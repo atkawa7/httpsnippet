@@ -3,7 +3,7 @@
 > HTTP Snippet port for java. See [the original node port](https://github.com/Kong/httpsnippet). Supports *many* languages & tools including: `cURL`, `HTTPie`, `Javascript`, `Node`, `C`, `Java`, `PHP`, `Objective-C`, `Swift`, `Python`, `Ruby`, `C#`, `Go`, `OCaml` and more!
 > The motivation behind porting this is using it for generating snippets in swagger and redocs  
 
-The project is still in development phase. 
+***The project is still in development phase***. 
 
 - [ ] Documentation
 - [ ] Tests
@@ -37,6 +37,8 @@ Enable maven snapshots in `~/.m2/settings.xml`
 </dependency>
 ```
 
+Here is the code for generating snippet
+
 ```java
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -65,6 +67,7 @@ public class Main {
                         .build();
 
         HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);
+        System.out.println(httpSnippet.getCode());
 
     }
 
@@ -74,6 +77,14 @@ public class Main {
         private String lastName;
     }
 }
+```
+
+The result 
+
+```java
+HttpResponse<String> response = Unirest.get("http://localhost:5000/users")
+  .body("{\"firstName\":\"Burton\",\"lastName\":\"Greenholt\"}")
+  .asString();
 ```
 
 

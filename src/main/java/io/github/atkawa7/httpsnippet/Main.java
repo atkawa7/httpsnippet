@@ -43,6 +43,7 @@ public class Main {
                         .build();
 
         HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);
+        System.out.println(httpSnippet.getCode());
 
     }
 
