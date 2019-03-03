@@ -64,6 +64,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.17.2</version>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>com.smartbear</groupId>
