@@ -1,9 +1,9 @@
-package io.github.atkawa7.httpsnippet.target.ruby;
+package io.github.atkawa7.httpsnippet.generators.ruby;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarRequest;
 import lombok.NonNull;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class RubyNative extends Target {
+public class RubyNative extends CodeGenerator {
     public RubyNative() {
         super(Client.RUBY, Language.RUBY);
     }

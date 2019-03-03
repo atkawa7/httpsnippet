@@ -1,10 +1,10 @@
-package io.github.atkawa7.httpsnippet.target.javascript;
+package io.github.atkawa7.httpsnippet.generators.javascript;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.target.Target;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.*;
 import lombok.NonNull;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-public class XMLHttpRequest extends Target {
+public class XMLHttpRequest extends CodeGenerator {
     private boolean cors;
 
     public XMLHttpRequest() {

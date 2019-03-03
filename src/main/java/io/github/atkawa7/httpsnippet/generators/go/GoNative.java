@@ -1,10 +1,10 @@
-package io.github.atkawa7.httpsnippet.target.go;
+package io.github.atkawa7.httpsnippet.generators.go;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.target.Target;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarCookie;
 import com.smartbear.har.model.HarHeader;
@@ -16,7 +16,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Setter
-public class GoNative extends Target {
+public class GoNative extends CodeGenerator {
 
     private boolean showBoilerplate;
     private boolean checkErrors;

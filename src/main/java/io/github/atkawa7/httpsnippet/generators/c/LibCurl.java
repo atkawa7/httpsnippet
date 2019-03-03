@@ -1,9 +1,9 @@
-package io.github.atkawa7.httpsnippet.target.c;
+package io.github.atkawa7.httpsnippet.generators.c;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarCookie;
 import com.smartbear.har.model.HarHeader;
@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-public class LibCurl extends Target {
+public class LibCurl extends CodeGenerator {
 
     public LibCurl() {
         super(Client.LIBCURL, Language.C);

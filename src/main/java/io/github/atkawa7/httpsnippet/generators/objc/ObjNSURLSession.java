@@ -1,10 +1,10 @@
-package io.github.atkawa7.httpsnippet.target.objc;
+package io.github.atkawa7.httpsnippet.generators.objc;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarParam;
 import com.smartbear.har.model.HarPostData;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ObjNSURLSession extends Target {
+public class ObjNSURLSession extends CodeGenerator {
     private int timeout;
 
     public ObjNSURLSession() {

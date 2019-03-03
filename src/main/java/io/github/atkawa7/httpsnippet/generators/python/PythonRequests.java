@@ -1,9 +1,9 @@
-package io.github.atkawa7.httpsnippet.target.python;
+package io.github.atkawa7.httpsnippet.generators.python;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarQueryString;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 import java.util.List;
 import java.util.Map;
 
-public class PythonRequests extends Target {
+public class PythonRequests extends CodeGenerator {
     public PythonRequests() {
         super(Client.PYTHON_REQUESTS, Language.PYTHON);
     }

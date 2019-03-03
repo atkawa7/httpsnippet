@@ -1,4 +1,4 @@
-package io.github.atkawa7.httpsnippet.target;
+package io.github.atkawa7.httpsnippet.generators;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
@@ -15,12 +15,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
-public abstract class Target {
+public abstract class CodeGenerator {
 
     protected final Client client;
     protected final Language language;
 
-    public Target(Client client, Language language) {
+    public CodeGenerator(Client client, Language language) {
         this.client = client;
         this.language = language;
     }

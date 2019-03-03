@@ -1,10 +1,10 @@
-package io.github.atkawa7.httpsnippet.target.javascript;
+package io.github.atkawa7.httpsnippet.generators.javascript;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.target.Target;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarParam;
@@ -20,7 +20,7 @@ import java.util.Map;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class JQuery extends Target {
+public class JQuery extends CodeGenerator {
 
     private final Boolean async;
     private final Boolean crossDomain;

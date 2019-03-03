@@ -1,9 +1,9 @@
-package io.github.atkawa7.httpsnippet.target.java;
+package io.github.atkawa7.httpsnippet.generators.java;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarPostData;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 import java.util.Arrays;
 import java.util.List;
 
-public class Unirest extends Target {
+public class Unirest extends CodeGenerator {
     private static final List<String> SUPPORTED_METHODS =
             Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS");
 

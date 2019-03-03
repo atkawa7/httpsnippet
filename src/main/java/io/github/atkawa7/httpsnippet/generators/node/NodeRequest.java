@@ -1,10 +1,10 @@
-package io.github.atkawa7.httpsnippet.target.node;
+package io.github.atkawa7.httpsnippet.generators.node;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.*;
 import lombok.NonNull;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NodeRequest extends Target {
+public class NodeRequest extends CodeGenerator {
     public NodeRequest() {
         super(Client.NODE_REQUEST, Language.NODE);
     }

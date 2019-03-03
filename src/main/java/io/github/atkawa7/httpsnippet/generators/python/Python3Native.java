@@ -1,10 +1,10 @@
-package io.github.atkawa7.httpsnippet.target.python;
+package io.github.atkawa7.httpsnippet.generators.python;
 
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.http.HttpScheme;
-import io.github.atkawa7.httpsnippet.target.Target;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarRequest;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 import java.net.URL;
 import java.util.Map;
 
-public class Python3Native extends Target {
+public class Python3Native extends CodeGenerator {
     public Python3Native() {
         super(Client.PYTHON3, Language.PYTHON);
     }
