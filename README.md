@@ -1,9 +1,10 @@
 # HTTP Snippet
 
 > HTTP Snippet port for java. See [the original node port](https://github.com/Kong/httpsnippet). Supports *many* languages & tools including: `cURL`, `HTTPie`, `Javascript`, `Node`, `C`, `Java`, `PHP`, `Objective-C`, `Swift`, `Python`, `Ruby`, `C#`, `Go`, `OCaml` and more!
-> The motivation behind porting this is using it for generating snippets in swagger and redocs  
 
-***The project is still in development phase***. 
+
+***The motivation behind porting this is using it for generating snippets in swagger and redocs.
+The project is still in development phase***. 
 
 - [ ] Documentation
 - [ ] Tests
