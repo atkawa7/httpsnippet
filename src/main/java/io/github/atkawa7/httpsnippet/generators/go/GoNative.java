@@ -27,7 +27,7 @@ public class GoNative extends CodeGenerator {
         this.showBoilerplate = true;
         this.checkErrors = false;
         this.printBody = true;
-        this.timeout = -10;
+        this.timeout = 10;
     }
 
     public String errorPlaceholder() {

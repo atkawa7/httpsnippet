@@ -46,6 +46,10 @@ public class Python3Native extends CodeGenerator {
             payload = toJson(postData.getText());
             code.push("payload = %s", payload).blank();
         }
+        else{
+            payload = toJson(toJson(asParams(postData.getParams())));
+            code.push("payload = %s", payload).blank();
+        }
 
         // Create HttpHeaders
         Map<String, String> headers = asHeaders(harRequest);

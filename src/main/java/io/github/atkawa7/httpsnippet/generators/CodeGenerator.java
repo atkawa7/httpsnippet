@@ -23,6 +23,13 @@ public abstract class CodeGenerator {
         this.language = language;
     }
 
+    public String code(final HarRequest harRequest) throws Exception {
+        Objects.requireNonNull(harRequest, "HarRequest cannot be null");
+        return this.generateCode(harRequest);
+    }
+
+    protected abstract String generateCode(final HarRequest harRequest) throws Exception;
+
     protected String toJson(Object value) throws Exception {
         return ObjectUtils.writeValueAsString(value);
     }
@@ -34,13 +41,6 @@ public abstract class CodeGenerator {
                 .filter(harHeader -> harHeader.getName().equalsIgnoreCase(headerName))
                 .findFirst();
     }
-
-    public String code(final HarRequest harRequest) throws Exception {
-        Objects.requireNonNull(harRequest, "HarRequest cannot be null");
-        return this.generateCode(harRequest);
-    }
-
-    protected abstract String generateCode(final HarRequest harRequest) throws Exception;
 
     protected String asCookies(List<HarCookie> cookies) {
         return ObjectUtils.isEmpty(cookies)
@@ -103,7 +103,7 @@ public abstract class CodeGenerator {
         return MediaType.APPLICATION_OCTET_STREAM;
     }
 
-    public boolean hasText(HarPostData harPostData) {
+    protected boolean hasText(HarPostData harPostData) {
         return ObjectUtils.isNotNull(harPostData) && StringUtils.isNotEmpty(harPostData.getText());
     }
 }
