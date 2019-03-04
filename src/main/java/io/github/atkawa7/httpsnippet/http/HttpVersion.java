@@ -18,7 +18,7 @@ private final int major;
 private final int minor;
 private final String protocolName;
 
-private HttpVersion(int major, int minor){
+private HttpVersion(int major, int minor) {
 	this(major, minor, String.format("%s/%s.%s", HTTP, major, minor));
 }
 

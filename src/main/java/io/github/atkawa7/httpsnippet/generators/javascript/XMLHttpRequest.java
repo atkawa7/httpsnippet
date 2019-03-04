@@ -27,7 +27,7 @@ public class XMLHttpRequest extends CodeGenerator {
         HarPostData postData = harRequest.getPostData();
 
         if (hasText(postData)) {
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
             switch (mimeType) {
                 case MediaType.APPLICATION_JSON: {
                     code.push("var data = JSON.stringify(%s);", postData.getText()).push(CodeBuilder.EMPTY);
@@ -40,7 +40,8 @@ public class XMLHttpRequest extends CodeGenerator {
                     if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam harParam : params) {
                             String value =
-                                    StringUtils.firstNonEmpty(harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);
+                                    StringUtils.firstNonEmpty(
+                                            harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);
                             code.push("data.append(%s, %s);", toJson(value), toJson(value));
                         }
                     }

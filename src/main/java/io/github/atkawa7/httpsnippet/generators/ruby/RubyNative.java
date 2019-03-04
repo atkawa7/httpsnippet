@@ -6,7 +6,6 @@ import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import lombok.NonNull;
 
 import java.net.URL;
 import java.util.Arrays;

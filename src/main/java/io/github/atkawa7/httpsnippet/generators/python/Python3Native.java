@@ -8,7 +8,6 @@ import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpScheme;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import lombok.NonNull;
 
 import java.net.URL;
 import java.util.Map;

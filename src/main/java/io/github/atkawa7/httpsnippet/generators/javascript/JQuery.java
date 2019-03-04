@@ -46,12 +46,13 @@ public class JQuery extends CodeGenerator {
         HarPostData postData = harRequest.getPostData();
 
         if (ObjectUtils.isNotNull(postData)) {
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
 
             switch (mimeType) {
                 case MediaType.APPLICATION_FORM_URLENCODED: {
                     List<HarParam> params = postData.getParams();
-                    settings.put("body", ObjectUtils.isNotEmpty(params) ? asParams(params) : postData.getText());
+                    settings.put(
+                            "body", ObjectUtils.isNotEmpty(params) ? asParams(params) : postData.getText());
                 }
                 break;
 
@@ -68,7 +69,8 @@ public class JQuery extends CodeGenerator {
                     if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam harParam : params) {
                             String value =
-                                    StringUtils.firstNonEmpty(harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);
+                                    StringUtils.firstNonEmpty(
+                                            harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);
                             code.push("form.append(%s, %s);", toJson(harParam.getName()), toJson(value));
                         }
                     }

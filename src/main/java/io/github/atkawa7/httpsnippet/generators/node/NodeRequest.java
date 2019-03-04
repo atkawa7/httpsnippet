@@ -42,7 +42,7 @@ public class NodeRequest extends CodeGenerator {
 
         HarPostData postData = harRequest.getPostData();
         if (hasText(postData)) {
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
             switch (mimeType) {
                 case MediaType.APPLICATION_FORM_URLENCODED:
                     reqOpts.put("forms", asParams(postData.getParams()));

@@ -8,7 +8,6 @@ import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import lombok.NonNull;
 
 import java.util.Arrays;
 import java.util.List;

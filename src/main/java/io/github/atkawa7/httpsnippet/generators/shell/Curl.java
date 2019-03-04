@@ -57,9 +57,9 @@ public class Curl extends CodeGenerator {
 
         HarPostData postData = harRequest.getPostData();
         if (hasText(postData)) {
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
             switch (mimeType) {
-                case MediaType.MULTIPART_FORM_DATA:{
+                case MediaType.MULTIPART_FORM_DATA: {
                     List<HarParam> params = postData.getParams();
                     if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam param : params) {
@@ -75,9 +75,9 @@ public class Curl extends CodeGenerator {
                     }
                 }
 
-                    break;
+                break;
 
-                case MediaType.APPLICATION_FORM_URLENCODED:{
+                case MediaType.APPLICATION_FORM_URLENCODED: {
                     List<HarParam> params = postData.getParams();
                     if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam param : params) {
@@ -94,10 +94,9 @@ public class Curl extends CodeGenerator {
                     }
                 }
 
-                    break;
+                break;
 
-                default:
-                {
+                default: {
                     code.push(
                             "%s %s",
                             _binary ? "--data-binary" : (_short ? "-d" : "--data"),

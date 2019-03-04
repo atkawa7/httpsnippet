@@ -10,7 +10,6 @@ import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import lombok.NonNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +42,7 @@ public class OkHttp extends CodeGenerator {
         boolean hasText = hasText(postData);
 
         if (hasText) {
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
             code.push("MediaType mediaType = MediaType.parse(\"%s\");", mimeType);
             code.push(
                     "RequestBody body = RequestBody.create(mediaType, %s);", toJson(postData.getText()));

@@ -60,7 +60,7 @@ public class NodeUnirest extends CodeGenerator {
 
         if (ObjectUtils.isNotNull(postData)) {
             List<HarParam> params = postData.getParams();
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
 
             switch (mimeType) {
                 case MediaType.APPLICATION_FORM_URLENCODED:

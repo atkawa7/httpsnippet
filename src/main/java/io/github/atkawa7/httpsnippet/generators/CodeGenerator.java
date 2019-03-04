@@ -35,7 +35,6 @@ public abstract class CodeGenerator {
                 .findFirst();
     }
 
-
     public String code(final HarRequest harRequest) throws Exception {
         Objects.requireNonNull(harRequest, "HarRequest cannot be null");
         return this.generateCode(harRequest);
@@ -86,21 +85,18 @@ public abstract class CodeGenerator {
         return result;
     }
 
-    protected String getMimeType(HarPostData harPostData){
-        if( ObjectUtils.isNotNull(harPostData)){
+    protected String getMimeType(HarPostData harPostData) {
+        if (ObjectUtils.isNotNull(harPostData)) {
             String mimeType = harPostData.getMimeType();
-            if(StringUtils.isBlank(mimeType)){
+            if (StringUtils.isBlank(mimeType)) {
                 return MediaType.APPLICATION_OCTET_STREAM;
-            }
-            else if(MediaType.isMultipartMediaType(mimeType)){
+            } else if (MediaType.isMultipartMediaType(mimeType)) {
                 return MediaType.MULTIPART_FORM_DATA;
-            }
-            else if(MediaType.isJsonMediaType(mimeType)){
+            } else if (MediaType.isJsonMediaType(mimeType)) {
                 return MediaType.APPLICATION_JSON;
-            }
-            else if(MediaType.APPLICATION_FORM_URLENCODED.equalsIgnoreCase(mimeType)){
+            } else if (MediaType.APPLICATION_FORM_URLENCODED.equalsIgnoreCase(mimeType)) {
                 return MediaType.APPLICATION_FORM_URLENCODED;
-            }else{
+            } else {
                 return mimeType;
             }
         }
@@ -108,8 +104,6 @@ public abstract class CodeGenerator {
     }
 
     public boolean hasText(HarPostData harPostData) {
-        return  ObjectUtils.isNotNull(harPostData) && StringUtils.isNotEmpty(harPostData.getText());
+        return ObjectUtils.isNotNull(harPostData) && StringUtils.isNotEmpty(harPostData.getText());
     }
-
-
 }

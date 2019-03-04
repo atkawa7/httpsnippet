@@ -52,7 +52,7 @@ public class NodeNative extends CodeGenerator {
 
         HarPostData postData = harRequest.getPostData();
         if (hasText(postData)) {
-            String mimeType  = this.getMimeType(postData);
+            String mimeType = this.getMimeType(postData);
             switch (mimeType) {
                 case MediaType.APPLICATION_FORM_URLENCODED: {
                     List<HarParam> params = postData.getParams();

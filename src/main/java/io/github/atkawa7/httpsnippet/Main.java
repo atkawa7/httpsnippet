@@ -17,8 +17,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class Main {
     public static void main(String[] args) throws Exception {
         List<HarHeader> headers = new ArrayList<>();
@@ -29,11 +27,11 @@ public class Main {
         user.setFirstName(faker.name().firstName());
         user.setLastName(faker.name().lastName());
 
-
         HarPostData harPostData =
                 new HarPostDataBuilder()
                         .withMimeType(MediaType.APPLICATION_JSON)
-                        .withText(ObjectUtils.writeValueAsString(user)).build();
+                        .withText(ObjectUtils.writeValueAsString(user))
+                        .build();
 
         HarRequest harRequest =
                 new HarRequestBuilder()
@@ -45,14 +43,13 @@ public class Main {
                         .withPostData(harPostData)
                         .build();
 
-        //Using default client
+        // Using default client
         HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);
         System.out.println(httpSnippet.getCode());
 
-        //Or directly using
-        String code   = new OkHttp().code(harRequest);
+        // Or directly using
+        String code = new OkHttp().code(harRequest);
         System.out.println(code);
-
     }
 
     @Data
@@ -61,4 +58,3 @@ public class Main {
         private String lastName;
     }
 }
-

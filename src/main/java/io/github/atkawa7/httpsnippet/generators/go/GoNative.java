@@ -10,7 +10,6 @@ import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.List;

@@ -22,13 +22,12 @@ import lombok.NonNull;
 import java.util.*;
 
 /**
- * An http snippet the list of available codeGenerators class that relies on the popular
- * <a href="http://www.softwareishard.com/blog/har-12-spec/#request">Har</a> format to create code snippets.
- * This converter supports many languages and tools including: {@linkplain Curl#code(HarRequest) cURL},
- * HTTPie, Javascript, Node, C, Java, PHP,
- * Objective-C, Swift, Python, Ruby, C#, Go, OCaml and more!
+ * An http snippet the list of available codeGenerators class that relies on the popular <a
+ * href="http://www.softwareishard.com/blog/har-12-spec/#request">Har</a> format to create code
+ * snippets. This converter supports many languages and tools including: {@linkplain
+ * Curl#code(HarRequest) cURL}, HTTPie, Javascript, Node, C, Java, PHP, Objective-C, Swift, Python,
+ * Ruby, C#, Go, OCaml and more!
  */
-
 public class HttpSnippetCodeGenerator {
     private final List<CodeGenerator> codeGenerators;
     private final List<Language> languages;
@@ -78,7 +77,8 @@ public class HttpSnippetCodeGenerator {
     }
 
     public List<HttpSnippet> snippets(
-            @NonNull final HarRequest harRequest, @NonNull final List<CodeGenerator> codeGenerators) throws Exception {
+            @NonNull final HarRequest harRequest, @NonNull final List<CodeGenerator> codeGenerators)
+            throws Exception {
         List<HttpSnippet> httpSnippets = new ArrayList<>(codeGenerators.size());
 
         for (CodeGenerator codeGenerator : codeGenerators) {
@@ -108,7 +108,9 @@ public class HttpSnippetCodeGenerator {
                                         && t.getLanguage().getTitle().equalsIgnoreCase(language))
                 .findFirst()
                 .orElseThrow(
-                        () -> new Exception(String.format("CodeGenerator (%s, %s) not supported", client, language)));
+                        () ->
+                                new Exception(
+                                        String.format("CodeGenerator (%s, %s) not supported", client, language)));
     }
 
     public Language findLanguage(@NonNull String name) throws Exception {
@@ -119,10 +121,10 @@ public class HttpSnippetCodeGenerator {
     }
 
     /**
-     * @param harRequest  The object contains detailed info about performed request.
-     * @param language The target programming language
-     * @param client The target client for the target programming language
-     * @return The http snippet for a  target. The target is searched from a list of available targets
+     * @param harRequest The object contains detailed info about performed request.
+     * @param language   The target programming language
+     * @param client     The target client for the target programming language
+     * @return The http snippet for a target. The target is searched from a list of available targets
      * {@link #findGenerator(String, String) findGenerator} using language and client
      * @throws Exception throws exception
      */
@@ -139,13 +141,14 @@ public class HttpSnippetCodeGenerator {
      * @param harRequest The object contains detailed info about performed request.
      * @param language   The target programming language
      * @param client     The target client for the target programming language
-     * @return The http snippet for a  target. The target is searched from a list of available targets
+     * @return The http snippet for a target. The target is searched from a list of available targets
      * {@link #findGenerator(String, String) findGenerator} using language and client
      * @throws Exception throws Exception
      */
-    public HttpSnippet snippet(@NonNull final HarRequest harRequest,
-                               @NonNull final Language language,
-                               @NonNull final Client client)
+    public HttpSnippet snippet(
+            @NonNull final HarRequest harRequest,
+            @NonNull final Language language,
+            @NonNull final Client client)
             throws Exception {
         CodeGenerator codeGenerator = this.findGenerator(language, client);
         return this.snippet(harRequest, codeGenerator);
@@ -154,9 +157,9 @@ public class HttpSnippetCodeGenerator {
     /**
      * @param harRequest The object contains detailed info about performed request.
      * @param language   The target programming language
-     * @return The http snippet for a code generator. Finds {@link #findLanguage(String) language}  and
-     * uses the {@link Language#getDefaultClient() default client} for a language to
-     * search through the list of available code generators.
+     * @return The http snippet for a code generator. Finds {@link #findLanguage(String) language} and
+     * uses the {@link Language#getDefaultClient() default client} for a language to search
+     * through the list of available code generators.
      * @throws Exception throws Exception
      */
     public HttpSnippet snippet(@NonNull final HarRequest harRequest, @NonNull final String language)
@@ -166,14 +169,12 @@ public class HttpSnippetCodeGenerator {
     }
 
     /**
-     *
      * @param harRequest The object contains detailed info about performed request.
-     * @param language The target programming language
-     * @return The http snippet for a code generator. Uses the {@link Language#getDefaultClient() default client}
-     * for a language to search through the list of available code generators.
+     * @param language   The target programming language
+     * @return The http snippet for a code generator. Uses the {@link Language#getDefaultClient()
+     * default client} for a language to search through the list of available code generators.
      * @throws Exception throws Exception
      */
-
     public HttpSnippet snippet(@NonNull final HarRequest harRequest, @NonNull final Language language)
             throws Exception {
         Client client = language.getDefaultClient();
@@ -182,14 +183,14 @@ public class HttpSnippetCodeGenerator {
     }
 
     /**
-     *
-     * @param harRequest The object contains detailed info about performed request.
-     * @param codeGenerator The codeGenerator that processes the request and creates {@link CodeGenerator#code(HarRequest) code}
+     * @param harRequest    The object contains detailed info about performed request.
+     * @param codeGenerator The codeGenerator that processes the request and creates {@link
+     *                      CodeGenerator#code(HarRequest) code}
      * @return The http snippet for a given code generator.
      * @throws Exception throws Exception
      */
-
-    public HttpSnippet snippet(@NonNull final HarRequest harRequest, @NonNull final CodeGenerator codeGenerator)
+    public HttpSnippet snippet(
+            @NonNull final HarRequest harRequest, @NonNull final CodeGenerator codeGenerator)
             throws Exception {
         return HttpSnippet.builder()
                 .client(codeGenerator.getClient())
