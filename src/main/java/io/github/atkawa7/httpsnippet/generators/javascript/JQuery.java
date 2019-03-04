@@ -1,16 +1,15 @@
 package io.github.atkawa7.httpsnippet.generators.javascript;
 
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
-import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarParam;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarRequest;
-import lombok.NonNull;
+import io.github.atkawa7.httpsnippet.Client;
+import io.github.atkawa7.httpsnippet.Language;
+import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
+import io.github.atkawa7.httpsnippet.http.MediaType;
+import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public class JQuery extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
         List<HarHeader> headers = harRequest.getHeaders();
@@ -47,23 +46,26 @@ public class JQuery extends CodeGenerator {
         HarPostData postData = harRequest.getPostData();
 
         if (ObjectUtils.isNotNull(postData)) {
-            List<HarParam> params = postData.getParams();
-            switch (postData.getMimeType()) {
-                case HttpHeaders.APPLICATION_FORM_URLENCODED: {
-                    settings.put("body", hasParams(params) ? asParams(params) : postData.getText());
+            String mimeType  = this.getMimeType(postData);
+
+            switch (mimeType) {
+                case MediaType.APPLICATION_FORM_URLENCODED: {
+                    List<HarParam> params = postData.getParams();
+                    settings.put("body", ObjectUtils.isNotEmpty(params) ? asParams(params) : postData.getText());
                 }
                 break;
 
-                case HttpHeaders.APPLICATION_JSON: {
+                case MediaType.APPLICATION_JSON: {
                     settings.put("processData", FALSE);
                     settings.put("data", postData.getText());
                 }
                 break;
 
-                case HttpHeaders.MULTIPART_FORM_DATA: {
+                case MediaType.MULTIPART_FORM_DATA: {
+                    List<HarParam> params = postData.getParams();
                     code.push("var form = new FormData();");
 
-                    if (hasParams(params)) {
+                    if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam harParam : params) {
                             String value =
                                     StringUtils.firstNonEmpty(harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);
@@ -73,7 +75,7 @@ public class JQuery extends CodeGenerator {
 
                     settings.put("processData", FALSE);
                     settings.put("contentType", FALSE);
-                    settings.put("mimeType", HttpHeaders.MULTIPART_FORM_DATA);
+                    settings.put("mimeType", MediaType.MULTIPART_FORM_DATA);
                     settings.put("data", "[form]");
                     code.blank();
                 }

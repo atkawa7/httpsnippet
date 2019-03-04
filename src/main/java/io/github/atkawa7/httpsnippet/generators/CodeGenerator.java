@@ -1,17 +1,15 @@
 package io.github.atkawa7.httpsnippet.generators;
 
+import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.*;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -20,16 +18,16 @@ public abstract class CodeGenerator {
     protected final Client client;
     protected final Language language;
 
-    public CodeGenerator(Client client, Language language) {
+    protected CodeGenerator(Client client, Language language) {
         this.client = client;
         this.language = language;
     }
 
-    public String toJson(Object value) throws Exception {
+    protected String toJson(Object value) throws Exception {
         return ObjectUtils.writeValueAsString(value);
     }
 
-    public Optional<HarHeader> find(List<HarHeader> headers, String headerName) {
+    protected Optional<HarHeader> find(List<HarHeader> headers, String headerName) {
         return (StringUtils.isEmpty(headerName) || ObjectUtils.isEmpty(headers))
                 ? Optional.empty()
                 : headers.stream()
@@ -37,36 +35,42 @@ public abstract class CodeGenerator {
                 .findFirst();
     }
 
-    public abstract String code(final HarRequest harRequest) throws Exception;
 
-    public String asCookies(List<HarCookie> cookies) {
-        return ObjectUtils.isNull(cookies)
+    public String code(final HarRequest harRequest) throws Exception {
+        Objects.requireNonNull(harRequest, "HarRequest cannot be null");
+        return this.generateCode(harRequest);
+    }
+
+    protected abstract String generateCode(final HarRequest harRequest) throws Exception;
+
+    protected String asCookies(List<HarCookie> cookies) {
+        return ObjectUtils.isEmpty(cookies)
                 ? StringUtils.EMPTY
                 : cookies.stream()
                 .map(e -> e.getName() + "=" + e.getValue())
                 .collect(Collectors.joining(";"));
     }
 
-    public Map<String, String> asHeaders(List<HarHeader> headers) {
+    protected Map<String, String> asHeaders(List<HarHeader> headers) {
         return ObjectUtils.isNull(headers)
                 ? new HashMap<>()
                 : headers.stream().collect(Collectors.toMap(HarHeader::getName, HarHeader::getValue));
     }
 
-    public Map<String, String> asQueryStrings(List<HarQueryString> queryStrings) {
+    protected Map<String, String> asQueryStrings(List<HarQueryString> queryStrings) {
         return ObjectUtils.isNull(queryStrings)
                 ? new HashMap<>()
                 : queryStrings.stream()
                 .collect(Collectors.toMap(HarQueryString::getName, HarQueryString::getValue));
     }
 
-    public Map<String, String> asParams(List<HarParam> params) {
+    protected Map<String, String> asParams(List<HarParam> params) {
         return ObjectUtils.isNull(params)
                 ? new HashMap<>()
                 : params.stream().collect(Collectors.toMap(HarParam::getName, HarParam::getValue));
     }
 
-    public Map<String, String> asHeaders(HarRequest harRequest) {
+    protected Map<String, String> asHeaders(HarRequest harRequest) {
         Map<String, String> result = new HashMap<>();
         List<HarHeader> headers = harRequest.getHeaders();
         if (ObjectUtils.isNotNull(headers)) {
@@ -82,11 +86,30 @@ public abstract class CodeGenerator {
         return result;
     }
 
-    public boolean hasText(HarPostData harPostData) {
-        return ObjectUtils.isNotNull(harPostData) && StringUtils.isNotEmpty(harPostData.getText());
+    protected String getMimeType(HarPostData harPostData){
+        if( ObjectUtils.isNotNull(harPostData)){
+            String mimeType = harPostData.getMimeType();
+            if(StringUtils.isBlank(mimeType)){
+                return MediaType.APPLICATION_OCTET_STREAM;
+            }
+            else if(MediaType.isMultipartMediaType(mimeType)){
+                return MediaType.MULTIPART_FORM_DATA;
+            }
+            else if(MediaType.isJsonMediaType(mimeType)){
+                return MediaType.APPLICATION_JSON;
+            }
+            else if(MediaType.APPLICATION_FORM_URLENCODED.equalsIgnoreCase(mimeType)){
+                return MediaType.APPLICATION_FORM_URLENCODED;
+            }else{
+                return mimeType;
+            }
+        }
+        return MediaType.APPLICATION_OCTET_STREAM;
     }
 
-    public boolean hasParams(List<HarParam> params) {
-        return ObjectUtils.isNotEmpty(params);
+    public boolean hasText(HarPostData harPostData) {
+        return  ObjectUtils.isNotNull(harPostData) && StringUtils.isNotEmpty(harPostData.getText());
     }
+
+
 }

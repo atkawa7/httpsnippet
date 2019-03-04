@@ -1,13 +1,13 @@
 package io.github.atkawa7.httpsnippet.generators.javascript;
 
+import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.*;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -21,22 +21,23 @@ public class XMLHttpRequest extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
         HarPostData postData = harRequest.getPostData();
 
         if (hasText(postData)) {
-            switch (postData.getMimeType()) {
-                case HttpHeaders.APPLICATION_JSON: {
+            String mimeType  = this.getMimeType(postData);
+            switch (mimeType) {
+                case MediaType.APPLICATION_JSON: {
                     code.push("var data = JSON.stringify(%s);", postData.getText()).push(CodeBuilder.EMPTY);
                 }
                 break;
 
-                case HttpHeaders.MULTIPART_FORM_DATA: {
+                case MediaType.MULTIPART_FORM_DATA: {
                     code.push("var data = new FormData();");
                     List<HarParam> params = postData.getParams();
-                    if (hasParams(params)) {
+                    if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam harParam : params) {
                             String value =
                                     StringUtils.firstNonEmpty(harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);

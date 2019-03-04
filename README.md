@@ -42,42 +42,48 @@ Here is the code for generating snippet
 
 ```java
 public class Main {
-    public static void main(String[] args) throws Exception {
-        List<HarHeader> headers = new ArrayList<>();
-        List<HarQueryString> queryStrings = new ArrayList<>();
+     public static void main(String[] args) throws Exception {
+         List<HarHeader> headers = new ArrayList<>();
+         List<HarQueryString> queryStrings = new ArrayList<>();
+ 
+         User user = new User();
+         Faker faker = new Faker();
+         user.setFirstName(faker.name().firstName());
+         user.setLastName(faker.name().lastName());
+ 
+ 
+         HarPostData harPostData =
+                 new HarPostDataBuilder()
+                         .withMimeType(MediaType.APPLICATION_JSON)
+                         .withText(ObjectUtils.writeValueAsString(user)).build();
+ 
+         HarRequest harRequest =
+                 new HarRequestBuilder()
+                         .withMethod(HttpMethod.GET.toString())
+                         .withUrl("http://localhost:5000/users")
+                         .withHeaders(headers)
+                         .withQueryString(queryStrings)
+                         .withHttpVersion(HttpVersion.HTTP_1_1.toString())
+                         .withPostData(harPostData)
+                         .build();
+ 
+         //Using default client
+         HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);
+         System.out.println(httpSnippet.getCode());
+ 
+         //Or directly using
+         String code   = new OkHttp().code(harRequest);
+         System.out.println(code);
+ 
+     }
+ 
+     @Data
+     static class User {
+         private String firstName;
+         private String lastName;
+     }
+ }
 
-        User user = new User();
-        Faker faker = new Faker();
-        user.setFirstName(faker.name().firstName());
-        user.setLastName(faker.name().lastName());
-
-
-        HarPostData harPostData =
-                new HarPostDataBuilder()
-                        .withMimeType(HttpHeaders.APPLICATION_JSON)
-                        .withText(ObjectUtils.writeValueAsString(user)).build();
-
-        HarRequest harRequest =
-                new HarRequestBuilder()
-                        .withMethod(HttpMethod.GET.toString())
-                        .withUrl("http://localhost:5000/users")
-                        .withHeaders(headers)
-                        .withQueryString(queryStrings)
-                        .withHttpVersion(HttpVersion.HTTP_1_1.toString())
-                        .withPostData(harPostData)
-                        .build();
-
-        HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);
-        System.out.println(httpSnippet.getCode());
-
-    }
-
-    @Data
-    static class User {
-        private String firstName;
-        private String lastName;
-    }
-}
 ```
 
 The result 

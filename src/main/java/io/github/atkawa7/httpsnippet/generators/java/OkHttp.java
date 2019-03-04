@@ -1,15 +1,15 @@
 package io.github.atkawa7.httpsnippet.generators.java;
 
+import com.smartbear.har.model.HarCookie;
+import com.smartbear.har.model.HarHeader;
+import com.smartbear.har.model.HarPostData;
+import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.HarCookie;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
 import lombok.NonNull;
 
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class OkHttp extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
         code.push("OkHttpClient client = new OkHttpClient();").blank();
@@ -43,7 +43,8 @@ public class OkHttp extends CodeGenerator {
         boolean hasText = hasText(postData);
 
         if (hasText) {
-            code.push("MediaType mediaType = MediaType.parse(\"%s\");", postData.getMimeType());
+            String mimeType  = this.getMimeType(postData);
+            code.push("MediaType mediaType = MediaType.parse(\"%s\");", mimeType);
             code.push(
                     "RequestBody body = RequestBody.create(mediaType, %s);", toJson(postData.getText()));
         }

@@ -1,15 +1,14 @@
 package io.github.atkawa7.httpsnippet.generators.objc;
 
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
-import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import com.smartbear.har.model.HarParam;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarRequest;
-import lombok.NonNull;
+import io.github.atkawa7.httpsnippet.Client;
+import io.github.atkawa7.httpsnippet.Language;
+import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
+import io.github.atkawa7.httpsnippet.http.MediaType;
+import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,7 @@ public class ObjNSURLSession extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
 
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
@@ -93,8 +92,9 @@ public class ObjNSURLSession extends CodeGenerator {
         if (hasText(postData)) {
             hasBody = true;
             List<HarParam> params = new ArrayList<>();
-            switch (postData.getMimeType()) {
-                case HttpHeaders.APPLICATION_FORM_URLENCODED:
+            String mimeType = this.getMimeType(postData);
+            switch (mimeType) {
+                case MediaType.APPLICATION_FORM_URLENCODED:
                     if (ObjectUtils.isNotEmpty(params)) {
                         code.blank()
                                 .push(
@@ -108,7 +108,7 @@ public class ObjNSURLSession extends CodeGenerator {
                     }
                     break;
 
-                case HttpHeaders.APPLICATION_JSON:
+                case MediaType.APPLICATION_JSON:
                     if (hasText(postData)) {
                         code.push(nsDeclaration("NSDictionary", "parameters", postData.getText(), 4))
                                 .blank()

@@ -1,13 +1,12 @@
 package io.github.atkawa7.httpsnippet.generators.node;
 
+import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.*;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class NodeRequest extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
         boolean includeFS = false;
 
@@ -43,22 +42,22 @@ public class NodeRequest extends CodeGenerator {
 
         HarPostData postData = harRequest.getPostData();
         if (hasText(postData)) {
-
-            switch (postData.getMimeType()) {
-                case HttpHeaders.APPLICATION_FORM_URLENCODED:
+            String mimeType  = this.getMimeType(postData);
+            switch (mimeType) {
+                case MediaType.APPLICATION_FORM_URLENCODED:
                     reqOpts.put("forms", asParams(postData.getParams()));
                     break;
 
-                case HttpHeaders.APPLICATION_JSON: {
+                case MediaType.APPLICATION_JSON: {
                     reqOpts.put("body", postData.getText());
                     reqOpts.put("json", Boolean.TRUE);
                 }
                 break;
 
-                case HttpHeaders.MULTIPART_FORM_DATA: {
+                case MediaType.MULTIPART_FORM_DATA: {
                     Map<String, Object> formData = new HashMap<>();
                     List<HarParam> params = postData.getParams();
-                    if (hasParams(params)) {
+                    if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam param : params) {
                             Map<String, Object> attachment = new HashMap<>();
 

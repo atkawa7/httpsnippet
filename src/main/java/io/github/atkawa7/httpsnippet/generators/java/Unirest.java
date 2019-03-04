@@ -1,13 +1,13 @@
 package io.github.atkawa7.httpsnippet.generators.java;
 
+import com.smartbear.har.model.HarHeader;
+import com.smartbear.har.model.HarPostData;
+import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
 import lombok.NonNull;
 
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class Unirest extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
         String method = harRequest.getMethod();

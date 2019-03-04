@@ -1,13 +1,12 @@
 package io.github.atkawa7.httpsnippet.generators.node;
 
+import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.*;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class NodeUnirest extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
         boolean includeFS = false;
 
@@ -61,21 +60,23 @@ public class NodeUnirest extends CodeGenerator {
 
         if (ObjectUtils.isNotNull(postData)) {
             List<HarParam> params = postData.getParams();
-            switch (postData.getMimeType()) {
-                case HttpHeaders.APPLICATION_FORM_URLENCODED:
-                    if (hasParams(params)) {
+            String mimeType  = this.getMimeType(postData);
+
+            switch (mimeType) {
+                case MediaType.APPLICATION_FORM_URLENCODED:
+                    if (ObjectUtils.isNotEmpty(params)) {
                         code.push("req.form(%s);", toJson(asParams(params)));
                     }
                     break;
 
-                case HttpHeaders.APPLICATION_JSON:
+                case MediaType.APPLICATION_JSON:
                     if (hasText(postData)) {
                         code.push("req.type(\"json\");").push("req.send(%s);", postData.getText());
                     }
                     break;
 
-                case HttpHeaders.MULTIPART_FORM_DATA:
-                    if (hasParams(params)) {
+                case MediaType.MULTIPART_FORM_DATA:
+                    if (ObjectUtils.isNotEmpty(params)) {
                         List<Object> multipart = new ArrayList<>();
 
                         for (HarParam param : params) {

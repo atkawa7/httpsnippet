@@ -1,14 +1,14 @@
 package io.github.atkawa7.httpsnippet.generators.node;
 
+import com.smartbear.har.model.HarParam;
+import com.smartbear.har.model.HarPostData;
+import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import com.smartbear.har.model.HarParam;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-import lombok.NonNull;
+import io.github.atkawa7.httpsnippet.http.MediaType;
+import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class NodeNative extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
         URL uri = new URL(harRequest.getUrl());
 
@@ -52,11 +52,11 @@ public class NodeNative extends CodeGenerator {
 
         HarPostData postData = harRequest.getPostData();
         if (hasText(postData)) {
-            List<HarParam> params = postData.getParams();
-
-            switch (postData.getMimeType()) {
-                case HttpHeaders.APPLICATION_FORM_URLENCODED: {
-                    if (hasParams(params)) {
+            String mimeType  = this.getMimeType(postData);
+            switch (mimeType) {
+                case MediaType.APPLICATION_FORM_URLENCODED: {
+                    List<HarParam> params = postData.getParams();
+                    if (ObjectUtils.isNotEmpty(params)) {
                         code.push("var qs = require(\"querystring\");");
                         code.push("req.write(qs.stringify(%s));", toJson(asParams(params)));
                     }
@@ -64,7 +64,7 @@ public class NodeNative extends CodeGenerator {
 
                 break;
 
-                case HttpHeaders.APPLICATION_JSON:
+                case MediaType.APPLICATION_JSON:
                     code.push("req.write(JSON.stringify(%s));", postData.getText());
                     break;
 

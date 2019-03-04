@@ -10,10 +10,6 @@ HttpScheme(String scheme) {
 }
 
 public boolean equalsIgnoreCase(String scheme) {
-	return this.getScheme().equalsIgnoreCase(scheme);
-}
-
-public String getScheme() {
-	return scheme;
+	return this.scheme.equalsIgnoreCase(scheme);
 }
 }

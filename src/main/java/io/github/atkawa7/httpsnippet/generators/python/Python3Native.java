@@ -1,13 +1,13 @@
 package io.github.atkawa7.httpsnippet.generators.python;
 
+import com.smartbear.har.model.HarPostData;
+import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
-import io.github.atkawa7.httpsnippet.http.HttpScheme;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
+import io.github.atkawa7.httpsnippet.http.HttpScheme;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
 import lombok.NonNull;
 
 import java.net.URL;
@@ -19,7 +19,7 @@ public class Python3Native extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
 
         URL url = new URL(harRequest.getUrl());
         CodeBuilder code = new CodeBuilder();

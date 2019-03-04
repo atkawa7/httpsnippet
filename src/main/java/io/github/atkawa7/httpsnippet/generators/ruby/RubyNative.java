@@ -1,11 +1,11 @@
 package io.github.atkawa7.httpsnippet.generators.ruby;
 
+import com.smartbear.har.model.HarPostData;
+import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
 import lombok.NonNull;
 
 import java.net.URL;
@@ -19,7 +19,7 @@ public class RubyNative extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder();
 
         code.push("require 'uri'").push("require 'net/http'").blank();

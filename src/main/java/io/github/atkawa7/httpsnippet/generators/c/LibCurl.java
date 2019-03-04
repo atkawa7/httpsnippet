@@ -1,14 +1,14 @@
 package io.github.atkawa7.httpsnippet.generators.c;
 
+import com.smartbear.har.model.HarCookie;
+import com.smartbear.har.model.HarHeader;
+import com.smartbear.har.model.HarPostData;
+import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.HarCookie;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,7 +21,7 @@ public class LibCurl extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         CodeBuilder code = new CodeBuilder();
 
         code.push("CURL *hnd = curl_easy_init();")

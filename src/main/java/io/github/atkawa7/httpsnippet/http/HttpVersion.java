@@ -1,10 +1,11 @@
 package io.github.atkawa7.httpsnippet.http;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpVersion {
 public static final String HTTP = "HTTP";
 
@@ -15,13 +16,18 @@ public static final HttpVersion HTTP_2_0 = new HttpVersion(2, 0);
 
 private final int major;
 private final int minor;
+private final String protocolName;
+
+private HttpVersion(int major, int minor){
+	this(major, minor, String.format("%s/%s.%s", HTTP, major, minor));
+}
 
 public boolean equalsIgnoreCase(String httpVersion) {
-	return this.toString().equalsIgnoreCase(httpVersion);
+	return this.protocolName.equalsIgnoreCase(httpVersion);
 }
 
 @Override
 public String toString() {
-	return String.format("%s/%s.%s", HTTP, major, minor);
+	return protocolName;
 }
 }

@@ -1,14 +1,13 @@
 package io.github.atkawa7.httpsnippet.generators.shell;
 
+import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.Client;
 import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import com.smartbear.har.model.*;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -24,7 +23,7 @@ public class Curl extends CodeGenerator {
     }
 
     @Override
-    public String code(@NonNull final HarRequest harRequest) throws Exception {
+    protected String generateCode(final HarRequest harRequest) throws Exception {
         String indent = "  ";
         boolean _short = false, _binary = false;
 
@@ -58,9 +57,10 @@ public class Curl extends CodeGenerator {
 
         HarPostData postData = harRequest.getPostData();
         if (hasText(postData)) {
-            List<HarParam> params = postData.getParams();
-            switch (postData.getMimeType()) {
-                case HttpHeaders.MULTIPART_FORM_DATA:
+            String mimeType  = this.getMimeType(postData);
+            switch (mimeType) {
+                case MediaType.MULTIPART_FORM_DATA:{
+                    List<HarParam> params = postData.getParams();
                     if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam param : params) {
                             String post = String.format("%s=%s", param.getName(), param.getValue());
@@ -73,9 +73,12 @@ public class Curl extends CodeGenerator {
                             code.push("%s %s", _short ? "-F" : "--form", quote(post));
                         }
                     }
+                }
+
                     break;
 
-                case HttpHeaders.APPLICATION_FORM_URLENCODED:
+                case MediaType.APPLICATION_FORM_URLENCODED:{
+                    List<HarParam> params = postData.getParams();
                     if (ObjectUtils.isNotEmpty(params)) {
                         for (HarParam param : params) {
                             code.push(
@@ -89,13 +92,17 @@ public class Curl extends CodeGenerator {
                                 _binary ? "--data-binary" : (_short ? "-d" : "--data"),
                                 StringEscapeUtils.escapeXSI(quote(postData.getText())));
                     }
+                }
+
                     break;
 
                 default:
+                {
                     code.push(
                             "%s %s",
                             _binary ? "--data-binary" : (_short ? "-d" : "--data"),
                             StringEscapeUtils.escapeXSI(quote(postData.getText())));
+                }
             }
         }
 
