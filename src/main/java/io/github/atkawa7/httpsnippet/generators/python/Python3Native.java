@@ -45,8 +45,7 @@ public class Python3Native extends CodeGenerator {
         if (hasText(postData)) {
             payload = toJson(postData.getText());
             code.push("payload = %s", payload).blank();
-        }
-        else{
+        } else {
             payload = toJson(toJson(asParams(postData.getParams())));
             code.push("payload = %s", payload).blank();
         }
