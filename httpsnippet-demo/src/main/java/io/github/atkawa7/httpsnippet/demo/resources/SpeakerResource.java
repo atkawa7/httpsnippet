@@ -39,7 +39,6 @@ public HttpEntity<SpeakerDTO> putSpeaker(@PathVariable Long id, @RequestBody Spe
 		return speakerProcessor.updateSpeaker(id, dto);
 	}
 
-
 @GetMapping("/{id}")
 public HttpEntity<SpeakerDTO> retrieveSpeaker(@PathVariable Long id) {
 	return speakerProcessor.retrieveSpeaker(id);
@@ -49,5 +48,4 @@ public HttpEntity<SpeakerDTO> retrieveSpeaker(@PathVariable Long id) {
 public HttpEntity<SpeakerDTO> deleteSpeaker(@PathVariable Long id) {
 	return speakerProcessor.deleteSpeaker(id);
 }
-
 }

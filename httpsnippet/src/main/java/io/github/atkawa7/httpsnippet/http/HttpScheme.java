@@ -1,15 +1,15 @@
 package io.github.atkawa7.httpsnippet.http;
 
 public enum HttpScheme {
-HTTP("http"),
-HTTPS("https");
-private String scheme;
+    HTTP("http"),
+    HTTPS("https");
+    private String scheme;
 
-HttpScheme(String scheme) {
-	this.scheme = scheme;
-}
+    HttpScheme(String scheme) {
+        this.scheme = scheme;
+    }
 
-public boolean equalsIgnoreCase(String scheme) {
-	return this.scheme.equalsIgnoreCase(scheme);
-}
+    public boolean equalsIgnoreCase(String scheme) {
+        return this.scheme.equalsIgnoreCase(scheme);
+    }
 }

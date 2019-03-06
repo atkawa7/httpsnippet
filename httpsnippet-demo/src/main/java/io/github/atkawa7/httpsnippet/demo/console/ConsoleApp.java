@@ -31,11 +31,11 @@ public class ConsoleApp {
         user.setFirstName(faker.name().firstName());
         user.setLastName(faker.name().lastName());
 
-
         HarPostData harPostData =
                 new HarPostDataBuilder()
                         .withMimeType(MediaType.APPLICATION_JSON)
-                        .withText(ObjectUtils.writeValueAsString(user)).build();
+                        .withText(ObjectUtils.writeValueAsString(user))
+                        .build();
 
         HarRequest harRequest =
                 new HarRequestBuilder()
@@ -47,14 +47,13 @@ public class ConsoleApp {
                         .withPostData(harPostData)
                         .build();
 
-        //Using default client
+        // Using default client
         HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);
         System.out.println(httpSnippet.getCode());
 
-        //Or directly using
-        String code   = new OkHttp().code(harRequest);
+        // Or directly using
+        String code = new OkHttp().code(harRequest);
         System.out.println(code);
-
     }
 
     @Data
