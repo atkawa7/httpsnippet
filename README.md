@@ -94,6 +94,20 @@ HttpResponse<String> response = Unirest.get("http://localhost:5000/users")
   .asString();
 ```
 
+## Running the demo application
+
+```sh
+mvn clean install
+java -jar httpsnippet-demo/target/httpsnippet-demo-0.0.1-SNAPSHOT.jar
+```
+
+After running the demo here are the results
+
+![Alt text](images/Redoc.png?raw=true "Redoc")
+
+![Alt text](images/Swagger-UI.png?raw=true "Swagger UI")
+
+
 
 ## License
 
