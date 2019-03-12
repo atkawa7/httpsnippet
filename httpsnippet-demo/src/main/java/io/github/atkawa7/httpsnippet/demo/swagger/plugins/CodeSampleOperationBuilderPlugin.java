@@ -1,4 +1,4 @@
-package io.github.atkawa7.httpsnippet.demo.swagger.models;
+package io.github.atkawa7.httpsnippet.demo.swagger.plugins;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +13,7 @@ import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.demo.dto.SpeakerDTO;
 import io.github.atkawa7.httpsnippet.demo.swagger.extensions.CodeSampleVendorExtension;
+import io.github.atkawa7.httpsnippet.demo.swagger.models.CodeSample;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.generators.c.LibCurl;
 import io.github.atkawa7.httpsnippet.generators.csharp.RestSharp;
@@ -28,6 +29,7 @@ import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,13 +48,19 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
-public class CodeSampleProcessor implements OperationBuilderPlugin {
-private static final String SPRING_APPLICATION_BASE_URL = "spring.application.base-url";
-private static final Faker FAKER = new Faker();
+public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin {
+	public static final String X_CODE_SAMPLES = "x-code-samples";
+	public static final String LINKEDIN = "https://www.linkedin.com/in/%s";
+	public static final String FACEBOOK = "https://www.facebook.com/%s";
+	public static final String GITHUB = "https://github.com/%s";
+	public static final String TWITTER = "https://twitter.com/%s";
+
+	private static final Faker FAKER = new Faker();
+	private static final String SPRING_APPLICATION_BASE_URL = "spring.application.base-url";
 private final List<CodeGenerator> generators;
 private final Environment environment;
 
-public CodeSampleProcessor(Environment environment) {
+	public CodeSampleOperationBuilderPlugin(Environment environment) {
 	this.generators = new ArrayList<>();
 	this.environment = environment;
 	this.add(new OkHttp());
@@ -100,13 +108,13 @@ public void apply(OperationContext operationContext) {
 					.biography(FAKER.lorem().paragraph())
 					.build();
 			String username =
-				String.format(
-					"%s.%s", speakerDTO.getFirstName().charAt(0), speakerDTO.getLastName());
+					StringUtils.lowerCase(
+							String.format("%s.%s", speakerDTO.getFirstName(), speakerDTO.getLastName()));
 
-			speakerDTO.setLinkedIn(String.format("https://www.linkedin.com/in/%s", username));
-			speakerDTO.setFacebook(String.format("https://www.facebook.com/%s", username));
-			speakerDTO.setGithub(String.format("https://github.com/%s", username));
-			speakerDTO.setTwitter(String.format("https://twitter.com/%s", username));
+			speakerDTO.setLinkedIn(String.format(LINKEDIN, username));
+			speakerDTO.setFacebook(String.format(FACEBOOK, username));
+			speakerDTO.setGithub(String.format(GITHUB, username));
+			speakerDTO.setTwitter(String.format(TWITTER, username));
 			example = speakerDTO;
 		}
 		}
@@ -164,7 +172,7 @@ public void apply(OperationContext operationContext) {
 				.collect(Collectors.toList());
 	if (codeSamples.size() > 0) {
 		final CodeSampleVendorExtension vendorExtension =
-			new CodeSampleVendorExtension("x-code-samples", codeSamples);
+				new CodeSampleVendorExtension(X_CODE_SAMPLES, codeSamples);
 		operationContext.operationBuilder().extensions(Collections.singletonList(vendorExtension));
 	}
 	} catch (Exception e) {

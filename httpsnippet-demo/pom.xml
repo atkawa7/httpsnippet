@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>httpsnippet-parent</artifactId>
         <groupId>io.github.atkawa7</groupId>
+        <artifactId>httpsnippet-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
 
     <artifactId>httpsnippet-demo</artifactId>
+    <packaging>jar</packaging>
     <name>Http Snippet Demo</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>${java.faker.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs-maven-plugin.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -37,20 +29,9 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
-            <version>${spotbugs-maven-plugin.version}</version>
+            <groupId>io.github.atkawa7</groupId>
+            <artifactId>httpsnippet</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
@@ -63,23 +44,39 @@
             <version>${springfox.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.atkawa7</groupId>
-            <artifactId>httpsnippet</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>${java.faker.version}</version>
-            <optional>true</optional>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 
     <build>
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
                 <includes>
                     <include>**/application*.yml</include>
                     <include>**/application*.yaml</include>
@@ -91,17 +88,17 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.7.5</version>
+                <version>${frontend-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>install node and yarn</id>
+                        <id>install-node-and-yarn</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>install-node-and-yarn</goal>
                         </goals>
-                        <phase>generate-resources</phase>
                     </execution>
                     <execution>
-                        <id>yarn install</id>
+                        <id>yarn-install</id>
                         <goals>
                             <goal>yarn</goal>
                         </goals>
@@ -110,7 +107,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>yarn run build</id>
+                        <id>yarn-run-build</id>
                         <goals>
                             <goal>yarn</goal>
                         </goals>
@@ -120,8 +117,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <nodeVersion>v11.10.1</nodeVersion>
-                    <yarnVersion>v1.13.0</yarnVersion>
+                    <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
+                    <yarnVersion>${frontend-maven-plugin.yarnVersion}</yarnVersion>
                     <installDirectory>${maven.multiModuleProjectDirectory}/bin</installDirectory>
                     <workingDirectory>${project.basedir}/redoc</workingDirectory>
                 </configuration>
@@ -129,36 +126,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <delimiters>
-                        <delimiter>@</delimiter>
-                    </delimiters>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
-                <configuration>
-                    <fork>true</fork>
-                    <mainClass>io.github.atkawa7.httpsnippet.demo.DemoStarter</mainClass>
-                </configuration>
+                <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                            <goal>build-info</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy redoc build to target</id>
+                        <id>copy-docs</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -174,6 +145,29 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>io.github.atkawa7.httpsnippet.demo.DemoStarter</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -9,7 +9,7 @@ import io.github.atkawa7.httpsnippet.demo.resources.SpeakerResource;
 import io.github.atkawa7.httpsnippet.demo.service.SpeakerService;
 import io.github.atkawa7.httpsnippet.demo.service.SpeakerServiceImpl;
 import io.github.atkawa7.httpsnippet.demo.swagger.extensions.LogoVendorExtension;
-import io.github.atkawa7.httpsnippet.demo.swagger.models.CodeSampleProcessor;
+import io.github.atkawa7.httpsnippet.demo.swagger.plugins.CodeSampleOperationBuilderPlugin;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -54,8 +54,8 @@ public SpeakerProcessor speakerProcessor(SpeakerService speakerService) {
 }
 
 @Bean
-public CodeSampleProcessor codeSampleProcessor(Environment environment) {
-	return new CodeSampleProcessor(environment);
+public CodeSampleOperationBuilderPlugin codeSampleProcessor(Environment environment) {
+	return new CodeSampleOperationBuilderPlugin(environment);
 }
 
 @Bean

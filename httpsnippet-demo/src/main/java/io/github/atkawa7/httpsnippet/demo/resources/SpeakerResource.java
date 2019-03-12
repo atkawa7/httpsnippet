@@ -34,10 +34,10 @@ public HttpEntity<SpeakerDTO> putSpeaker(@PathVariable Long id, @RequestBody Spe
 	return speakerProcessor.updateSpeaker(id, dto);
 }
 
-	@PatchMapping("/{id}")
-	public HttpEntity<SpeakerDTO> patchSpeaker(@PathVariable Long id, @RequestBody SpeakerDTO dto) {
-		return speakerProcessor.updateSpeaker(id, dto);
-	}
+    @PatchMapping("/{id}")
+    public HttpEntity<SpeakerDTO> patchSpeaker(@PathVariable Long id, @RequestBody SpeakerDTO dto) {
+        return speakerProcessor.updateSpeaker(id, dto);
+    }
 
 @GetMapping("/{id}")
 public HttpEntity<SpeakerDTO> retrieveSpeaker(@PathVariable Long id) {
