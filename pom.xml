@@ -34,15 +34,22 @@
     </distributionManagement>
 
     <properties>
+        <animal-sniffer-maven-plugin.version>1.16</animal-sniffer-maven-plugin.version>
+        <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
         <asciidoctor-maven-plugin.version>1.5.7.1</asciidoctor-maven-plugin.version>
         <asciidoctorj-pdf.version>1.5.0-alpha.16</asciidoctorj-pdf.version>
+        <build-number-maven-plugin.version>1.4</build-number-maven-plugin.version>
+        <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
+        <clover-maven-plugin.version>4.3.1</clover-maven-plugin.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-text.version>1.6</commons-text.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
+        <dependency-check-maven.version>5.0.0-M2</dependency-check-maven.version>
         <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
         <error_prone_core.version>2.3.2</error_prone_core.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
         <findsecbugs-plugin.version>1.8.0</findsecbugs-plugin.version>
+        <forbidden-apis.version>2.6</forbidden-apis.version>
         <frontend-maven-plugin.nodeVersion>v11.10.1</frontend-maven-plugin.nodeVersion>
         <frontend-maven-plugin.version>1.7.5</frontend-maven-plugin.version>
         <frontend-maven-plugin.yarnVersion>v1.13.0</frontend-maven-plugin.yarnVersion>
@@ -63,6 +70,7 @@
         <junit-platform.version>1.4.0</junit-platform.version>
         <lombok.version>1.18.6</lombok.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+        <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -72,6 +80,7 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <maven-jar-signer-plugin.version>3.0.0</maven-jar-signer-plugin.version>
         <maven-jarsigner-plugin.version>3.0.0</maven-jarsigner-plugin.version>
         <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
         <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
@@ -96,12 +105,6 @@
         <spring.boot.version>2.1.3.RELEASE</spring.boot.version>
         <springfox.version>2.9.2</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
-        <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
-        <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
-        <maven-jar-signer-plugin.version>3.0.0</maven-jar-signer-plugin.version>
-        <clover-maven-plugin.version>4.3.1</clover-maven-plugin.version>
-        <forbidden-apis.version>2.6</forbidden-apis.version>
-        <build-number-maven-plugin.version>1.4</build-number-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
     </properties>
 
@@ -163,6 +166,23 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>au.com.acegi</groupId>
+                    <artifactId>xml-format-maven-plugin</artifactId>
+                    <version>${xml-format-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>xml-format</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>xml-format</goal>
+                            </goals>
+                            <configuration>
+                                <indentSize>4</indentSize>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>com.coderplus.maven.plugins</groupId>
                     <artifactId>copy-rename-maven-plugin</artifactId>
@@ -274,9 +294,40 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>de.thetaphi</groupId>
+                    <artifactId>forbiddenapis</artifactId>
+                    <version>${forbidden-apis.version}</version>
+                    <configuration>
+                        <failOnUnsupportedJava>false</failOnUnsupportedJava>
+                        <bundledSignatures>
+                            <bundledSignature>jdk-unsafe</bundledSignature>
+                            <bundledSignature>jdk-deprecated</bundledSignature>
+                            <bundledSignature>jdk-non-portable</bundledSignature>
+                            <bundledSignature>jdk-reflection</bundledSignature>
+                        </bundledSignatures>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>net.nicoulaj.maven.plugins</groupId>
+                    <artifactId>checksum-maven-plugin</artifactId>
+                    <version>${checksum-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>artifacts</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-changelog-plugin</artifactId>
+                    <version>${maven-changelog-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -433,6 +484,23 @@
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>animal-sniffer-maven-plugin</artifactId>
+                    <version>${animal-sniffer-maven-plugin.version}</version>
+                    <configuration>
+                        <signature>
+                            <groupId>org.codehaus.mojo.signature</groupId>
+                            <artifactId>java18</artifactId>
+                            <version>${animal-sniffer-signature.version}</version>
+                        </signature>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>${build-number-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>${exec-maven-plugin.version}</version>
                 </plugin>
@@ -456,6 +524,23 @@
                             <phase>prepare-package</phase>
                             <goals>
                                 <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.openclover</groupId>
+                    <artifactId>clover-maven-plugin</artifactId>
+                    <version>${clover-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${dependency-check-maven.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -510,64 +595,6 @@
                             </validationProperty>
                         </validationProperties>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>net.nicoulaj.maven.plugins</groupId>
-                    <artifactId>checksum-maven-plugin</artifactId>
-                    <version>${checksum-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>artifacts</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-changelog-plugin</artifactId>
-                    <version>${maven-changelog-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.openclover</groupId>
-                    <artifactId>clover-maven-plugin</artifactId>
-                    <version>${clover-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
-                <groupId>de.thetaphi</groupId>
-                <artifactId>forbiddenapis</artifactId>
-                <version>${forbidden-apis.version}</version>
-                <configuration>
-                    <failOnUnsupportedJava>false</failOnUnsupportedJava>
-                    <bundledSignatures>
-                        <bundledSignature>jdk-unsafe</bundledSignature>
-                        <bundledSignature>jdk-deprecated</bundledSignature>
-                        <bundledSignature>jdk-non-portable</bundledSignature>
-                        <bundledSignature>jdk-reflection</bundledSignature>
-                    </bundledSignatures>
-                </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>${build-number-maven-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>au.com.acegi</groupId>
-                    <artifactId>xml-format-maven-plugin</artifactId>
-                    <version>${xml-format-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>xml-format</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>xml-format</goal>
-                            </goals>
-                            <configuration>
-                                <indentSize>4</indentSize>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
