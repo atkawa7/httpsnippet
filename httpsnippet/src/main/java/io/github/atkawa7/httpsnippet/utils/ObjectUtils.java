@@ -7,6 +7,7 @@ import lombok.experimental.UtilityClass;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @UtilityClass
@@ -18,11 +19,11 @@ public class ObjectUtils {
     }
 
     public static <T> boolean isNotNull(T object) {
-        return object != null;
+        return Objects.nonNull(object);
     }
 
     public static <T> boolean isNull(T object) {
-        return object == null;
+        return Objects.isNull(object);
     }
 
     public static <T> String defaultIfNull(T obj, String str) {
@@ -31,7 +32,7 @@ public class ObjectUtils {
 
     @SuppressWarnings("rawtypes")
     public static boolean isEmpty(Object obj) {
-        if (obj == null) {
+        if (Objects.isNull(obj)) {
             return true;
         }
 

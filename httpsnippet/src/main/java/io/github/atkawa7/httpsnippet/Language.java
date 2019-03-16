@@ -14,10 +14,10 @@ public enum Language {
     C("c", "C", ".c", Client.LIBCURL),
     JAVA("java", "Java", ".java", Client.UNIREST),
     SHELL("shell", "Shell", ".sh", Client.CURL);
-    private String key;
-    private String title;
-    private String extname;
-    private Client defaultClient;
+    private final String key;
+    private final String title;
+    private final String extname;
+    private final Client defaultClient;
 
     Language(String key, String title, String extname, Client defaultClient) {
         this.key = key;

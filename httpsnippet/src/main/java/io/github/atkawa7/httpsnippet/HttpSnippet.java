@@ -13,4 +13,5 @@ public class HttpSnippet {
     private Client client;
     private Language language;
     private String code;
+    private String displayName;
 }

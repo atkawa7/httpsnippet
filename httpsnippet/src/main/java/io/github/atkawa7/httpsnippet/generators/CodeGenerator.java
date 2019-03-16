@@ -17,10 +17,15 @@ public abstract class CodeGenerator {
 
     protected final Client client;
     protected final Language language;
+    protected final String displayName;
 
     protected CodeGenerator(Client client, Language language) {
+        Objects.requireNonNull(client, "Client cannot be null");
+        Objects.requireNonNull(language, "Language cannot be null");
         this.client = client;
         this.language = language;
+        this.displayName = String.format("%s:%s", language.getTitle(), client.getTitle());
+
     }
 
     public String code(final HarRequest harRequest) throws Exception {

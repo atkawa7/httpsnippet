@@ -11,174 +11,185 @@ import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.HttpSnippetCodeGenerator;
+import io.github.atkawa7.httpsnippet.demo.config.DemoProperties;
 import io.github.atkawa7.httpsnippet.demo.dto.SpeakerDTO;
 import io.github.atkawa7.httpsnippet.demo.swagger.extensions.CodeSampleVendorExtension;
 import io.github.atkawa7.httpsnippet.demo.swagger.models.CodeSample;
-import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.generators.c.LibCurl;
-import io.github.atkawa7.httpsnippet.generators.csharp.RestSharp;
-import io.github.atkawa7.httpsnippet.generators.go.GoNative;
-import io.github.atkawa7.httpsnippet.generators.java.OkHttp;
-import io.github.atkawa7.httpsnippet.generators.javascript.JQuery;
-import io.github.atkawa7.httpsnippet.generators.node.NodeNative;
-import io.github.atkawa7.httpsnippet.generators.objc.ObjNSURLSession;
-import io.github.atkawa7.httpsnippet.generators.python.Python3Native;
-import io.github.atkawa7.httpsnippet.generators.ruby.RubyNative;
-import io.github.atkawa7.httpsnippet.generators.shell.Curl;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.mvc.condition.NameValueExpression;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
+import springfox.documentation.spi.service.contexts.DocumentationContext;
 import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
 public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin {
-	public static final String X_CODE_SAMPLES = "x-code-samples";
-	public static final String LINKEDIN = "https://www.linkedin.com/in/%s";
-	public static final String FACEBOOK = "https://www.facebook.com/%s";
-	public static final String GITHUB = "https://github.com/%s";
-	public static final String TWITTER = "https://twitter.com/%s";
+    private final DemoProperties properties;
 
-	private static final Faker FAKER = new Faker();
-	private static final String SPRING_APPLICATION_BASE_URL = "spring.application.base-url";
-private final List<CodeGenerator> generators;
-private final Environment environment;
-
-	public CodeSampleOperationBuilderPlugin(Environment environment) {
-	this.generators = new ArrayList<>();
-	this.environment = environment;
-	this.add(new OkHttp());
-	this.add(new LibCurl());
-	this.add(new RestSharp());
-	this.add(new GoNative());
-	this.add(new JQuery());
-	this.add(new NodeNative());
-	this.add(new ObjNSURLSession());
-	this.add(new RubyNative());
-	this.add(new Python3Native());
-	this.add(new Curl());
-}
-
-private void add(CodeGenerator generator) {
-	this.generators.add(generator);
+    public CodeSampleOperationBuilderPlugin(DemoProperties properties) {
+        Objects.requireNonNull(properties, "Properties cannot be null");
+        this.properties = properties;
 }
 
 @Override
 public void apply(OperationContext operationContext) {
-	List<ResolvedMethodParameter> resolvedParameters = operationContext.getParameters();
+    String X_CODE_SAMPLES = "x-code-samples";
 
-	Object example = null;
+    List<ResolvedMethodParameter> resolvedParameters = operationContext.getParameters();
 
-	if (resolvedParameters != null) {
-	for (ResolvedMethodParameter resolvedMethodParameter : resolvedParameters) {
-		Optional<String> optional = resolvedMethodParameter.defaultName();
+    Object example = getExample(resolvedParameters);
 
-		if (optional.isPresent()) {
-		String name = optional.get();
-		logger.info("Current parameter is {}", name);
-		}
+    List<HarHeader> headers = getHarHeaders(operationContext);
 
-		ResolvedType resolvedType = resolvedMethodParameter.getParameterType();
-		Optional<RequestBody> requestBody =
-			resolvedMethodParameter.findAnnotation(RequestBody.class);
-		if (requestBody.isPresent()) {
-		final Class<?> erasedType = resolvedType.getErasedType();
-		if (erasedType.isAssignableFrom(SpeakerDTO.class)) {
-			SpeakerDTO speakerDTO =
-				SpeakerDTO.builder()
-					.firstName(FAKER.name().firstName())
-					.lastName(FAKER.name().lastName())
-					.company(FAKER.company().name())
-					.biography(FAKER.lorem().paragraph())
-					.build();
-			String username =
-					StringUtils.lowerCase(
-							String.format("%s.%s", speakerDTO.getFirstName(), speakerDTO.getLastName()));
+    String body;
+    try {
+        body = ObjectUtils.isNull(example) ? "" : ObjectUtils.writeValueAsString(example);
+    } catch (JsonProcessingException e) {
+        throw new RuntimeException("Failed to create json from example");
+    }
 
-			speakerDTO.setLinkedIn(String.format(LINKEDIN, username));
-			speakerDTO.setFacebook(String.format(FACEBOOK, username));
-			speakerDTO.setGithub(String.format(GITHUB, username));
-			speakerDTO.setTwitter(String.format(TWITTER, username));
-			example = speakerDTO;
-		}
-		}
-	}
-	}
+    HarPostData postData =
+            new HarPostDataBuilder().withMimeType(MediaType.APPLICATION_JSON).withText(body).build();
 
-	List<HarHeader> headers = new ArrayList<>();
+    HarRequest harRequest =
+            new HarRequestBuilder()
+                    .withMethod(operationContext.httpMethod().name())
+                    .withUrl(
+                            String.format(
+                                    "%s%s",
+                                    properties.getApplicationBaseUrl(), operationContext.requestMappingPattern()))
+                    .withHeaders(headers)
+                    .withHttpVersion(HttpVersion.HTTP_1_1.toString())
+                    .withPostData(postData)
+                    .build();
 
-	Set<NameValueExpression<String>> nameValueExpressions = operationContext.headers();
-	if (nameValueExpressions != null && nameValueExpressions.size() > 0) {
-	for (NameValueExpression<String> nameValueExpression : nameValueExpressions) {
-		HarHeader harHeader =
-			new HarHeaderBuilder()
-				.withName(nameValueExpression.getName())
-				.withValue(nameValueExpression.getValue())
-				.build();
-		headers.add(harHeader);
-	}
-	}
+    try {
+        final List<CodeSample> codeSamples =
+                new HttpSnippetCodeGenerator()
+                        .snippets(harRequest).stream()
+                        .map(
+                                c ->
+                                        CodeSample.builder()
+                                                .label(c.getDisplayName().toLowerCase())
+                                                .lang(c.getLanguage().getTitle())
+                                                .source(c.getCode())
+                                                .build())
+                        .collect(Collectors.toList());
+        if (codeSamples.size() > 0) {
+            final CodeSampleVendorExtension vendorExtension =
+                    new CodeSampleVendorExtension(X_CODE_SAMPLES, codeSamples);
+            operationContext.operationBuilder().extensions(Collections.singletonList(vendorExtension));
+        }
+    } catch (Exception e) {
+        logger.error("Failed to create code samples", e);
+        throw new RuntimeException("Failed to create sample codes");
+    }
+}
 
-	String body;
-	try {
-	body = ObjectUtils.isNull(example) ? "" : ObjectUtils.writeValueAsString(example);
-	} catch (JsonProcessingException e) {
-	throw new RuntimeException("Failed to create json from example");
-	}
+    private Object getExample(List<ResolvedMethodParameter> resolvedParameters) {
+        Object example = null;
 
-	HarPostData postData =
-		new HarPostDataBuilder().withMimeType(MediaType.APPLICATION_JSON).withText(body).build();
+        String LINKEDIN = "https://www.linkedin.com/in/%s";
+        String FACEBOOK = "https://www.facebook.com/%s";
+        String GITHUB = "https://github.com/%s";
+        String TWITTER = "https://twitter.com/%s";
+        Faker FAKER = new Faker();
 
-	HarRequest harRequest =
-		new HarRequestBuilder()
-			.withMethod(operationContext.httpMethod().name())
-			.withUrl(
-				String.format(
-					"%s%s",
-					environment.getProperty(SPRING_APPLICATION_BASE_URL),
-					operationContext.requestMappingPattern()))
-			.withHeaders(headers)
-			.withHttpVersion(HttpVersion.HTTP_1_1.toString())
-			.withPostData(postData)
-			.build();
+        if (ObjectUtils.isNotNull(resolvedParameters)) {
+            for (ResolvedMethodParameter resolvedMethodParameter : resolvedParameters) {
+                Optional<String> optional = resolvedMethodParameter.defaultName();
 
-	try {
-	final List<CodeSample> codeSamples =
-		new HttpSnippetCodeGenerator(generators)
-			.snippets(harRequest).stream()
-				.map(
-					c ->
-						CodeSample.builder()
-							.label(c.getClient().getTitle())
-							.lang(c.getLanguage().getTitle())
-							.source(c.getCode())
-							.build())
-				.collect(Collectors.toList());
-	if (codeSamples.size() > 0) {
-		final CodeSampleVendorExtension vendorExtension =
-				new CodeSampleVendorExtension(X_CODE_SAMPLES, codeSamples);
-		operationContext.operationBuilder().extensions(Collections.singletonList(vendorExtension));
-	}
-	} catch (Exception e) {
-	logger.error("Failed to create code samples", e);
-	throw new RuntimeException("Failed to create sample codes");
-	}
+                if (optional.isPresent()) {
+                    String name = optional.get();
+                    logger.info("Current parameter is {}", name);
+                }
+
+                ResolvedType resolvedType = resolvedMethodParameter.getParameterType();
+                final Class<?> erasedType = resolvedType.getErasedType();
+                logger.info("Current class name", erasedType.getSimpleName());
+
+                Optional<RequestBody> requestBody =
+                        resolvedMethodParameter.findAnnotation(RequestBody.class);
+                if (requestBody.isPresent()) {
+
+                    if (erasedType.isAssignableFrom(SpeakerDTO.class)) {
+                        SpeakerDTO speakerDTO =
+                                SpeakerDTO.builder()
+                                        .firstName(FAKER.name().firstName())
+                                        .lastName(FAKER.name().lastName())
+                                        .company(FAKER.company().name())
+                                        .biography(FAKER.lorem().paragraph())
+                                        .build();
+                        String username =
+                                StringUtils.lowerCase(
+                                        String.format("%s.%s", speakerDTO.getFirstName(), speakerDTO.getLastName()));
+
+                        speakerDTO.setLinkedIn(String.format(LINKEDIN, username));
+                        speakerDTO.setFacebook(String.format(FACEBOOK, username));
+                        speakerDTO.setGithub(String.format(GITHUB, username));
+                        speakerDTO.setTwitter(String.format(TWITTER, username));
+                        example = speakerDTO;
+                    }
+                }
+            }
+        }
+        return example;
+    }
+
+    private List<HarHeader> getHarHeaders(OperationContext operationContext) {
+        List<HarHeader> headers = new ArrayList<>();
+
+        Set<NameValueExpression<String>> nameValueExpressions = operationContext.headers();
+        if (ObjectUtils.isNotEmpty(nameValueExpressions)) {
+            for (NameValueExpression<String> nameValueExpression : nameValueExpressions) {
+                HarHeader harHeader =
+                        new HarHeaderBuilder()
+                                .withName(nameValueExpression.getName())
+                                .withValue(nameValueExpression.getValue())
+                                .build();
+                headers.add(harHeader);
+            }
+        }
+
+        DocumentationContext documentationContext = operationContext.getDocumentationContext();
+        if (ObjectUtils.isNotNull(documentationContext)) {
+            Set<String> consumes = documentationContext.getConsumes();
+            if (ObjectUtils.isNotEmpty(consumes)) {
+                HarHeader harHeader =
+                        new HarHeaderBuilder()
+                                .withName(HttpHeaders.CONTENT_TYPE)
+                                .withValue(StringUtils.join(consumes, ","))
+                                .build();
+                headers.add(harHeader);
+            }
+
+            Set<String> produces = documentationContext.getProduces();
+
+            if (ObjectUtils.isNotEmpty(consumes)) {
+                HarHeader harHeader =
+                        new HarHeaderBuilder()
+                                .withName(HttpHeaders.ACCEPT)
+                                .withValue(StringUtils.join(produces, ","))
+                                .build();
+                headers.add(harHeader);
+            }
+
+        }
+
+        return headers;
 }
 
 @Override

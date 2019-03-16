@@ -10,6 +10,8 @@
     <artifactId>httpsnippet-demo</artifactId>
     <packaging>jar</packaging>
     <name>Http Snippet Demo</name>
+    <description>An HTTP Request snippet generator for Springfox</description>
+    <url>https://github.com/atkawa7/httpsnippet</url>
 
     <dependencies>
         <dependency>

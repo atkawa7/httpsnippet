@@ -33,96 +33,38 @@ public class HttpSnippetCodeGenerator {
     private final List<Language> languages;
 
     public HttpSnippetCodeGenerator() {
-        this(new ArrayList<>());
-
-        this.add(new OkHttp());
-        this.add(new Unirest());
-
-        this.add(new LibCurl());
-
-        this.add(new RestSharp());
-
-        this.add(new GoNative());
-
-        this.add(new JQuery());
-        this.add(new XMLHttpRequest());
-
-        this.add(new NodeNative());
-        this.add(new NodeRequest());
-        this.add(new NodeUnirest());
-
-        this.add(new ObjNSURLSession());
-
-        this.add(new Python3Native());
-        this.add(new PythonRequests());
-
-        this.add(new RubyNative());
-
-        this.add(new Curl());
-
-        Collections.sort(codeGenerators, Comparator.comparing(o -> o.getClient().getTitle()));
+        this(defaultGenerators());
+    }
+    public HttpSnippetCodeGenerator(@NonNull CodeGenerator... codeGenerators) {
+        this(Arrays.asList(codeGenerators));
     }
 
     public HttpSnippetCodeGenerator(@NonNull final List<CodeGenerator> codeGenerators) {
-        this.codeGenerators = codeGenerators;
+        Collections.sort(codeGenerators, Comparator.comparing(o -> o.getDisplayName()));
+        this.codeGenerators = Collections.unmodifiableList(codeGenerators);
         this.languages = Collections.unmodifiableList(Arrays.asList(Language.values()));
+
     }
 
-    public HttpSnippetCodeGenerator(@NonNull CodeGenerator... codeGenerators) {
-        this.codeGenerators = Arrays.asList(codeGenerators);
-        this.languages = Collections.unmodifiableList(Arrays.asList(Language.values()));
-    }
+    private static List<CodeGenerator> defaultGenerators() {
+        List<CodeGenerator> codeGenerators = new ArrayList<>();
+        codeGenerators.add(new OkHttp());
+        codeGenerators.add(new Unirest());
+        codeGenerators.add(new LibCurl());
+        codeGenerators.add(new RestSharp());
+        codeGenerators.add(new GoNative());
+        codeGenerators.add(new JQuery());
+        codeGenerators.add(new XMLHttpRequest());
+        codeGenerators.add(new NodeNative());
+        codeGenerators.add(new NodeRequest());
+        codeGenerators.add(new NodeUnirest());
+        codeGenerators.add(new ObjNSURLSession());
+        codeGenerators.add(new Python3Native());
+        codeGenerators.add(new PythonRequests());
+        codeGenerators.add(new RubyNative());
+        codeGenerators.add(new Curl());
+        return codeGenerators;
 
-    public final boolean add(@NonNull final CodeGenerator codeGenerator) {
-        return this.codeGenerators.add(codeGenerator);
-    }
-
-    public List<HttpSnippet> snippets(@NonNull final HarRequest harRequest) throws Exception {
-        return this.snippets(harRequest, this.codeGenerators);
-    }
-
-    public List<HttpSnippet> snippets(
-            @NonNull final HarRequest harRequest, @NonNull final List<CodeGenerator> codeGenerators)
-            throws Exception {
-        List<HttpSnippet> httpSnippets = new ArrayList<>(codeGenerators.size());
-
-        for (CodeGenerator codeGenerator : codeGenerators) {
-            String snippet = codeGenerator.code(harRequest);
-            HttpSnippet httpSnippet =
-                    HttpSnippet.builder()
-                            .client(codeGenerator.getClient())
-                            .language(codeGenerator.getLanguage())
-                            .code(snippet)
-                            .build();
-            httpSnippets.add(httpSnippet);
-        }
-        return httpSnippets;
-    }
-
-    public CodeGenerator findGenerator(@NonNull final Language language, @NonNull final Client client)
-            throws Exception {
-        return this.findGenerator(language.getTitle(), client.getTitle());
-    }
-
-    public CodeGenerator findGenerator(@NonNull final String language, @NonNull final String client)
-            throws Exception {
-        return this.codeGenerators.stream()
-                .filter(
-                        t ->
-                                t.getClient().getTitle().equalsIgnoreCase(client)
-                                        && t.getLanguage().getTitle().equalsIgnoreCase(language))
-                .findFirst()
-                .orElseThrow(
-                        () ->
-                                new Exception(
-                                        String.format("CodeGenerator (%s, %s) not supported", client, language)));
-    }
-
-    public Language findLanguage(@NonNull String name) throws Exception {
-        return this.languages.stream()
-                .filter(l -> l.getTitle().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(() -> new Exception(String.format("Language (%s) not supported", name)));
     }
 
     /**
@@ -139,24 +81,7 @@ public class HttpSnippetCodeGenerator {
             @NonNull final String client)
             throws Exception {
         CodeGenerator codeGenerator = this.findGenerator(language, client);
-        return this.snippet(harRequest, codeGenerator);
-    }
-
-    /**
-     * @param harRequest The object contains detailed info about performed request.
-     * @param language   The target programming language
-     * @param client     The target client for the target programming language
-     * @return The http snippet for a target. The target is searched from a list of available targets
-     * {@link #findGenerator(String, String) findGenerator} using language and client
-     * @throws Exception throws Exception
-     */
-    public HttpSnippet snippet(
-            @NonNull final HarRequest harRequest,
-            @NonNull final Language language,
-            @NonNull final Client client)
-            throws Exception {
-        CodeGenerator codeGenerator = this.findGenerator(language, client);
-        return this.snippet(harRequest, codeGenerator);
+        return this.convert(harRequest, codeGenerator);
     }
 
     /**
@@ -176,6 +101,23 @@ public class HttpSnippetCodeGenerator {
     /**
      * @param harRequest The object contains detailed info about performed request.
      * @param language   The target programming language
+     * @param client     The target client for the target programming language
+     * @return The http snippet for a target. The target is searched from a list of available targets
+     * {@link #findGenerator(String, String) findGenerator} using language and client
+     * @throws Exception throws Exception
+     */
+    public HttpSnippet snippet(
+            @NonNull final HarRequest harRequest,
+            @NonNull final Language language,
+            @NonNull final Client client)
+            throws Exception {
+        CodeGenerator codeGenerator = this.findGenerator(language, client);
+        return this.convert(harRequest, codeGenerator);
+    }
+
+    /**
+     * @param harRequest The object contains detailed info about performed request.
+     * @param language   The target programming language
      * @return The http snippet for a code generator. Uses the {@link Language#getDefaultClient()
      * default client} for a language to search through the list of available code generators.
      * @throws Exception throws Exception
@@ -184,23 +126,60 @@ public class HttpSnippetCodeGenerator {
             throws Exception {
         Client client = language.getDefaultClient();
         CodeGenerator codeGenerator = this.findGenerator(language, client);
-        return this.snippet(harRequest, codeGenerator);
+        return this.convert(harRequest, codeGenerator);
     }
 
     /**
-     * @param harRequest    The object contains detailed info about performed request.
-     * @param codeGenerator The codeGenerator that processes the request and creates {@link
-     *                      CodeGenerator#code(HarRequest) code}
-     * @return The http snippet for a given code generator.
-     * @throws Exception throws Exception
+     *
+     * @param harRequest The object contains detailed info about performed request.
+     * @return The list of http snippets using generators
+     * @throws Exception when fails to convert post data to json
      */
-    public HttpSnippet snippet(
+
+    public List<HttpSnippet> snippets(@NonNull final HarRequest harRequest) throws Exception {
+        List<HttpSnippet> httpSnippets = new ArrayList<>(codeGenerators.size());
+        for (CodeGenerator codeGenerator : codeGenerators) {
+            httpSnippets.add(this.convert(harRequest, codeGenerator));
+        }
+        return httpSnippets;
+    }
+
+    protected HttpSnippet convert(
             @NonNull final HarRequest harRequest, @NonNull final CodeGenerator codeGenerator)
             throws Exception {
         return HttpSnippet.builder()
                 .client(codeGenerator.getClient())
+                .displayName(codeGenerator.getDisplayName())
                 .language(codeGenerator.getLanguage())
                 .code(codeGenerator.code(harRequest))
                 .build();
     }
+
+    protected CodeGenerator findGenerator(@NonNull final Language language, @NonNull final Client client)
+            throws Exception {
+        return this.findGenerator(language.getTitle(), client.getTitle());
+    }
+
+    protected CodeGenerator findGenerator(@NonNull final String language, @NonNull final String client)
+            throws Exception {
+        return this.codeGenerators.stream()
+                .filter(
+                        t ->
+                                t.getClient().getTitle().equalsIgnoreCase(client)
+                                        && t.getLanguage().getTitle().equalsIgnoreCase(language))
+                .findFirst()
+                .orElseThrow(
+                        () ->
+                                new Exception(
+                                        String.format("CodeGenerator (%s, %s) not supported", client, language)));
+    }
+
+    protected Language findLanguage(@NonNull String name) throws Exception {
+        return this.languages.stream()
+                .filter(l -> l.getTitle().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new Exception(String.format("Language (%s) not supported", name)));
+    }
+
+
 }

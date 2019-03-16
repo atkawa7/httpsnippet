@@ -3,7 +3,7 @@ package io.github.atkawa7.httpsnippet;
 public enum Client {
     CJ_HTTP(
             "clj_http",
-            "clj-http",
+            "Clj-http",
             "https://github.com/dakrone/clj-http",
             "An idiomatic clojure http client wrapping the apache client."),
     GO(
@@ -37,7 +37,7 @@ public enum Client {
             "nsurlsession",
             "NSURLSession",
             "https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSURLSession_class/index.html",
-            "Foundation\'s NSURLSession request"),
+            "Foundation's NSURLSession request"),
     COHTTP(
             "cohttp",
             "CoHTTP",
@@ -72,8 +72,8 @@ public enum Client {
             "nsurlsession",
             "NSURLSession",
             "https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSURLSession_class/index.html",
-            "Foundation\'s NSURLSession request"),
-    RUBY("ruby", "Ruby", ".rb", "ative"),
+            "Foundation's NSURLSession request"),
+    RUBY("net::http", "Net::http", "http://ruby-doc.org/stdlib-2.2.1/libdoc/net/http/rdoc/Net/HTTP.html", "Ruby HTTP client"),
     UNIREST(
             "unirest",
             "Unirest",
@@ -91,10 +91,10 @@ public enum Client {
             "Simple REST and HTTP API Client for C"),
     OKHTTP("okhttp", "OkHttp", "http://square.github.io/okhttp/", "An HTTP Request Client Library");
 
-    private String key;
-    private String title;
-    private String link;
-    private String description;
+    private final String key;
+    private final String title;
+    private final String link;
+    private final String description;
 
     Client(String key, String title, String link, String description) {
         this.key = key;
