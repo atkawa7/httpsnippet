@@ -1,4 +1,4 @@
-package io.github.atkawa7.httpsnippet;
+package io.github.atkawa7.httpsnippet.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

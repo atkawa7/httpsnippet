@@ -1,19 +1,15 @@
 package io.github.atkawa7.httpsnippet.generators.javascript;
 
-import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarParam;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.MediaType;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.lang.Boolean.FALSE;
@@ -31,61 +27,52 @@ public class JQuery extends CodeGenerator {
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
-
-        List<HarHeader> headers = harRequest.getHeaders();
 
         Map<String, Object> settings = new HashMap<>();
         settings.put("async", async);
         settings.put("crossDomain", crossDomain);
-        settings.put("url", harRequest.getUrl());
-        settings.put("method", harRequest.getMethod());
-        settings.put("headers", asHeaders(headers));
+        settings.put("url", codeRequest.getUrl());
+        settings.put("method", codeRequest.getMethod());
+        settings.put("headers", codeRequest.allHeadersAsMap());
 
-        HarPostData postData = harRequest.getPostData();
+        if (codeRequest.hasBody()) {
+            switch (codeRequest.getMimeType()) {
+                case MediaType.APPLICATION_FORM_URLENCODED:
+                    if (codeRequest.hasParams()) {
+                        settings.put("body", codeRequest.paramsAsMap());
+                    }
+                    break;
 
-        if (ObjectUtils.isNotNull(postData)) {
-            String mimeType = this.getMimeType(postData);
+                case MediaType.APPLICATION_JSON:
+                    if (codeRequest.hasText()) {
+                        settings.put("processData", FALSE);
+                        settings.put("data", codeRequest.getText());
+                    }
+                    break;
 
-            switch (mimeType) {
-                case MediaType.APPLICATION_FORM_URLENCODED: {
-                    List<HarParam> params = postData.getParams();
-                    settings.put(
-                            "body", ObjectUtils.isNotEmpty(params) ? asParams(params) : postData.getText());
-                }
-                break;
+                case MediaType.MULTIPART_FORM_DATA:
+                    if (codeRequest.hasParams()) {
+                        code.push("var form = new FormData();");
 
-                case MediaType.APPLICATION_JSON: {
-                    settings.put("processData", FALSE);
-                    settings.put("data", postData.getText());
-                }
-                break;
-
-                case MediaType.MULTIPART_FORM_DATA: {
-                    List<HarParam> params = postData.getParams();
-                    code.push("var form = new FormData();");
-
-                    if (ObjectUtils.isNotEmpty(params)) {
-                        for (HarParam harParam : params) {
+                        for (HarParam harParam : codeRequest.getParams()) {
                             String value =
                                     StringUtils.firstNonEmpty(
                                             harParam.getValue(), harParam.getFileName(), CodeBuilder.SPACE);
                             code.push("form.append(%s, %s);", toJson(harParam.getName()), toJson(value));
                         }
+
+                        settings.put("processData", FALSE);
+                        settings.put("contentType", FALSE);
+                        settings.put("mimeType", MediaType.MULTIPART_FORM_DATA);
+                        settings.put("data", "[form]");
+                        code.blank();
                     }
-
-                    settings.put("processData", FALSE);
-                    settings.put("contentType", FALSE);
-                    settings.put("mimeType", MediaType.MULTIPART_FORM_DATA);
-                    settings.put("data", "[form]");
-                    code.blank();
-                }
-                break;
-
+                    break;
                 default:
-                    if (hasText(postData)) {
-                        settings.put("data", postData.getText());
+                    if (codeRequest.hasText()) {
+                        settings.put("data", codeRequest.getText());
                     }
             }
         }

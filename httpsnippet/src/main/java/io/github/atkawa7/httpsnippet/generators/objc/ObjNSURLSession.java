@@ -1,13 +1,12 @@
 package io.github.atkawa7.httpsnippet.generators.objc;
 
 import com.smartbear.har.model.HarParam;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.MediaType;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class ObjNSURLSession extends CodeGenerator {
     public <T> String literalRepresentation(T value, Integer indentation) {
         String join = indentation == null ? ", " : ",\n   " + this.blankString(indentation);
         if (value instanceof Number) {
-            return '@' + ((Number) value).toString();
+            return "@" + value.toString();
         } else if (value instanceof List) {
             List list = (List) value;
             List<String> listBuilder = new ArrayList<>();
@@ -71,7 +70,7 @@ public class ObjNSURLSession extends CodeGenerator {
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
 
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
@@ -81,21 +80,19 @@ public class ObjNSURLSession extends CodeGenerator {
         // We just want to make sure people understand that is the only dependency
         code.push("#import <Foundation/Foundation.h>");
 
-        Map<String, String> allHeaders = asHeaders(harRequest);
+        Map<String, String> allHeaders = codeRequest.allHeadersAsMap();
 
         if (ObjectUtils.isNotEmpty(allHeaders)) {
             hasHeaders = true;
-            code.blank().push(nsDeclaration("NSDictionary", "headers", asHeaders(harRequest), 1));
+            code.blank().push(nsDeclaration("NSDictionary", "headers", allHeaders, 1));
         }
 
-        HarPostData postData = harRequest.getPostData();
-        if (hasText(postData)) {
+        if (codeRequest.hasBody()) {
             hasBody = true;
-            List<HarParam> params = new ArrayList<>();
-            String mimeType = this.getMimeType(postData);
-            switch (mimeType) {
-                case MediaType.APPLICATION_FORM_URLENCODED:
-                    if (ObjectUtils.isNotEmpty(params)) {
+            switch (codeRequest.getMimeType()) {
+                case MediaType.APPLICATION_FORM_URLENCODED: {
+                    if (codeRequest.hasParams()) {
+                        List<HarParam> params = codeRequest.getParams();
                         code.blank()
                                 .push(
                                         "NSMutableData *postData = [[NSMutableData alloc] initWithData:[@\"%s=%s\" dataUsingEncoding:NSUTF8StringEncoding]];",
@@ -106,11 +103,12 @@ public class ObjNSURLSession extends CodeGenerator {
                                     params.get(0).getName(), params.get(0).getValue());
                         }
                     }
-                    break;
+                }
+                break;
 
                 case MediaType.APPLICATION_JSON:
-                    if (hasText(postData)) {
-                        code.push(nsDeclaration("NSDictionary", "parameters", postData.getText(), 4))
+                    if (codeRequest.hasText()) {
+                        code.push(nsDeclaration("NSDictionary", "parameters", codeRequest.fromJsonString(), 4))
                                 .blank()
                                 .push(
                                         "NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:nil];");
@@ -121,7 +119,7 @@ public class ObjNSURLSession extends CodeGenerator {
                     code.blank()
                             .push(
                                     "NSData *postData = [[NSData alloc] initWithData:[@\""
-                                            + postData.getText()
+                                            + codeRequest.getText()
                                             + "\" dataUsingEncoding:NSUTF8StringEncoding]];");
             }
         }
@@ -129,7 +127,7 @@ public class ObjNSURLSession extends CodeGenerator {
         code.blank()
                 .push(
                         "NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@\""
-                                + harRequest.getUrl()
+                                + codeRequest.getUrl()
                                 + "\"]")
                 // NSURLRequestUseProtocolCachePolicy is the default policy, let"s just always set it to
                 // avoid confusion.
@@ -137,7 +135,7 @@ public class ObjNSURLSession extends CodeGenerator {
                         "                                                       cachePolicy:NSURLRequestUseProtocolCachePolicy")
                 .push(
                         "                                                   timeoutInterval:" + timeout + "];")
-                .push("[request setHTTPMethod:@\"" + harRequest.getMethod() + "\"];");
+                .push("[request setHTTPMethod:@\"" + codeRequest.getMethod() + "\"];");
 
         if (hasHeaders) {
             code.push("[request setAllHTTPHeaderFields:headers];");

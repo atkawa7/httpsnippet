@@ -1,4 +1,4 @@
-package io.github.atkawa7.httpsnippet;
+package io.github.atkawa7.httpsnippet.models;
 
 public enum Client {
     CJ_HTTP(
@@ -73,7 +73,11 @@ public enum Client {
             "NSURLSession",
             "https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSURLSession_class/index.html",
             "Foundation's NSURLSession request"),
-    RUBY("net::http", "Net::http", "http://ruby-doc.org/stdlib-2.2.1/libdoc/net/http/rdoc/Net/HTTP.html", "Ruby HTTP client"),
+    RUBY(
+            "net::http",
+            "Net::http",
+            "http://ruby-doc.org/stdlib-2.2.1/libdoc/net/http/rdoc/Net/HTTP.html",
+            "Ruby HTTP client"),
     UNIREST(
             "unirest",
             "Unirest",
@@ -89,7 +93,17 @@ public enum Client {
             "Libcurl",
             "http://curl.haxx.se/libcurl/",
             "Simple REST and HTTP API Client for C"),
-    OKHTTP("okhttp", "OkHttp", "http://square.github.io/okhttp/", "An HTTP Request Client Library");
+    OKHTTP("okhttp", "OkHttp", "http://square.github.io/okhttp/", "An HTTP Request Client Library"),
+    WEBREQUEST(
+            "webrequest",
+            "Invoke-WebRequest",
+            "https://docs.microsoft.com/en-us/powershell/module/Microsoft.PowerShell.Utility/Invoke-WebRequest",
+            "Powershell Invoke-WebRequest client"),
+    JSOUP(
+            "jsoup",
+            "JSoup",
+            "http://jsoup.org/",
+            "JSoup Java HTML Parser, with best of DOM, CSS, and jquery");
 
     private final String key;
     private final String title;

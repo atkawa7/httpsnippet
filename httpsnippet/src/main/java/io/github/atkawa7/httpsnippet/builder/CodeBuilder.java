@@ -13,8 +13,6 @@ public class CodeBuilder {
     public static final String EMPTY = "";
     public static final String SPACE = "  ";
 
-    public static final String HTTPS = "https";
-
     private List<String> code;
     private String indentation;
     private String lineJoin;

@@ -38,10 +38,10 @@ import java.util.Set;
 @EnableJpaRepositories(basePackageClasses = RepositoryMarker.class)
 @EnableSwagger2
 public class DemoConfig {
-	@Bean
-	public DemoProperties demoProperties(Environment environment) {
-		return new DemoProperties(environment);
-	}
+    @Bean
+    public DemoProperties demoProperties(Environment environment) {
+        return new DemoProperties(environment);
+    }
 
 @Bean
 public SpeakerService speakerService(SpeakerRepository speakerRepository) {
@@ -64,25 +64,25 @@ public Docket docket(DemoProperties demoProperties) {
 	Set<String> protocols = new HashSet<>(Collections.singleton("http"));
 
 	List<VendorExtension> apiInfoVendorExtensions =
-			Collections.singletonList(
-					new LogoVendorExtension(demoProperties).getObjectVendorExtension());
+            Collections.singletonList(
+                    new LogoVendorExtension(demoProperties).getObjectVendorExtension());
 	List<VendorExtension> docketVendorExtensions =
-			Collections.singletonList(
-					new ExternalDocsVendorExtension(demoProperties).getObjectVendorExtension());
+            Collections.singletonList(
+                    new ExternalDocsVendorExtension(demoProperties).getObjectVendorExtension());
 	ApiInfo apiInfo =
 		new ApiInfoBuilder()
-				.title(demoProperties.getApplicationName())
-				.description(demoProperties.getApplicationDescription())
-				.contact(
-						new Contact(
-								demoProperties.getApplicationName(),
-								demoProperties.getApplicationDomain(),
-								demoProperties.getApplicationSupport()))
-				.license(demoProperties.getApplicationLicenseName())
-				.licenseUrl(demoProperties.getApplicationLicenseUrl())
-				.version(demoProperties.getApplicationVersion())
-				.termsOfServiceUrl(demoProperties.getApplicationLicenseUrl())
-				.extensions(apiInfoVendorExtensions)
+                .title(demoProperties.getApplicationName())
+                .description(demoProperties.getApplicationDescription())
+                .contact(
+                        new Contact(
+                                demoProperties.getApplicationName(),
+                                demoProperties.getApplicationDomain(),
+                                demoProperties.getApplicationSupport()))
+                .license(demoProperties.getApplicationLicenseName())
+                .licenseUrl(demoProperties.getApplicationLicenseUrl())
+                .version(demoProperties.getApplicationVersion())
+                .termsOfServiceUrl(demoProperties.getApplicationLicenseUrl())
+                .extensions(apiInfoVendorExtensions)
 			.build();
 
 	return new Docket(DocumentationType.SWAGGER_2)
@@ -90,7 +90,7 @@ public Docket docket(DemoProperties demoProperties) {
 		.apiInfo(apiInfo)
 		.produces(Collections.singleton(MediaType.APPLICATION_JSON))
 		.consumes(Collections.singleton(MediaType.APPLICATION_JSON))
-			.extensions(docketVendorExtensions)
+            .extensions(docketVendorExtensions)
 		.tags(new Tag("Speakers", "Speakers at Spring One Conference"))
 		.select()
 		.apis(RequestHandlerSelectors.basePackage(SpeakerResource.class.getPackage().getName()))

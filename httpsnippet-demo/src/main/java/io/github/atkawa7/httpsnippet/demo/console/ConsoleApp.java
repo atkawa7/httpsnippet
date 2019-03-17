@@ -7,13 +7,13 @@ import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarQueryString;
 import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.HttpSnippet;
-import io.github.atkawa7.httpsnippet.HttpSnippetCodeGenerator;
-import io.github.atkawa7.httpsnippet.Language;
+import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.generators.java.OkHttp;
 import io.github.atkawa7.httpsnippet.http.HttpMethod;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
+import io.github.atkawa7.httpsnippet.models.HttpSnippet;
+import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import lombok.Data;
 
@@ -34,7 +34,7 @@ public class ConsoleApp {
         HarPostData harPostData =
                 new HarPostDataBuilder()
                         .withMimeType(MediaType.APPLICATION_JSON)
-                        .withText(ObjectUtils.writeValueAsString(user))
+                        .withText(ObjectUtils.toJsonString(user))
                         .build();
 
         HarRequest harRequest =

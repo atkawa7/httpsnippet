@@ -1,4 +1,4 @@
-package io.github.atkawa7.httpsnippet;
+package io.github.atkawa7.httpsnippet.models;
 
 public enum Language {
     RUBY("ruby", "Ruby", ".rb", Client.RUBY),
@@ -13,7 +13,8 @@ public enum Language {
     CLOJURE("clojure", "Clojure", ".clj", Client.CJ_HTTP),
     C("c", "C", ".c", Client.LIBCURL),
     JAVA("java", "Java", ".java", Client.UNIREST),
-    SHELL("shell", "Shell", ".sh", Client.CURL);
+    SHELL("shell", "Shell", ".sh", Client.CURL),
+    POWERSHELL("powershell", "Powershell", ".ps1", Client.WEBREQUEST);
     private final String key;
     private final String title;
     private final String extname;

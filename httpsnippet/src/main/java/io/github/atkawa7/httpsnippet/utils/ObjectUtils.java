@@ -4,18 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @UtilityClass
 public class ObjectUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static String writeValueAsString(Object value) throws JsonProcessingException {
+    public static String toJsonString(Object value) throws JsonProcessingException {
         return objectMapper.writeValueAsString(value);
+    }
+
+    public static Map<String, Object> fromJsonString(String json) throws IOException {
+        return objectMapper.readValue(json, Map.class);
     }
 
     public static <T> boolean isNotNull(T object) {
@@ -28,6 +30,10 @@ public class ObjectUtils {
 
     public static <T> String defaultIfNull(T obj, String str) {
         return isNull(obj) ? str : obj.toString();
+    }
+
+    public static <T> List<T> defaultIfNull(List<T> obj) {
+        return isNull(obj) ? new ArrayList<>() : obj;
     }
 
     @SuppressWarnings("rawtypes")

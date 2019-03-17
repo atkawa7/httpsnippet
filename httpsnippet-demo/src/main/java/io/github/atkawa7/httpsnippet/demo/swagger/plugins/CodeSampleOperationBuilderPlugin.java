@@ -10,11 +10,11 @@ import com.smartbear.har.builder.HarRequestBuilder;
 import com.smartbear.har.model.HarHeader;
 import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.demo.config.DemoProperties;
 import io.github.atkawa7.httpsnippet.demo.dto.SpeakerDTO;
 import io.github.atkawa7.httpsnippet.demo.swagger.extensions.CodeSampleVendorExtension;
 import io.github.atkawa7.httpsnippet.demo.swagger.models.CodeSample;
+import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
@@ -56,7 +56,7 @@ public void apply(OperationContext operationContext) {
 
     String body;
     try {
-        body = ObjectUtils.isNull(example) ? "" : ObjectUtils.writeValueAsString(example);
+        body = ObjectUtils.isNull(example) ? "" : ObjectUtils.toJsonString(example);
     } catch (JsonProcessingException e) {
         throw new RuntimeException("Failed to create json from example");
     }
@@ -186,7 +186,6 @@ public void apply(OperationContext operationContext) {
                                 .build();
                 headers.add(harHeader);
             }
-
         }
 
         return headers;

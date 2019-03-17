@@ -1,18 +1,11 @@
 package io.github.atkawa7.httpsnippet.generators.go;
 
-import com.smartbear.har.model.HarCookie;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import lombok.Setter;
-
-import java.util.List;
 
 @Setter
 public class GoNative extends CodeGenerator {
@@ -46,9 +39,9 @@ public class GoNative extends CodeGenerator {
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
         CodeBuilder codeBuilder = new CodeBuilder("\t");
-        HarPostData postData = harRequest.getPostData();
+
         int indent = indent();
         String errorPlaceholder = errorPlaceholder();
 
@@ -60,7 +53,7 @@ public class GoNative extends CodeGenerator {
                 codeBuilder.push(indent, "\"time\"");
             }
 
-            if (hasText(postData)) {
+            if (codeRequest.hasText()) {
                 codeBuilder.push(indent, "\"strings\"");
             }
 
@@ -86,18 +79,18 @@ public class GoNative extends CodeGenerator {
             client = "http.DefaultClient";
         }
 
-        codeBuilder.push(indent, "url := \"%s\"", harRequest.getUrl()).blank();
+        codeBuilder.push(indent, "url := \"%s\"", codeRequest.getUrl()).blank();
 
         // If we have body content or not create the var and reader or nil
-        if (hasText(postData)) {
+        if (codeRequest.hasText()) {
             codeBuilder
-                    .push(indent, "payload := strings.NewReader(%s)", toJson(postData.getText()))
+                    .push(indent, "payload := strings.NewReader(%s)", codeRequest.toJsonString())
                     .blank()
                     .push(
                             indent,
                             "req, %s := http.NewRequest(\"%s\", url, payload)",
                             errorPlaceholder,
-                            harRequest.getMethod())
+                            codeRequest.getMethod())
                     .blank();
         } else {
             codeBuilder
@@ -105,33 +98,20 @@ public class GoNative extends CodeGenerator {
                             indent,
                             "req, %s := http.NewRequest(\"%s\", url, nil)",
                             errorPlaceholder,
-                            harRequest.getMethod())
+                            codeRequest.getMethod())
                     .blank();
         }
 
         errorCheck(codeBuilder);
 
-        List<HarHeader> headers = harRequest.getHeaders();
+        if (codeRequest.hasHeadersAndCookies()) {
+            codeRequest
+                    .allHeadersAsMap()
+                    .forEach(
+                            (k, v) -> {
+                                codeBuilder.push(indent, "req.Header.Add(\"%s\", \"%s\")", k, v);
+                            });
 
-        // Add headers
-        if (ObjectUtils.isNotEmpty(headers)) {
-            headers.forEach(
-                    harHeader -> {
-                        codeBuilder.push(
-                                indent,
-                                "req.Header.Add(\"%s\", \"%s\")",
-                                harHeader.getName(),
-                                harHeader.getValue());
-                    });
-
-            codeBuilder.blank();
-        }
-
-        List<HarCookie> cookies = harRequest.getCookies();
-
-        if (ObjectUtils.isNotEmpty(cookies)) {
-            codeBuilder.push(
-                    indent, "req.Header.Add(\"%s\", \"%s\")", HttpHeaders.COOKIE, asCookies(cookies));
             codeBuilder.blank();
         }
 

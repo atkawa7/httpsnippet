@@ -1,12 +1,13 @@
 package io.github.atkawa7.httpsnippet.generators.node;
 
-import com.smartbear.har.model.*;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
+import com.smartbear.har.model.HarCookie;
+import com.smartbear.har.model.HarParam;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.MediaType;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -20,18 +21,20 @@ public class NodeUnirest extends CodeGenerator {
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
-        boolean includeFS = false;
 
+        if (codeRequest.hasAttachments()) {
+            code.push("var fs = require(\"fs\");");
+        }
         code.push("var unirest = require(\"unirest\");")
                 .blank()
-                .push("var req = unirest(\"%s\", \"%s\");", harRequest.getMethod(), harRequest.getUrl())
+                .push("var req = unirest(\"%s\", \"%s\");", codeRequest.getMethod(), codeRequest.getUrl())
                 .blank();
 
-        List<HarCookie> cookies = harRequest.getCookies();
+        List<HarCookie> cookies = codeRequest.getCookies();
 
-        if (ObjectUtils.isNotEmpty(cookies)) {
+        if (codeRequest.hasCookies()) {
             code.push("var CookieJar = unirest.jar();");
 
             cookies.forEach(
@@ -44,59 +47,45 @@ public class NodeUnirest extends CodeGenerator {
             code.push("req.jar(CookieJar);").blank();
         }
 
-        List<HarQueryString> queryStrings = harRequest.getQueryString();
-
-        if (ObjectUtils.isNotEmpty(queryStrings)) {
-            code.push("req.query(%s);", toJson(asQueryStrings(queryStrings))).blank();
+        if (codeRequest.hasQueryStrings()) {
+            code.push("req.query(%s);", codeRequest.queryStringsToJsonString()).blank();
         }
 
-        List<HarHeader> headers = harRequest.getHeaders();
-
-        if (ObjectUtils.isNotEmpty(headers)) {
-            code.push("req.headers(%s);", toJson(asHeaders(headers))).blank();
+        if (codeRequest.hasHeaders()) {
+            code.push("req.headers(%s);", codeRequest.headersToJsonString()).blank();
         }
 
-        HarPostData postData = harRequest.getPostData();
-
-        if (ObjectUtils.isNotNull(postData)) {
-            List<HarParam> params = postData.getParams();
-            String mimeType = this.getMimeType(postData);
-
-            switch (mimeType) {
+        if (codeRequest.hasBody()) {
+            switch (codeRequest.getMimeType()) {
                 case MediaType.APPLICATION_FORM_URLENCODED:
-                    if (ObjectUtils.isNotEmpty(params)) {
-                        code.push("req.form(%s);", toJson(asParams(params)));
+                    if (codeRequest.hasParams()) {
+                        code.push("req.form(%s);", codeRequest.paramsToJSONString());
                     }
                     break;
 
                 case MediaType.APPLICATION_JSON:
-                    if (hasText(postData)) {
-                        code.push("req.type(\"json\");").push("req.send(%s);", postData.getText());
+                    if (codeRequest.hasText()) {
+                        code.push("req.type(\"json\");").push("req.send(%s);", codeRequest.toJsonString());
                     }
                     break;
 
                 case MediaType.MULTIPART_FORM_DATA:
-                    if (ObjectUtils.isNotEmpty(params)) {
+                    if (codeRequest.hasParams()) {
                         List<Object> multipart = new ArrayList<>();
 
-                        for (HarParam param : params) {
+                        for (HarParam param : codeRequest.getParams()) {
                             Map<String, Object> part = new HashMap<>();
 
-                            if (StringUtils.isNotEmpty(param.getFileName())
-                                    && StringUtils.isNotEmpty(param.getValue())) {
-                                includeFS = true;
+                            if (StringUtils.isNotEmpty(param.getFileName())) {
                                 part.put("body ", "fs.createReadStream(\"" + param.getFileName() + "\")");
-                            } else if (StringUtils.isNotEmpty(param.getValue())) {
+                            } else {
                                 part.put("body", param.getValue());
                             }
 
-                            if (part.containsKey("body")) {
-                                if (StringUtils.isNotEmpty(param.getContentType())) {
-                                    part.put("content-type", param.getContentType());
-                                }
-
-                                multipart.add(part);
+                            if (StringUtils.isNotEmpty(param.getContentType())) {
+                                part.put("content-type", param.getContentType());
                             }
+                            multipart.add(part);
                         }
 
                         code.push("req.multipart(%s);", toJson(multipart));
@@ -104,14 +93,10 @@ public class NodeUnirest extends CodeGenerator {
                     break;
 
                 default:
-                    if (hasText(postData)) {
-                        code.push(CodeBuilder.SPACE + "req.send(%s);", postData.getText());
+                    if (codeRequest.hasText()) {
+                        code.push(CodeBuilder.SPACE + "req.send(%s);", codeRequest.getText());
                     }
             }
-        }
-
-        if (includeFS) {
-            code.push("var fs = require(\"fs\");");
         }
 
         code.blank()

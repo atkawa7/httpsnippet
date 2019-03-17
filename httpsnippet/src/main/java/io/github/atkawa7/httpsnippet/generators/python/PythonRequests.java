@@ -1,97 +1,58 @@
 package io.github.atkawa7.httpsnippet.generators.python;
 
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarQueryString;
-import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.generators.python.helpers.PythonHelper;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 
-import java.util.List;
 import java.util.Map;
 
-public class PythonRequests extends CodeGenerator {
+public class PythonRequests extends CodeGenerator implements PythonHelper {
     public PythonRequests() {
         super(Client.PYTHON_REQUESTS, Language.PYTHON);
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
         // Start code
-        CodeBuilder code = new CodeBuilder("    ");
+        CodeBuilder code = new CodeBuilder();
 
         // Import requests
         code.push("import requests").blank();
 
         // Set URL
-        code.push("url = \"%s\"", harRequest.getUrl()).blank();
+        code.push("url = \"%s\"", codeRequest.getUrl()).blank();
 
-        List<HarQueryString> queryStrings = harRequest.getQueryString();
-        // Construct query string
-        if (ObjectUtils.isNotEmpty(queryStrings)) {
-            String qs = "querystring = " + toJson(asQueryStrings(queryStrings));
-
-            code.push(qs).blank();
+        if (codeRequest.hasQueryStrings()) {
+            code.push("querystring = %s", toJson(codeRequest.queryStringsAsMap())).blank();
         }
 
-        // Construct payload
-        String payload = null;
+        this.pushPayLoad(code, codeRequest);
 
-        HarPostData postData = harRequest.getPostData();
-        if (hasText(postData)) {
-            payload = toJson(postData.getText());
-            code.push("payload = %s", payload);
-        }
+        Map<String, String> allHeaders = codeRequest.allHeadersAsMap();
 
-        // Construct headers
-        Map<String, String> headers = asHeaders(harRequest);
-        int headerCount = headers.size();
+        this.pushHeaders(code, allHeaders);
 
-        if (headerCount == 1) {
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                code.push("headers = {\"%s\": \"%s\"}", header.getKey(), header.getValue()).blank();
-            }
-        } else if (headerCount > 1) {
-            int count = 1;
-
-            code.push("headers = {");
-
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                if (count++ != headerCount) {
-                    code.push(1, "\"%s\": \"%s\",", header.getKey(), header.getValue());
-                } else {
-                    code.push(1, "\"%s\": \"%s\"", header.getKey(), header.getValue());
-                }
-            }
-
-            code.push(1, "}").blank();
-        }
-
-        // Construct request
-        String method = harRequest.getMethod();
+        String method = codeRequest.getMethod();
         String request = String.format("response = requests.request(\"%s\", url", method);
 
-        if (ObjectUtils.isNotEmpty(payload)) {
+        if (codeRequest.hasBody()) {
             request += ", data=payload";
         }
 
-        if (headerCount > 0) {
+        if (allHeaders.size() > 0) {
             request += ", headers=headers";
         }
 
-        if (ObjectUtils.isNotEmpty(queryStrings)) {
+        if (codeRequest.hasQueryStrings()) {
             request += ", params=querystring";
         }
 
         request += ")";
 
-        code.push(request)
-                .blank()
-
-                // Print response
-                .push("print(response.text)");
+        code.push(request).blank().push("print(response.text)");
 
         return code.join();
     }

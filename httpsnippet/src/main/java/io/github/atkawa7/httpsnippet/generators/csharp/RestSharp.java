@@ -1,16 +1,12 @@
 package io.github.atkawa7.httpsnippet.generators.csharp;
 
-import com.smartbear.har.model.HarCookie;
 import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,47 +25,41 @@ public class RestSharp extends CodeGenerator {
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
-        if (isNotSupported(harRequest.getMethod())) {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
+        if (isNotSupported(codeRequest.getMethod())) {
             throw new Exception("Method not supported");
         }
 
         CodeBuilder code = new CodeBuilder();
-        code.push("var client = new RestClient(\"%s\");", harRequest.getUrl());
-        code.push("var request = new RestRequest(Method.%s);", harRequest.getMethod().toUpperCase());
+        code.push("var client = new RestClient(\"%s\");", codeRequest.getUrl());
+        code.push("var request = new RestRequest(Method.%s);", codeRequest.getMethod().toUpperCase());
 
-        List<HarHeader> headers = harRequest.getHeaders();
-
-        // construct headers
-        if (ObjectUtils.isNotEmpty(headers)) {
-            headers.forEach(
-                    harHeader -> {
-                        code.push(
-                                "request.AddHeader(\"%s\", \"%s\");", harHeader.getName(), harHeader.getValue());
-                    });
+        if (codeRequest.hasHeaders()) {
+            codeRequest
+                    .getHeaders()
+                    .forEach(
+                            harHeader ->
+                                    code.push(
+                                            "request.AddHeader(\"%s\", \"%s\");",
+                                            harHeader.getName(), harHeader.getValue()));
         }
 
-        List<HarCookie> cookies = harRequest.getCookies();
-        // construct cookies
-        if (ObjectUtils.isNotEmpty(cookies)) {
-            cookies.forEach(
-                    cookie -> {
-                        code.push("request.AddCookie(\"%s\", \"%s\");", cookie.getName(), cookie.getValue());
-                    });
+        if (codeRequest.hasCookies()) {
+            codeRequest
+                    .getCookies()
+                    .forEach(
+                            cookie ->
+                                    code.push(
+                                            "request.AddCookie(\"%s\", \"%s\");", cookie.getName(), cookie.getValue()));
         }
 
-        HarPostData postData = harRequest.getPostData();
-
-        if (ObjectUtils.isNotNull(postData)) {
-            String text = postData.getText();
-            if (StringUtils.isNotEmpty(text) && ObjectUtils.isNotEmpty(headers)) {
-                Optional<HarHeader> optionalHarHeader = find(headers, HttpHeaders.CONTENT_TYPE);
-                if (optionalHarHeader.isPresent()) {
-                    HarHeader harHeader = optionalHarHeader.get();
-                    code.push(
-                            "request.AddParameter(\"%s\", %s, ParameterType.RequestBody);",
-                            harHeader.getValue(), toJson(text));
-                }
+        if (codeRequest.hasText() && codeRequest.hasHeaders()) {
+            Optional<HarHeader> optionalHarHeader = codeRequest.find(HttpHeaders.CONTENT_TYPE);
+            if (optionalHarHeader.isPresent()) {
+                HarHeader harHeader = optionalHarHeader.get();
+                code.push(
+                        "request.AddParameter(\"%s\", %s, ParameterType.RequestBody);",
+                        harHeader.getValue(), codeRequest.toJsonString());
             }
         }
 

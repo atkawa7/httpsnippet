@@ -1,17 +1,15 @@
 package io.github.atkawa7.httpsnippet.generators.shell;
 
-import com.smartbear.har.model.*;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
+import com.smartbear.har.model.HarParam;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-
-import java.util.List;
 
 public class Curl extends CodeGenerator {
     public Curl() {
@@ -19,58 +17,46 @@ public class Curl extends CodeGenerator {
     }
 
     public String quote(String value) {
-        return String.format("'%s'", value.replace("'", "'\\''"));
+        return String.format("'%s'", value.replace("'", "\"'\""));
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
         String indent = "  ";
         boolean _short = false, _binary = false;
 
         CodeBuilder code = new CodeBuilder(indent, "\\\n" + indent);
 
-        code.push("curl %s %s", _short ? "-X" : "--request", harRequest.getMethod())
-                .push(String.format("%s%s", _short ? "" : "--url ", quote(harRequest.getUrl())));
+        code.push("curl %s %s", _short ? "-X" : "--request", codeRequest.getMethod())
+                .push(String.format("%s%s", _short ? "" : "--url ", quote(codeRequest.getUrl())));
 
-        if (HttpVersion.HTTP_1_0.equalsIgnoreCase(harRequest.getHttpVersion())) {
+        if (HttpVersion.HTTP_1_0.equalsIgnoreCase(codeRequest.getHttpVersion())) {
             code.push(_short ? "-0" : "--http1.0");
         }
 
-        // construct headers
-
-        List<HarHeader> headers = harRequest.getHeaders();
-        if (ObjectUtils.isNotEmpty(headers)) {
-            headers.forEach(
-                    harHeader -> {
-                        String header = String.format("%s: %s", harHeader.getName(), harHeader.getValue());
-                        code.push("%s %s", _short ? "-H" : "--header", quote(header));
-                    });
+        if (codeRequest.hasHeaders()) {
+            codeRequest
+                    .getHeaders()
+                    .forEach(
+                            harHeader -> {
+                                String header = String.format("%s: %s", harHeader.getName(), harHeader.getValue());
+                                code.push("%s %s", _short ? "-H" : "--header", quote(header));
+                            });
         }
 
-        List<HarCookie> cookies = harRequest.getCookies();
-
-        if (ObjectUtils.isNotEmpty(cookies)) {
-            code.push("%s %s", _short ? "-b" : "--cookie", quote(asCookies(cookies)));
+        if (codeRequest.hasCookies()) {
+            code.push("%s %s", _short ? "-b" : "--cookie", quote(codeRequest.getCookieString()));
         }
 
-        // construct post params
-
-        HarPostData postData = harRequest.getPostData();
-        if (hasText(postData)) {
-            String mimeType = this.getMimeType(postData);
-            switch (mimeType) {
+        if (codeRequest.hasBody()) {
+            switch (codeRequest.getMimeType()) {
                 case MediaType.MULTIPART_FORM_DATA: {
-                    List<HarParam> params = postData.getParams();
-                    if (ObjectUtils.isNotEmpty(params)) {
-                        for (HarParam param : params) {
-                            String post = String.format("%s=%s", param.getName(), param.getValue());
-
-                            if (StringUtils.isNotEmpty(param.getFileName())
-                                    && StringUtils.isEmpty(param.getValue())) {
-                                post = String.format("%s=@%s", param.getName(), param.getFileName());
-                            }
-
-                            code.push("%s %s", _short ? "-F" : "--form", quote(post));
+                    if (codeRequest.hasParams()) {
+                        for (HarParam param : codeRequest.getParams()) {
+                            String post = StringUtils.isNotEmpty(param.getFileName()) ?
+                                    String.format("%s=@%s", param.getName(), param.getFileName()) :
+                                    String.format("%s=%s", param.getName(), param.getValue());
+                            code.push("%s %s", _short ? "-F" : "--form", quote(toJson(post)));
                         }
                     }
                 }
@@ -78,9 +64,8 @@ public class Curl extends CodeGenerator {
                 break;
 
                 case MediaType.APPLICATION_FORM_URLENCODED: {
-                    List<HarParam> params = postData.getParams();
-                    if (ObjectUtils.isNotEmpty(params)) {
-                        for (HarParam param : params) {
+                    if (codeRequest.hasParams()) {
+                        for (HarParam param : codeRequest.getParams()) {
                             code.push(
                                     "%s %s",
                                     _binary ? "--data-binary" : (_short ? "-d" : "--data"),
@@ -90,7 +75,7 @@ public class Curl extends CodeGenerator {
                         code.push(
                                 "%s %s",
                                 _binary ? "--data-binary" : (_short ? "-d" : "--data"),
-                                StringEscapeUtils.escapeXSI(quote(postData.getText())));
+                                StringEscapeUtils.escapeXSI(quote(codeRequest.getText())));
                     }
                 }
 
@@ -99,8 +84,7 @@ public class Curl extends CodeGenerator {
                 default: {
                     code.push(
                             "%s %s",
-                            _binary ? "--data-binary" : (_short ? "-d" : "--data"),
-                            StringEscapeUtils.escapeXSI(quote(postData.getText())));
+                            _binary ? "--data-binary" : (_short ? "-d" : "--data"), quote(codeRequest.getText()));
                 }
             }
         }

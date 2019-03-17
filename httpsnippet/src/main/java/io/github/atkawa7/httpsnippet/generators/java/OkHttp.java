@@ -1,15 +1,10 @@
 package io.github.atkawa7.httpsnippet.generators.java;
 
-import com.smartbear.har.model.HarCookie;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-import io.github.atkawa7.httpsnippet.Client;
-import io.github.atkawa7.httpsnippet.Language;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.models.Client;
+import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,57 +28,44 @@ public class OkHttp extends CodeGenerator {
     }
 
     @Override
-    protected String generateCode(final HarRequest harRequest) throws Exception {
+    protected String generateCode(final CodeRequest codeRequest) throws Exception {
         CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
 
         code.push("OkHttpClient client = new OkHttpClient();").blank();
 
-        HarPostData postData = harRequest.getPostData();
-        boolean hasText = hasText(postData);
-
-        if (hasText) {
-            String mimeType = this.getMimeType(postData);
-            code.push("MediaType mediaType = MediaType.parse(\"%s\");", mimeType);
-            code.push(
-                    "RequestBody body = RequestBody.create(mediaType, %s);", toJson(postData.getText()));
+        if (codeRequest.hasText()) {
+            code.push("MediaType mediaType = MediaType.parse(\"%s\");", codeRequest.getMimeType());
+            code.push("RequestBody body = RequestBody.create(mediaType, %s);", codeRequest.getText());
         }
 
         code.push("Request request = new Request.Builder()");
-        code.push(1, ".url(\"%s\")", harRequest.getUrl());
+        code.push(1, ".url(\"%s\")", codeRequest.getUrl());
 
-        String method = harRequest.getMethod().toUpperCase();
+        String method = codeRequest.getMethod().toUpperCase();
 
         if (isNotSupportedMethod(method)) {
-            if (hasText) {
+            if (codeRequest.hasText()) {
                 code.push(1, ".method(\"%s\", body)", method);
             } else {
                 code.push(1, ".method(\"%s\", null)", method);
             }
         } else if (supportsBody(method)) {
-            if (hasText) {
-                code.push(1, ".%s(body)", harRequest.getMethod().toLowerCase());
+            if (codeRequest.hasText()) {
+                code.push(1, ".%s(body)", codeRequest.getMethod().toLowerCase());
             } else {
-                code.push(1, ".%s(null)", harRequest.getMethod().toLowerCase());
+                code.push(1, ".%s(null)", codeRequest.getMethod().toLowerCase());
             }
         } else {
-            code.push(1, ".%s()", harRequest.getMethod().toLowerCase());
+            code.push(1, ".%s()", codeRequest.getMethod().toLowerCase());
         }
 
-        List<HarHeader> headers = harRequest.getHeaders();
-
-        // construct headers
-        if (ObjectUtils.isNotEmpty(headers)) {
-            headers.forEach(
-                    harHeader -> {
-                        code.push(1, ".addHeader(\"%s\", \"%s\")", harHeader.getName(), harHeader.getValue());
-                    });
-        }
-
-        List<HarCookie> cookies = harRequest.getCookies();
-
-        // construct cookies
-        if (ObjectUtils.isNotEmpty(headers)) {
-            code.push(1, ".addHeader(\"%s\", \"%s\")", HttpHeaders.COOKIE, asCookies(cookies));
+        if (codeRequest.hasHeadersAndCookies()) {
+            codeRequest
+                    .allHeadersAsMap()
+                    .forEach(
+                            (k, v) -> {
+                                code.push(1, ".addHeader(\"%s\", \"%s\")", k, v);
+                            });
         }
 
         code.push(1, ".build();")
