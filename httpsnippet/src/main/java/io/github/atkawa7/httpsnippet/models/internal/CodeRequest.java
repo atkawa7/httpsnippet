@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 // internal wrapper class around har request
-public class CodeRequest {
+public final class CodeRequest {
 
 private final String method;
 private final String url;

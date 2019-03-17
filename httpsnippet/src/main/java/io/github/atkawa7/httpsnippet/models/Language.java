@@ -14,7 +14,8 @@ public enum Language {
     C("c", "C", ".c", Client.LIBCURL),
     JAVA("java", "Java", ".java", Client.UNIREST),
     SHELL("shell", "Shell", ".sh", Client.CURL),
-    POWERSHELL("powershell", "Powershell", ".ps1", Client.WEBREQUEST);
+    POWERSHELL("powershell", "Powershell", ".ps1", Client.WEBREQUEST),
+    SWIFT( "swift", "Swift", ".swift", Client.SWIFT);
     private final String key;
     private final String title;
     private final String extname;

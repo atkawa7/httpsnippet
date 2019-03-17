@@ -19,6 +19,7 @@ import io.github.atkawa7.httpsnippet.generators.python.Python3Native;
 import io.github.atkawa7.httpsnippet.generators.python.PythonRequests;
 import io.github.atkawa7.httpsnippet.generators.ruby.RubyNative;
 import io.github.atkawa7.httpsnippet.generators.shell.Curl;
+import io.github.atkawa7.httpsnippet.generators.swift.Swift;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.HttpSnippet;
 import io.github.atkawa7.httpsnippet.models.Language;
@@ -72,6 +73,7 @@ public class HttpSnippetCodeGenerator {
         codeGenerators.add(new CljHttp());
         codeGenerators.add(new PowerShell());
         codeGenerators.add(new Jsoup());
+        codeGenerators.add(new Swift());
         return codeGenerators;
     }
 
