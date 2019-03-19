@@ -1,6 +1,7 @@
 package io.github.atkawa7.httpsnippet.generators.clojure;
 
-import com.smartbear.har.model.*;
+import com.smartbear.har.model.HarHeader;
+import com.smartbear.har.model.HarParam;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
@@ -9,10 +10,11 @@ import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
-import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 public class CljHttp extends CodeGenerator {
 private static final List<String> SUPPORTED_METHODS =
@@ -102,18 +104,17 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 		if (codeRequest.hasParams()) {
 			List<Object> multipart = new ArrayList<>();
 			for (HarParam param : codeRequest.getParams()) {
-				Map<String, Object> content = new HashMap<>();
-				Object value =
-					(StringUtils.isNotBlank(param.getFileName())
-							&& StringUtils.isBlank(param.getValue()))
-						? new CljFile(param.getFileName())
-						: param.getValue();
-				content.put("name", param.getName());
-				content.put("content", value);
-				multipart.add(content);
+                Map<String, Object> content = new HashMap<>();
+                Object value =
+                        (StringUtils.isNotBlank(param.getFileName())
+                                && StringUtils.isBlank(param.getValue()))
+                                ? new CljFile(param.getFileName())
+                                : param.getValue();
+                content.put("name", param.getName());
+                content.put("content", value);
+                multipart.add(content);
 			}
 			body.put("multipart", multipart);
-
 		}
 		break;
 		default:

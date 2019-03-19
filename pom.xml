@@ -97,6 +97,7 @@
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <ossindex-maven-plugin.version>3.0.4</ossindex-maven-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>1.7.26</slf4j.version>
         <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
         <sortpom-maven-plugin.version>2.10.0</sortpom-maven-plugin.version>
         <spotbugs-fb-contrib.version>7.4.3.sb</spotbugs-fb-contrib.version>

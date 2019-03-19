@@ -53,9 +53,10 @@ public class Curl extends CodeGenerator {
                 case MediaType.MULTIPART_FORM_DATA: {
                     if (codeRequest.hasParams()) {
                         for (HarParam param : codeRequest.getParams()) {
-                            String post = StringUtils.isNotEmpty(param.getFileName()) ?
-                                    String.format("%s=@%s", param.getName(), param.getFileName()) :
-                                    String.format("%s=%s", param.getName(), param.getValue());
+                            String post =
+                                    StringUtils.isNotEmpty(param.getFileName())
+                                            ? String.format("%s=@%s", param.getName(), param.getFileName())
+                                            : String.format("%s=%s", param.getName(), param.getValue());
                             code.push("%s %s", _short ? "-F" : "--form", quote(toJson(post)));
                         }
                     }
@@ -84,7 +85,8 @@ public class Curl extends CodeGenerator {
                 default: {
                     code.push(
                             "%s %s",
-                            _binary ? "--data-binary" : (_short ? "-d" : "--data"), quote(codeRequest.getText()));
+                            _binary ? "--data-binary" : (_short ? "-d" : "--data"),
+                            quote(codeRequest.getText()));
                 }
             }
         }

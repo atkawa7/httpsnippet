@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HttpVersion {
@@ -24,6 +28,18 @@ public final class HttpVersion {
 
     public boolean equalsIgnoreCase(String httpVersion) {
         return this.protocolName.equalsIgnoreCase(httpVersion);
+    }
+
+    private static final Map<String, HttpVersion> mappings = new HashMap<>(18);
+
+    static {
+        for (HttpVersion httpVersion : Arrays.asList(HTTP_0_9, HTTP_1_0, HTTP_1_1, HTTP_2_0)) {
+            mappings.put(httpVersion.getProtocolName(), httpVersion);
+        }
+    }
+
+    public static HttpVersion resolve(String method) {
+        return mappings.containsKey(method) ? mappings.get(method) : HttpVersion.HTTP_1_1;
     }
 
     @Override

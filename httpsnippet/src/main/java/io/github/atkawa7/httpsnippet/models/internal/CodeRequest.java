@@ -3,15 +3,20 @@ package io.github.atkawa7.httpsnippet.models.internal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.http.*;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
+
+import static io.github.atkawa7.httpsnippet.utils.ObjectUtils.newURL;
 
 // internal wrapper class around har request
 public final class CodeRequest {
 
+	public static final int DEFAULT_PORT = 80;
 private final String method;
 private final String url;
 private final String httpVersion;
@@ -35,31 +40,30 @@ private final boolean _hasAttachments;
 
 private Map<String, String> _headers;
 private Map<String, String> _allHeaders;
-private Map<String, String> _queryStrings;
+private Map<String, List<String>> _queryStrings;
 private Map<String, String> _params;
 private Map<String, String> _cookies;
 
 private CodeRequest(HarRequest harRequest) throws Exception {
 	Objects.requireNonNull(harRequest, "Har Request cannot be null");
-	this.method = StringUtils.defaultIfBlank(harRequest.getMethod(), HttpMethod.GET.name());
+
+	this.method = HttpMethod.resolve(harRequest.getMethod()).name();
 	this.url = harRequest.getUrl();
-	this.headers = ObjectUtils.defaultIfNull(harRequest.getHeaders());
-	this.cookies = ObjectUtils.defaultIfNull(harRequest.getCookies());
-	this.httpVersion =
-		StringUtils.defaultIfBlank(
-			harRequest.getHttpVersion(), HttpVersion.HTTP_1_1.getProtocolName());
-	this.queryStrings = ObjectUtils.defaultIfNull(harRequest.getQueryString());
+	this.headers = HarUtils.processHeaders(harRequest);
+	this.cookies = HarUtils.processCookies(harRequest);
+	this.queryStrings = HarUtils.processQueryStrings(harRequest);
+	this.httpVersion = HttpVersion.resolve(harRequest.getHttpVersion()).getProtocolName();
 
 	HarPostData harPostData = harRequest.getPostData();
-	List<HarParam> harParams = ObjectUtils.isNotNull(harPostData) ? harPostData.getParams() : null;
 	String mimeType = ObjectUtils.isNotNull(harPostData) ? harPostData.getMimeType() : null;
 	String text = ObjectUtils.isNotNull(harPostData) ? harPostData.getText() : null;
 
-	this.params = ObjectUtils.defaultIfNull(harParams);
-	this.mimeType = defaultMimeType(mimeType);
+	this.params = HarUtils.processParams(harPostData);
+	this.mimeType = HarUtils.defaultMimeType(mimeType);
 	this.text = StringUtils.defaultIfEmpty(text, "");
 
-	this._url = new URL(harRequest.getUrl());
+	this._url = newURL(harRequest.getUrl());
+
 	this._cookieString =
 		cookies.stream()
 			.map(e -> e.getName() + "=" + e.getValue())
@@ -71,23 +75,57 @@ private CodeRequest(HarRequest harRequest) throws Exception {
 	this._hasQueryStrings = ObjectUtils.isNotEmpty(queryStrings);
 	this._hasAttachments =
 		this.params.stream()
-			.filter(h -> ObjectUtils.isNotNull(h) && StringUtils.isNotBlank(h.getFileName()))
+				.filter(h -> StringUtils.isNotBlank(h.getFileName()))
 			.findFirst()
 			.isPresent();
 
 	this._headers =
 		headers.stream().collect(Collectors.toMap(HarHeader::getName, HarHeader::getValue));
 	this._cookies = new HashMap<>();
-	this._cookies.put(HttpHeaders.COOKIE, this._cookieString);
-	this._params = params.stream().collect(Collectors.toMap(HarParam::getName, HarParam::getValue));
-	this._queryStrings =
-		queryStrings.stream()
-			.collect(Collectors.toMap(HarQueryString::getName, HarQueryString::getValue));
-	this._allHeaders = new HashMap<>();
-	if(_hasCookies){
-		this._allHeaders.putAll(_cookies);
+	if (_hasCookies) {
+		this._cookies.put(HttpHeaders.COOKIE, this._cookieString);
 	}
+	this._params =
+			params.stream()
+					.filter(h -> StringUtils.isNotBlank(h.getValue()))
+					.collect(Collectors.toMap(HarParam::getName, HarParam::getValue));
+	this._queryStrings = queryStringsToMap();
+	this._allHeaders = new HashMap<>();
 	this._allHeaders.putAll(_headers);
+	this._allHeaders.putAll(_cookies);
+
+	// validations
+	this.validateMimeType();
+}
+
+	private void validateMimeType() throws Exception {
+
+		if (MediaType.APPLICATION_JSON.equalsIgnoreCase(mimeType)) {
+			ObjectUtils.validateJSON(this.text);
+		} else if (MediaType.APPLICATION_FORM_URLENCODED.equalsIgnoreCase(mimeType)) {
+			if (!this._hasParams) {
+				throw new Exception("Params cannot be empty");
+			}
+		} else if (MediaType.MULTIPART_FORM_DATA.equalsIgnoreCase(mimeType)) {
+			if (!this._hasParams) {
+				throw new Exception("Params cannot be empty");
+			}
+			if (!this._hasAttachments) {
+				throw new Exception("Params must have attachments");
+			}
+		}
+}
+
+public Map<String, List<String>> queryStringsToMap(){
+	Map<String, List<String>>  map = new HashMap<>();
+	for(HarQueryString queryString: queryStrings){
+		String key  = queryString.getName();
+		if(!map.containsKey(key)){
+			map.put(key, new ArrayList<>());
+		}
+		map.get(key).add(queryString.getValue());
+	}
+	return  map;
 }
 
 public Optional<HarHeader> find(String headerName) {
@@ -184,7 +222,7 @@ public Map<String, String> allHeadersAsMap() {
 	return _allHeaders;
 }
 
-public Map<String, String> queryStringsAsMap() {
+public Map<String, List<String>> queryStringsAsMap() {
 	return _queryStrings;
 }
 
@@ -216,26 +254,12 @@ public String allHeadersToJsonString() throws JsonProcessingException {
 	return ObjectUtils.toJsonString(_allHeaders);
 }
 
-public String defaultMimeType(final String mimeType) {
-	if (StringUtils.isBlank(mimeType)) {
-	return MediaType.APPLICATION_OCTET_STREAM;
-	} else if (MediaType.isMultipartMediaType(mimeType)) {
-	return MediaType.MULTIPART_FORM_DATA;
-	} else if (MediaType.isJsonMediaType(mimeType)) {
-	return MediaType.APPLICATION_JSON;
-	} else if (MediaType.APPLICATION_FORM_URLENCODED.equalsIgnoreCase(mimeType)) {
-	return MediaType.APPLICATION_FORM_URLENCODED;
-	} else {
-	return mimeType;
-	}
-}
-
 public String getHost() {
 	return _url.getHost();
 }
 
 public int getPort() {
-	return _url.getPort();
+	return _url.getPort() == -1 ? DEFAULT_PORT : _url.getPort();
 }
 
 public String getProtocol() {
@@ -243,7 +267,7 @@ public String getProtocol() {
 }
 
 public String getPath() {
-	return _url.getPath();
+	return StringUtils.isNotBlank(_url.getPath()) ? _url.getPath() : "/";
 }
 
 public boolean isSecure() {

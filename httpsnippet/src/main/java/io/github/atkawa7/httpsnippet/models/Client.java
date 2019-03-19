@@ -103,7 +103,12 @@ public enum Client {
             "jsoup",
             "JSoup",
             "http://jsoup.org/",
-            "JSoup Java HTML Parser, with best of DOM, CSS, and jquery");
+            "JSoup Java HTML Parser, with best of DOM, CSS, and jquery"),
+    FETCH(
+            "fetch",
+            "Fetch API",
+            "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
+            "Browser API that offers a simple interface for fetching resources");
 
     private final String key;
     private final String title;

@@ -19,10 +19,7 @@ public class RubyNative extends CodeGenerator {
     protected String generateCode(final CodeRequest codeRequest) throws Exception {
         CodeBuilder code = new CodeBuilder();
 
-
-        code
-                .push("require 'uri'")
-                .push("require 'net/http'");
+        code.push("require 'uri'").push("require 'net/http'");
 
         if (codeRequest.isSecure()) {
             code.push("require 'openssl'");

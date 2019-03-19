@@ -25,6 +25,7 @@ public class MediaType {
     public static final List<String> JSON_MEDIA_TYPES =
             Collections.unmodifiableList(
                     Arrays.asList(APPLICATION_JSON, APPLICATION_X_JSON, TEXT_JSON, TEXT_X_JSON));
+    public static final String TEXT_PLAIN = "text/plain";
 
     public static final boolean isMultipartMediaType(String header) {
         return MULTIPART_MEDIA_TYPES.indexOf(header) != -1;
