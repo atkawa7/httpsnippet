@@ -4,6 +4,7 @@
 ![Coveralls github](https://img.shields.io/coveralls/github/atkawa7/httpsnippet.svg?label=jacoco)
 ![Codecov](https://img.shields.io/codecov/c/github/atkawa7/httpsnippet.svg?label=cobertura)
 ![GitHub issues](https://img.shields.io/github/issues/atkawa7/httpsnippet.svg)
+![Travis (.org)](https://img.shields.io/travis/atkawa7/httpsnippet.svg?label=travis)
 > HTTP Snippet port for java. See [the original node port](https://github.com/Kong/httpsnippet). Supports *many* languages & tools including: `cURL`, `HTTPie`, `Javascript`, `Node`, `C`, `Java`, `PHP`, `Objective-C`, `Swift`, `Python`, `Ruby`, `C#`, `Go`, `OCaml` and more!
 
 
