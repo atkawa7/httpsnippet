@@ -11,7 +11,7 @@
 The project is still in development phase***. 
 
 - [ ] Documentation
-- [ ] Tests
+- [x] Tests
 - [ ] Releasing to maven
 
 ##  Usage

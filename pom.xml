@@ -41,10 +41,14 @@
         <build-number-maven-plugin.version>1.4</build-number-maven-plugin.version>
         <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
         <clover-maven-plugin.version>4.3.1</clover-maven-plugin.version>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
+        <codecov.token>${env.CODECOV_TOKEN}</codecov.token>
         <commons-io.version>2.4</commons-io.version>
+        <commons-lang3.version>3.8.1</commons-lang3.version>
         <commons-text.version>1.6</commons-text.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
+        <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+        <coveralls.token>${env.COVERALLS_REPO_TOKEN}</coveralls.token>
         <dependency-check-maven.version>5.0.0-M2</dependency-check-maven.version>
         <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
         <error_prone_core.version>2.3.2</error_prone_core.version>
@@ -108,10 +112,6 @@
         <springfox.version>2.9.2</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
-        <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
-        <codecov.token>${env.CODECOV_TOKEN}</codecov.token>
-        <coveralls.token>${env.COVERALLS_REPO_TOKEN}</coveralls.token>
-        <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -516,6 +516,11 @@
                     <version>${versions-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>${coveralls-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco-maven-plugin.version}</version>
@@ -601,11 +606,6 @@
                             </validationProperty>
                         </validationProperties>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.eluder.coveralls</groupId>
-                    <artifactId>coveralls-maven-plugin</artifactId>
-                    <version>${coveralls-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
