@@ -42,6 +42,7 @@
         <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
         <clover-maven-plugin.version>4.3.1</clover-maven-plugin.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
+        <commons-io.version>2.4</commons-io.version>
         <commons-text.version>1.6</commons-text.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <dependency-check-maven.version>5.0.0-M2</dependency-check-maven.version>

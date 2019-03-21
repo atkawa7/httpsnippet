@@ -1,0 +1,13 @@
+{
+  "url": "http://mockbin.com/har",
+  "method": "POST",
+  "headers": [{
+    "name": "content-type",
+    "value": "application/json"
+  }],
+  "postData": {
+    "params": [],
+    "text": "{\"foo\":null}",
+    "mimeType": "application/json"
+  }
+}

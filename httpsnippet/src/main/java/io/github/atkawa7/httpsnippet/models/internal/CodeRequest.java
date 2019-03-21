@@ -110,9 +110,9 @@ private CodeRequest(HarRequest harRequest) throws Exception {
 			if (!this._hasParams) {
 				throw new Exception("Params cannot be empty");
 			}
-			if (!this._hasAttachments) {
-				throw new Exception("Params must have attachments");
-			}
+//			if (!this._hasAttachments) {
+//				throw new Exception("Params must have attachments");
+//			}
 		}
 }
 

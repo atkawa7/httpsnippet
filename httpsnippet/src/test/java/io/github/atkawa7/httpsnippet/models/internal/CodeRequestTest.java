@@ -128,20 +128,6 @@ void testExceptionIsThrownWhenContentTypeIsMultiFormDataAndListOfParamsIsEmpty()
 	assertEquals("Params cannot be empty", thrown.getMessage());
 }
 
-@Test
-void testExceptionIsRaisedWhenContentTypeIsMultiFormDataAndParamsDoesNotHaveAttachment() {
-	List<HarParam> harParams = new ArrayList<>();
-	harParams.add(new HarParam("foo", "bar", null, null, null));
-	HarRequest harRequest =
-		new HarRequestBuilder()
-			.withUrl(HTTP_URL)
-			.withPostData(new HarPostData(MediaType.MULTIPART_FORM_DATA, harParams, null, null))
-			.build();
-	Exception thrown =
-		assertThrows(
-			Exception.class, () -> newCodeRequest(harRequest), "Expected exception thrown");
-	assertEquals("Params must have attachments", thrown.getMessage());
-}
 
 @Test
 void testExceptionIsRaisedWhenContentTypeIsFormUrlEncodedAndListOfParamsIsEmpty() {
