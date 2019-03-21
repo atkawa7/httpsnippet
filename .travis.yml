@@ -4,7 +4,7 @@ before_install:
   - echo "MAVEN_OPTS='-Xmx2048M -Xss128M -XX:+CMSClassUnloadingEnabled -XX:+UseG1GC -XX:-UseGCOverheadLimit'" > ~/.mavenrc
 
 install: skip
-script: travis_wait 60 mvn -q test jacoco:report cobertura:cobertura coveralls:report  httpsnippet
+script: travis_wait 60 mvn -q test jacoco:report coveralls:report -pl httpsnippet
 
 sudo: required
 
@@ -20,4 +20,4 @@ cache:
     - .autoconf
     - $HOME/.m2
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - mvn cobertura:cobertura -pl httpsnippet && bash <(curl -s https://codecov.io/bash)
