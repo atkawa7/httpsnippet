@@ -1,8 +1,8 @@
 # HTTP Snippet
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-![Coveralls github](https://img.shields.io/coveralls/github/atkawa7/httpsnippet.svg?label=cobertura)
-![Codecov](https://img.shields.io/codecov/c/github/atkawa7/httpsnippet.svg?label=jacoco)
+![Coveralls github](https://img.shields.io/coveralls/github/atkawa7/httpsnippet.svg?label=jacoco)
+![Codecov](https://img.shields.io/codecov/c/github/atkawa7/httpsnippet.svg?label=cobertura)
 ![GitHub issues](https://img.shields.io/github/issues/atkawa7/httpsnippet.svg)
 > HTTP Snippet port for java. See [the original node port](https://github.com/Kong/httpsnippet). Supports *many* languages & tools including: `cURL`, `HTTPie`, `Javascript`, `Node`, `C`, `Java`, `PHP`, `Objective-C`, `Swift`, `Python`, `Ruby`, `C#`, `Go`, `OCaml` and more!
 
