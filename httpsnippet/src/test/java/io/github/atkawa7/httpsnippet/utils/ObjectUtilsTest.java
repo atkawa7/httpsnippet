@@ -34,7 +34,7 @@ class ObjectUtilsTest {
     }
 
     @Test
-    void fromJsonString() {
+    void testFromJsonString() {
 
         Map<String, Object> h = new HashMap<>();
         h.put("foo", "foo");
@@ -59,19 +59,19 @@ class ObjectUtilsTest {
     }
 
     @Test
-    void isNotNull() {
+    void testIsNotNull() {
         String nonNull = "foo";
         assertTrue(ObjectUtils.isNotNull(nonNull));
     }
 
     @Test
-    void isNull() {
+    void testIsNull() {
         String nullStr = null;
         assertTrue(ObjectUtils.isNull(nullStr));
     }
 
     @Test
-    void defaultIfNull() {
+    void testDefaultIfNull() {
         Object nullInteger  = null;
         String result  = ObjectUtils.defaultIfNull(nullInteger, "10");
         assertEquals("10", result);
@@ -93,14 +93,14 @@ class ObjectUtilsTest {
 
     @ParameterizedTest
     @MethodSource("streamOfEmptyObjects")
-    void isEmpty(Object obj) {
+    void testIsEmpty(Object obj) {
         assertTrue(ObjectUtils.isEmpty(obj));
         assertFalse(ObjectUtils.isNotEmpty(obj));
     }
 
     @ParameterizedTest
     @MethodSource("streamOfObjects")
-    void isNotEmpty(Object obj) {
+    void testIsNotEmpty(Object obj) {
         assertTrue(ObjectUtils.isNotEmpty(obj));
         assertFalse(ObjectUtils.isEmpty(obj));
     }

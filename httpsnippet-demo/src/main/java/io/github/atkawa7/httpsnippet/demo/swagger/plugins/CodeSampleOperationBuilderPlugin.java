@@ -61,7 +61,7 @@ public void apply(OperationContext operationContext) {
         throw new RuntimeException("Failed to create json from example");
     }
 
-    HarPostData postData =
+    HarPostData postData = ObjectUtils.isNull(example)? null:
             new HarPostDataBuilder().withMimeType(MediaType.APPLICATION_JSON).withText(body).build();
 
     HarRequest harRequest =
