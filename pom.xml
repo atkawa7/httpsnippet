@@ -108,6 +108,10 @@
         <springfox.version>2.9.2</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
+        <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+        <codecov.token>${env.CODECOV_TOKEN}</codecov.token>
+        <coveralls.token>${env.COVERALLS_REPO_TOKEN}</coveralls.token>
+        <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -597,6 +601,11 @@
                             </validationProperty>
                         </validationProperties>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>${coveralls-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
