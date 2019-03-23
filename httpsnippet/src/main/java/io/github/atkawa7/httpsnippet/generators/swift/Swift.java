@@ -9,6 +9,7 @@ import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class Swift extends CodeGenerator {
         int indentLevel = ObjectUtils.isNull(indent) ? 1 : indent + 1;
 
         if (ObjectUtils.isNull(value)) {
-            return "\"\"";
+            return "nil";
         } else if (value instanceof List) {
             List list = (List) value;
             List<String> listBuilder = new ArrayList<>();
@@ -48,14 +49,16 @@ public class Swift extends CodeGenerator {
                 listBuilder.add(format);
             }
             return "[" + String.join(",", listBuilder) + "]";
+        } else if (value instanceof Number) {
+            return value.toString();
         } else {
-            return '"' + value.toString() + '"';
+            return '"' + value.toString().replace("\"", "\\\"") + '"';
         }
     }
 
     @Override
     protected String generateCode(CodeRequest codeRequest) throws Exception {
-        CodeBuilder code = new CodeBuilder(" ");
+        CodeBuilder code = new CodeBuilder("  ");
         int timeout = 10;
 
         // We just want to make sure people understand that is the only dependency
@@ -85,8 +88,9 @@ public class Swift extends CodeGenerator {
                 case MediaType.APPLICATION_JSON:
                     if (codeRequest.hasText()) {
                         code.push(
+                                "%s %s",
                                 this.literalDeclaration("parameters", codeRequest.fromJsonString()),
-                                "as [String : Any]")
+                                "as [String : Any?]")
                                 .blank()
                                 .push(
                                         "let postData = JSONSerialization.data(withJSONObject: parameters, options: [])");
@@ -134,16 +138,18 @@ public class Swift extends CodeGenerator {
                 // avoid confusion.
                 .push(
                         "let request = NSMutableURLRequest(url: NSURL(string: \"%s\")! as URL,",
-                        codeRequest.getUrl())
+                        codeRequest.getFullUrl())
                 .push("                                        cachePolicy: .useProtocolCachePolicy,")
-                .push("                                    timeoutInterval: %s)", Integer.toString(timeout))
+                .push(
+                        "                                    timeoutInterval: %s)",
+                        new BigDecimal(timeout).setScale(1).toString())
                 .push("request.httpMethod = \"%s\"", codeRequest.getMethod());
 
-        if (codeRequest.hasHeaders()) {
+        if (codeRequest.hasHeadersAndCookies()) {
             code.push("request.allHTTPHeaderFields = headers");
         }
 
-        if (codeRequest.hasHeaders()) {
+        if (codeRequest.hasBody()) {
             code.push("request.httpBody = postData as Data");
         }
 
@@ -161,7 +167,8 @@ public class Swift extends CodeGenerator {
                 .push(1, "}")
                 .push("})")
                 .blank()
-                .push("dataTask.resume()");
+                .push("dataTask.resume()")
+                .blank();
 
         return code.join();
     }

@@ -1,6 +1,6 @@
 import http.client
 
-conn = http.client.HTTPSConnection("mockbin.com", "80")
+conn = http.client.HTTPSConnection("mockbin.com")
 
 conn.request("GET", "/har")
 

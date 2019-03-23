@@ -37,6 +37,10 @@ public abstract class CodeGenerator {
         return ObjectUtils.toJsonString(value);
     }
 
+    protected String toPrettyJson(Object value) throws Exception {
+        return ObjectUtils.toPrettyJsonString(value);
+    }
+
     @Override
     public String toString() {
         return displayName;

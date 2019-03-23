@@ -7,6 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Fixture {
-    private FixtureType fixtureType;
-    private HarRequest harRequest;
+private FixtureType fixtureType;
+private HarRequest harRequest;
+
+@Override
+public String toString() {
+	return "Fixture{name='" + fixtureType.getName() + "'}";
+}
 }

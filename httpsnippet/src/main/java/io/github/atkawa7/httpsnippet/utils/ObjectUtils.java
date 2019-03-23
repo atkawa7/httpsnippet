@@ -1,21 +1,59 @@
 package io.github.atkawa7.httpsnippet.utils;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.net.URL;
 import java.util.*;
 
 @UtilityClass
 public class ObjectUtils {
+
+    private static final ObjectMapper prettyObjectMapper = new ObjectMapper();
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        prettyObjectMapper.setDefaultPrettyPrinter(new HttpSnippetPrettyPrinter());
+        prettyObjectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
+    }
+
+    public static String toPrettyJsonString(Object value) throws JsonProcessingException {
+        return prettyObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+    }
 
     public static String toJsonString(Object value) throws JsonProcessingException {
         return objectMapper.writeValueAsString(value);
+    }
+
+    static class HttpSnippetPrettyPrinter extends DefaultPrettyPrinter {
+
+        public HttpSnippetPrettyPrinter(DefaultPrettyPrinter base) {
+            super(base);
+        }
+
+        public HttpSnippetPrettyPrinter() {
+            super();
+            _arrayIndenter = DefaultIndenter.SYSTEM_LINEFEED_INSTANCE;
+        }
+
+        @Override
+        public DefaultPrettyPrinter createInstance() {
+            return new HttpSnippetPrettyPrinter(this);
+        }
+
+        @Override
+        public void writeObjectFieldValueSeparator(JsonGenerator g) throws IOException {
+            g.writeRaw(": ");
+        }
     }
 
     public static Map<String, Object> fromJsonString(String json) throws IOException {
@@ -31,14 +69,6 @@ public class ObjectUtils {
             }
         } else {
             throw new Exception("JSON validation failed");
-        }
-    }
-
-    public static URL newURL(String url) throws Exception {
-        try {
-            return new URL(url);
-        } catch (Exception ex) {
-            throw new Exception("Malformed url");
         }
     }
 

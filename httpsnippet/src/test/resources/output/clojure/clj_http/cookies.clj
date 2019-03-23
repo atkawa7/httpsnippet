@@ -1,5 +1,3 @@
 (require '[clj-http.client :as client])
 
-(client/post "http://mockbin.com/har" {headers {Cookie "foo=bar;bar=baz" 
-                                         } 
-                                      })
+(client/post "http://mockbin.com/har" {:headers {:cookie "foo=bar; bar=baz"}})

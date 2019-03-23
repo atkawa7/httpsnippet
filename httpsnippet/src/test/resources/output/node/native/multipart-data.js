@@ -1,6 +1,17 @@
+var fs = require("fs")
 var http = require("http");
+var FormData = require("form-data");
+var form = new FormData()
+form.append("foo", fs.createReadStream("hello.txt"));
+let headers = form.getHeaders();
 
-var options = {"path":"/har","headers":{"content-type":"multipart/form-data"},"hostname":"mockbin.com","method":"POST","port":80};
+var options = {
+  "method": "POST",
+  "hostname": "mockbin.com",
+  "port": 80,
+  "path": "/har",
+  "headers": headers
+};
 
 var req = http.request(options, function (res) {
   var chunks = [];
@@ -15,4 +26,4 @@ var req = http.request(options, function (res) {
   });
 });
 
-req.end();
+form.pipe(req);

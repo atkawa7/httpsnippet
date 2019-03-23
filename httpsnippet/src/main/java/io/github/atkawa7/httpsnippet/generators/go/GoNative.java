@@ -20,7 +20,7 @@ public class GoNative extends CodeGenerator {
         this.showBoilerplate = true;
         this.checkErrors = false;
         this.printBody = true;
-        this.timeout = 10;
+        this.timeout = -1;
     }
 
     public String errorPlaceholder() {
@@ -53,7 +53,7 @@ public class GoNative extends CodeGenerator {
                 codeBuilder.push(indent, "\"time\"");
             }
 
-            if (codeRequest.hasText()) {
+            if (codeRequest.hasBody()) {
                 codeBuilder.push(indent, "\"strings\"");
             }
 
@@ -79,12 +79,22 @@ public class GoNative extends CodeGenerator {
             client = "http.DefaultClient";
         }
 
-        codeBuilder.push(indent, "url := \"%s\"", codeRequest.getUrl()).blank();
+        codeBuilder.push(indent, "url := \"%s\"", codeRequest.getFullUrl()).blank();
 
         // If we have body content or not create the var and reader or nil
         if (codeRequest.hasText()) {
             codeBuilder
                     .push(indent, "payload := strings.NewReader(%s)", codeRequest.toJsonString())
+                    .blank()
+                    .push(
+                            indent,
+                            "req, %s := http.NewRequest(\"%s\", url, payload)",
+                            errorPlaceholder,
+                            codeRequest.getMethod())
+                    .blank();
+        } else if (codeRequest.hasParams()) {
+            codeBuilder
+                    .push(indent, "payload := strings.NewReader(\"%s\")", codeRequest.paramsToString())
                     .blank()
                     .push(
                             indent,
@@ -139,6 +149,8 @@ public class GoNative extends CodeGenerator {
         if (showBoilerplate) {
             codeBuilder.blank().push("}");
         }
+
+        codeBuilder.blank();
 
         return codeBuilder.join();
     }

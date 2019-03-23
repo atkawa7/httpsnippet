@@ -1,13 +1,8 @@
 (require '[clj-http.client :as client])
 
-(client/post "http://mockbin.com/har?key=value" {headers {Cookie "foo=bar;bar=baz" 
-                                                   :content-type "application/x-www-form-urlencoded" 
-                                                   :accept "application/json" 
-                                                   } 
-                                                :form-params {foo "bar" 
-                                                    } 
-                                                :query-params {foo ["bar" "baz" ] 
-                                                     :baz ["abc" ] 
-                                                     } 
-                                                :accept :json 
-                                                })
+(client/post "http://mockbin.com/har" {:headers {:cookie "foo=bar; bar=baz"}
+                                       :query-params {:foo ["bar" "baz"]
+                                                      :baz "abc"
+                                                      :key "value"}
+                                       :form-params {:foo "bar"}
+                                       :accept :json})

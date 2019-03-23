@@ -1,6 +1,17 @@
+var qs = require("querystring");
 var http = require("http");
 
-var options = {"path":"/har","headers":{"Cookie":"foo=bar;bar=baz","content-type":"application/x-www-form-urlencoded","accept":"application/json"},"hostname":"mockbin.com","method":"POST","port":80};
+var options = {
+  "method": "POST",
+  "hostname": "mockbin.com",
+  "port": 80,
+  "path": "/har?baz=abc&foo=bar&foo=baz&key=value",
+  "headers": {
+    "Cookie": "foo=bar; bar=baz",
+    "content-type": "application/x-www-form-urlencoded",
+    "accept": "application/json"
+  }
+};
 
 var req = http.request(options, function (res) {
   var chunks = [];
@@ -15,6 +26,5 @@ var req = http.request(options, function (res) {
   });
 });
 
-var qs = require("querystring");
 req.write(qs.stringify({"foo":"bar"}));
 req.end();

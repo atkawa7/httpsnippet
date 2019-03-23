@@ -6,7 +6,7 @@ url = URI("http://mockbin.com/har")
 http = Net::HTTP.new(url.host, url.port)
 
 request = Net::HTTP::Post.new(url)
-request["Cookie"] = "foo=bar;bar=baz"
+request["Cookie"] = "foo=bar; bar=baz"
 
 response = http.request(request)
 puts response.read_body

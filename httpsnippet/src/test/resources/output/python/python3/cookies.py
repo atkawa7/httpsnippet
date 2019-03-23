@@ -1,10 +1,8 @@
 import http.client
 
-conn = http.client.HTTPConnection("mockbin.com", "80")
+conn = http.client.HTTPConnection("mockbin.com")
 
-headers = {
-	"Cookie": "foo=bar;bar=baz"
-}
+headers = {"Cookie":"foo=bar; bar=baz"}
 
 conn.request("POST", "/har", headers=headers)
 

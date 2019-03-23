@@ -1,6 +1,15 @@
 var http = require("http");
 
-var options = {"path":"/har","headers":{"x-foo":"Bar","accept":"application/json"},"hostname":"mockbin.com","method":"GET","port":80};
+var options = {
+  "method": "GET",
+  "hostname": "mockbin.com",
+  "port": 80,
+  "path": "/har",
+  "headers": {
+    "x-foo": "Bar",
+    "accept": "application/json"
+  }
+};
 
 var req = http.request(options, function (res) {
   var chunks = [];

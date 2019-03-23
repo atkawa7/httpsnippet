@@ -2,26 +2,24 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"strings"
 	"net/http"
 	"io/ioutil"
 )
 
 func main() {
 
-	client := http.Client{
-		Timeout: time.Duration(10 * time.Second),
-	}
+	url := "http://mockbin.com/har?baz=abc&foo=bar&foo=baz&key=value"
 
-	url := "http://mockbin.com/har?key=value"
+	payload := strings.NewReader("foo=bar")
 
-	req, _ := http.NewRequest("POST", url, nil)
+	req, _ := http.NewRequest("POST", url, payload)
 
-	req.Header.Add("Cookie", "foo=bar;bar=baz")
+	req.Header.Add("Cookie", "foo=bar; bar=baz")
 	req.Header.Add("content-type", "application/x-www-form-urlencoded")
 	req.Header.Add("accept", "application/json")
 
-	res, _ := client.Do(req)
+	res, _ := http.DefaultClient.Do(req)
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)

@@ -1,7 +1,7 @@
 OkHttpClient client = new OkHttpClient();
 
 MediaType mediaType = MediaType.parse("text/plain");
-RequestBody body = RequestBody.create(mediaType, Hello World);
+RequestBody body = RequestBody.create(mediaType, "Hello World");
 Request request = new Request.Builder()
   .url("http://mockbin.com/har")
   .post(body)

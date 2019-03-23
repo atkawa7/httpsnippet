@@ -5,6 +5,7 @@ import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,7 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 
 	code.push(
 		"$response = Invoke-WebRequest -Uri '%s' -Method %s %s",
-		codeRequest.getUrl(), codeRequest.getMethod(), String.join(" ", commandOptions));
+			codeRequest.getFullUrl(), codeRequest.getMethod(), String.join(" ", commandOptions));
 	return code.join();
 }
 }

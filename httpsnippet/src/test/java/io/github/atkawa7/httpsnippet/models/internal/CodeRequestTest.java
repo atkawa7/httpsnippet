@@ -8,7 +8,8 @@ import com.smartbear.har.model.*;
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
@@ -127,7 +128,6 @@ void testExceptionIsThrownWhenContentTypeIsMultiFormDataAndListOfParamsIsEmpty()
 			Exception.class, () -> newCodeRequest(harRequest), "Expected exception thrown");
 	assertEquals("Params cannot be empty", thrown.getMessage());
 }
-
 
 @Test
 void testExceptionIsRaisedWhenContentTypeIsFormUrlEncodedAndListOfParamsIsEmpty() {
@@ -368,37 +368,42 @@ void testCookies() {
 	assertTrue(codeRequest.hasHeadersAndCookies());
 }
 
-	@Test
-	void testHeaders() {
-		HarRequest harRequest =
-				new HarRequestBuilder().withUrl(HTTP_URL).withHeaders(jsonHeaders()).withPostData(null).build();
-		CodeRequest codeRequest =
-				assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
-		assertTrue(codeRequest.hasHeaders());
-		assertEquals(2, codeRequest.getHeaders().size());
-		assertFalse(codeRequest.hasBody());
-		assertTrue(codeRequest.hasHeadersAndCookies());
-	}
+@Test
+void testHeaders() {
+	HarRequest harRequest =
+		new HarRequestBuilder()
+			.withUrl(HTTP_URL)
+			.withHeaders(jsonHeaders())
+			.withPostData(null)
+			.build();
+	CodeRequest codeRequest =
+		assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
+	assertTrue(codeRequest.hasHeaders());
+	assertEquals(2, codeRequest.getHeaders().size());
+	assertFalse(codeRequest.hasBody());
+	assertTrue(codeRequest.hasHeadersAndCookies());
+}
 
+@Test
+void testQueryStrings() {
+	HarRequest harRequest =
+		new HarRequestBuilder()
+			.withUrl(HTTP_URL)
+			.withQueryString(queryStrings())
+			.withPostData(null)
+			.build();
+	CodeRequest codeRequest =
+		assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
+	assertTrue(codeRequest.hasQueryStrings());
+	assertEquals(2, codeRequest.getQueryStrings().size());
+	assertFalse(codeRequest.hasBody());
+}
 
-	@Test
-	void testQueryStrings() {
-		HarRequest harRequest =
-				new HarRequestBuilder().withUrl(HTTP_URL).withQueryString(queryStrings()).withPostData(null).build();
-		CodeRequest codeRequest =
-				assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
-		assertTrue(codeRequest.hasQueryStrings());
-		assertEquals(2, codeRequest.getQueryStrings().size());
-		assertFalse(codeRequest.hasBody());
-	}
-
-
-	@Test
+@Test
 void testHttpVersion() {
 	HarRequest harRequest = new HarRequestBuilder().withUrl(HTTP_URL).withPostData(null).build();
 	CodeRequest codeRequest =
 		assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
 	assertEquals(HttpVersion.HTTP_1_1, HttpVersion.resolve(codeRequest.getHttpVersion()));
 }
-
 }

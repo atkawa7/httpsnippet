@@ -2,24 +2,22 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"strings"
 	"net/http"
 	"io/ioutil"
 )
 
 func main() {
 
-	client := http.Client{
-		Timeout: time.Duration(10 * time.Second),
-	}
-
 	url := "http://mockbin.com/har"
 
-	req, _ := http.NewRequest("POST", url, nil)
+	payload := strings.NewReader("-----011000010111000001101001\r\nContent-Disposition: form-data; name=\"foo\"\r\n\r\nbar\r\n-----011000010111000001101001--\r\n")
 
-	req.Header.Add("content-type", "multipart/form-data")
+	req, _ := http.NewRequest("POST", url, payload)
 
-	res, _ := client.Do(req)
+	req.Header.Add("content-type", "multipart/form-data; boundary=---011000010111000001101001")
+
+	res, _ := http.DefaultClient.Do(req)
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)

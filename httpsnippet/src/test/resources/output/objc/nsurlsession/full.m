@@ -1,14 +1,14 @@
 #import <Foundation/Foundation.h>
 
-NSDictionary *headers = @{ @"Cookie": @"foo=bar;bar=baz",
-   @"content-type": @"application/x-www-form-urlencoded",
-   @"accept": @"application/json" };
+NSDictionary *headers = @{ @"Cookie": @"foo=bar; bar=baz",
+                           @"content-type": @"application/x-www-form-urlencoded",
+                           @"accept": @"application/json" };
 
 NSMutableData *postData = [[NSMutableData alloc] initWithData:[@"foo=bar" dataUsingEncoding:NSUTF8StringEncoding]];
 
-NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://mockbin.com/har?key=value"]
+NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://mockbin.com/har?baz=abc&foo=bar&foo=baz&key=value"]
                                                        cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                   timeoutInterval:10];
+                                                   timeoutInterval:10.0];
 [request setHTTPMethod:@"POST"];
 [request setAllHTTPHeaderFields:headers];
 [request setHTTPBody:postData];
@@ -16,11 +16,11 @@ NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWit
 NSURLSession *session = [NSURLSession sharedSession];
 NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                              if (error) {
-                                                NSLog(@"%@", error);
-                                              } else {
-                                                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                                                NSLog(@"%@", httpResponse);
-                                              }
+                                                if (error) {
+                                                    NSLog(@"%@", error);
+                                                } else {
+                                                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                                                    NSLog(@"%@", httpResponse);
+                                                }
                                             }];
 [dataTask resume];

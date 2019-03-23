@@ -1,16 +1,15 @@
 package io.github.atkawa7.httpsnippet.generators.csharp;
 
-import com.smartbear.har.model.HarHeader;
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
-import io.github.atkawa7.httpsnippet.http.HttpHeaders;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class RestSharp extends CodeGenerator {
     private final List<String> SUPPORTED_METHODS =
@@ -31,7 +30,7 @@ public class RestSharp extends CodeGenerator {
         }
 
         CodeBuilder code = new CodeBuilder();
-        code.push("var client = new RestClient(\"%s\");", codeRequest.getUrl());
+        code.push("var client = new RestClient(\"%s\");", codeRequest.getFullUrl());
         code.push("var request = new RestRequest(Method.%s);", codeRequest.getMethod().toUpperCase());
 
         if (codeRequest.hasHeaders()) {
@@ -53,17 +52,48 @@ public class RestSharp extends CodeGenerator {
                                             "request.AddCookie(\"%s\", \"%s\");", cookie.getName(), cookie.getValue()));
         }
 
-        if (codeRequest.hasText() && codeRequest.hasHeaders()) {
-            Optional<HarHeader> optionalHarHeader = codeRequest.find(HttpHeaders.CONTENT_TYPE);
-            if (optionalHarHeader.isPresent()) {
-                HarHeader harHeader = optionalHarHeader.get();
-                code.push(
-                        "request.AddParameter(\"%s\", %s, ParameterType.RequestBody);",
-                        harHeader.getValue(), codeRequest.toJsonString());
+        if (codeRequest.hasBody()) {
+            switch (codeRequest.getMimeType()) {
+                case MediaType.APPLICATION_JSON:
+                    if (codeRequest.hasText()) {
+                        code.push(
+                                "request.AddParameter(\"%s\", %s, ParameterType.RequestBody);",
+                                codeRequest.getMimeType(), codeRequest.toJsonString());
+                    }
+                    break;
+                case MediaType.APPLICATION_FORM_URLENCODED:
+                    if (codeRequest.hasParams()) {
+                        code.push(
+                                "request.AddParameter(\"%s\", \"%s\", ParameterType.RequestBody);",
+                                codeRequest.getMimeType(), codeRequest.paramsToString());
+                    }
+                    break;
+
+                case MediaType.MULTIPART_FORM_DATA:
+                    if (codeRequest.hasParams()) {
+                        codeRequest
+                                .getParams()
+                                .forEach(
+                                        p -> {
+                                            if (StringUtils.isNotBlank(p.getFileName())) {
+                                                code.push("request.AddFile(\"%s\", \"%s\");", p.getName(), p.getFileName());
+                                            } else {
+                                                code.push(
+                                                        "request.AddParameter(\"%s\", \"%s\", ParameterType.RequestBody);",
+                                                        p.getName(), p.getValue());
+                                            }
+                                        });
+                    }
+                    break;
+                default: {
+                    code.push(
+                            "request.AddParameter(\"%s\", \"%s\", ParameterType.RequestBody);",
+                            codeRequest.getMimeType(), codeRequest.getText());
+                }
             }
         }
 
-        code.push("IRestResponse response = client.Execute(request);");
+        code.push("IRestResponse response = client.Execute(request);").blank();
         return code.join();
     }
 }

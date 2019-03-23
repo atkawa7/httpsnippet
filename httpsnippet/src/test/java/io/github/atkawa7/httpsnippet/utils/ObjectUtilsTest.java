@@ -1,107 +1,101 @@
 package io.github.atkawa7.httpsnippet.utils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.*;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.util.*;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class ObjectUtilsTest {
 
-    static Stream<Object> streamOfEmptyObjects(){
-        return Stream.of(null, "", new HashMap<>(), new ArrayList<>(), Optional.empty(), new int[]{});
-    }
-
-    static Stream<Object> streamOfObjects(){
-        Map<String, String> h = new HashMap<>();
-        h.put("foo", "foo");
-        Optional<String> o  = Optional.of("foo");
-        List<String> l  = new ArrayList<>();
-        l.add("foo");
-        return Stream.of(h, o, l, "foo", new Integer(10), new String[]{"foo", "bar"});
-    }
-
-    @Test
-    void testToJsonString() {
-        Map<String, String> h = new HashMap<>();
-        h.put("foo", "foo");
-        String result = assertDoesNotThrow(()->ObjectUtils.toJsonString(h));
-        assertEquals("{\"foo\":\"foo\"}", result);
-    }
-
-    @Test
-    void testFromJsonString() {
-
-        Map<String, Object> h = new HashMap<>();
-        h.put("foo", "foo");
-        Map<String, Object> result = assertDoesNotThrow(()->ObjectUtils.fromJsonString("{\"foo\":\"foo\"}"));
-        assertEquals(h, result);
-    }
-
-    @Test
-    void testValidateJSON() {
-        Exception exception = assertThrows(Exception.class, ()->ObjectUtils.validateJSON(""));
-        assertEquals("JSON validation failed", exception.getMessage());
-        exception = assertThrows(Exception.class, ()->ObjectUtils.validateJSON("{"));
-        assertEquals("JSON validation failed", exception.getMessage());
-        assertDoesNotThrow(()->ObjectUtils.validateJSON("{}"));
+static Stream<Object> streamOfEmptyObjects() {
+	return Stream.of(null, "", new HashMap<>(), new ArrayList<>(), Optional.empty(), new int[] {});
 }
 
-    @Test
-    void testNewURL() {
-        Exception exception = assertThrows(Exception.class, ()->ObjectUtils.newURL("localhost"));
-        assertEquals( "Malformed url", exception.getMessage());
-        assertDoesNotThrow(()->ObjectUtils.newURL("http://localhost"));
-    }
+static Stream<Object> streamOfObjects() {
+	Map<String, String> h = new HashMap<>();
+	h.put("foo", "foo");
+	Optional<String> o = Optional.of("foo");
+	List<String> l = new ArrayList<>();
+	l.add("foo");
+	return Stream.of(h, o, l, "foo", new Integer(10), new String[] {"foo", "bar"});
+}
 
-    @Test
-    void testIsNotNull() {
-        String nonNull = "foo";
-        assertTrue(ObjectUtils.isNotNull(nonNull));
-    }
+@Test
+void testToJsonString() {
+	Map<String, String> h = new HashMap<>();
+	h.put("foo", "foo");
+	String result = assertDoesNotThrow(() -> ObjectUtils.toJsonString(h));
+	assertEquals("{\"foo\":\"foo\"}", result);
+}
 
-    @Test
-    void testIsNull() {
-        String nullStr = null;
-        assertTrue(ObjectUtils.isNull(nullStr));
-    }
+@Test
+void testFromJsonString() {
 
-    @Test
-    void testDefaultIfNull() {
-        Object nullInteger  = null;
-        String result  = ObjectUtils.defaultIfNull(nullInteger, "10");
-        assertEquals("10", result);
+	Map<String, Object> h = new HashMap<>();
+	h.put("foo", "foo");
+	Map<String, Object> result =
+		assertDoesNotThrow(() -> ObjectUtils.fromJsonString("{\"foo\":\"foo\"}"));
+	assertEquals(h, result);
+}
 
-        result  = ObjectUtils.defaultIfNull(20, "10");
-        assertEquals("20", result);
+@Test
+void testValidateJSON() {
+	Exception exception = assertThrows(Exception.class, () -> ObjectUtils.validateJSON(""));
+	assertEquals("JSON validation failed", exception.getMessage());
+	exception = assertThrows(Exception.class, () -> ObjectUtils.validateJSON("{"));
+	assertEquals("JSON validation failed", exception.getMessage());
+	assertDoesNotThrow(() -> ObjectUtils.validateJSON("{}"));
+}
 
-        List<String> strings = null;
-        List<String> rList  = ObjectUtils.defaultIfNull(strings);
-        assertNotNull(rList);
-        assertEquals(rList.size(), 0);
+@Test
+void testIsNotNull() {
+	String nonNull = "foo";
+	assertTrue(ObjectUtils.isNotNull(nonNull));
+}
 
-        List<String> iList  = new ArrayList<>();
-        iList.add("foo");
-        rList  = ObjectUtils.defaultIfNull(iList);
-        assertNotNull(rList);
-        assertEquals(iList, rList);
-    }
+@Test
+void testIsNull() {
+	String nullStr = null;
+	assertTrue(ObjectUtils.isNull(nullStr));
+}
 
-    @ParameterizedTest
-    @MethodSource("streamOfEmptyObjects")
-    void testIsEmpty(Object obj) {
-        assertTrue(ObjectUtils.isEmpty(obj));
-        assertFalse(ObjectUtils.isNotEmpty(obj));
-    }
+@Test
+void testDefaultIfNull() {
+	Object nullInteger = null;
+	String result = ObjectUtils.defaultIfNull(nullInteger, "10");
+	assertEquals("10", result);
 
-    @ParameterizedTest
-    @MethodSource("streamOfObjects")
-    void testIsNotEmpty(Object obj) {
-        assertTrue(ObjectUtils.isNotEmpty(obj));
-        assertFalse(ObjectUtils.isEmpty(obj));
-    }
+	result = ObjectUtils.defaultIfNull(20, "10");
+	assertEquals("20", result);
+
+	List<String> strings = null;
+	List<String> rList = ObjectUtils.defaultIfNull(strings);
+	assertNotNull(rList);
+	assertEquals(rList.size(), 0);
+
+	List<String> iList = new ArrayList<>();
+	iList.add("foo");
+	rList = ObjectUtils.defaultIfNull(iList);
+	assertNotNull(rList);
+	assertEquals(iList, rList);
+}
+
+@ParameterizedTest
+@MethodSource("streamOfEmptyObjects")
+void testIsEmpty(Object obj) {
+	assertTrue(ObjectUtils.isEmpty(obj));
+	assertFalse(ObjectUtils.isNotEmpty(obj));
+}
+
+@ParameterizedTest
+@MethodSource("streamOfObjects")
+void testIsNotEmpty(Object obj) {
+	assertTrue(ObjectUtils.isNotEmpty(obj));
+	assertFalse(ObjectUtils.isEmpty(obj));
+}
 }

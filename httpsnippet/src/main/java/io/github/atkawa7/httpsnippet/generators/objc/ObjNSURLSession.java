@@ -9,6 +9,7 @@ import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,22 +25,25 @@ public class ObjNSURLSession extends CodeGenerator {
     public String blankString(int length) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            builder.append(CodeBuilder.EMPTY);
+            builder.append(" ");
         }
 
         return builder.toString();
     }
 
-    public String nsDeclaration(String nsClass, String name, Object parameters, Integer indent) {
+    public String nsDeclaration(String nsClass, String name, Object parameters, Integer indent)
+            throws Exception {
         String opening = nsClass + " *" + name + " = ";
         String literal =
                 this.literalRepresentation(parameters, indent != null ? opening.length() : null);
         return opening + literal + ";";
     }
 
-    public <T> String literalRepresentation(T value, Integer indentation) {
+    public <T> String literalRepresentation(T value, Integer indentation) throws Exception {
         String join = indentation == null ? ", " : ",\n   " + this.blankString(indentation);
-        if (value instanceof Number) {
+        if (ObjectUtils.isNull(value)) {
+            return "nil";
+        } else if (value instanceof Number) {
             return "@" + value.toString();
         } else if (value instanceof List) {
             List list = (List) value;
@@ -65,14 +69,14 @@ public class ObjNSURLSession extends CodeGenerator {
             Boolean bool = (Boolean) value;
             return bool ? "@YES" : "@NO";
         } else {
-            return String.format("@\"%s\"", ObjectUtils.defaultIfNull(value, ""));
+            return String.format("@%s", toJson(ObjectUtils.defaultIfNull(value, "")));
         }
     }
 
     @Override
     protected String generateCode(final CodeRequest codeRequest) throws Exception {
 
-        CodeBuilder code = new CodeBuilder(CodeBuilder.SPACE);
+        CodeBuilder code = new CodeBuilder("    ");
 
         boolean hasHeaders = false;
         boolean hasBody = false;
@@ -100,7 +104,7 @@ public class ObjNSURLSession extends CodeGenerator {
                         for (int i = 1; i < params.size(); i++) {
                             code.push(
                                     "[postData appendData:[@\"&%s=%s\" dataUsingEncoding:NSUTF8StringEncoding]];",
-                                    params.get(0).getName(), params.get(0).getValue());
+                                    params.get(i).getName(), params.get(i).getValue());
                         }
                     }
                 }
@@ -108,12 +112,14 @@ public class ObjNSURLSession extends CodeGenerator {
 
                 case MediaType.APPLICATION_JSON:
                     if (codeRequest.hasText()) {
-                        code.push(nsDeclaration("NSDictionary", "parameters", codeRequest.fromJsonString(), 4))
+                        code.push(nsDeclaration("NSDictionary", "parameters", codeRequest.fromJsonString(), 2))
                                 .blank()
                                 .push(
                                         "NSData *postData = [NSJSONSerialization dataWithJSONObject:parameters options:0 error:nil];");
                     }
                     break;
+
+                    //TODO: Multiform
 
                 default:
                     code.blank()
@@ -127,14 +133,16 @@ public class ObjNSURLSession extends CodeGenerator {
         code.blank()
                 .push(
                         "NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@\""
-                                + codeRequest.getUrl()
+                                + codeRequest.getFullUrl()
                                 + "\"]")
                 // NSURLRequestUseProtocolCachePolicy is the default policy, let"s just always set it to
                 // avoid confusion.
                 .push(
                         "                                                       cachePolicy:NSURLRequestUseProtocolCachePolicy")
                 .push(
-                        "                                                   timeoutInterval:" + timeout + "];")
+                        "                                                   timeoutInterval:"
+                                + new BigDecimal(timeout).setScale(1).toString()
+                                + "];")
                 .push("[request setHTTPMethod:@\"" + codeRequest.getMethod() + "\"];");
 
         if (hasHeaders) {
@@ -161,7 +169,8 @@ public class ObjNSURLSession extends CodeGenerator {
                 .push(2, "                                            NSLog(@\"%@\", httpResponse);")
                 .push(1, "                                            }")
                 .push("                                            }];")
-                .push("[dataTask resume];");
+                .push("[dataTask resume];")
+                .blank();
 
         return code.join();
     }

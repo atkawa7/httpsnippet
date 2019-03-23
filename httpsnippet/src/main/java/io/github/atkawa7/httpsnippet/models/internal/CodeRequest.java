@@ -7,16 +7,16 @@ import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static io.github.atkawa7.httpsnippet.utils.ObjectUtils.newURL;
-
 // internal wrapper class around har request
 public final class CodeRequest {
 
-	public static final int DEFAULT_PORT = 80;
+	public static final int HTTP_PORT = 80;
+	public static final int HTTPS_PORT = 443;
 private final String method;
 private final String url;
 private final String httpVersion;
@@ -30,6 +30,7 @@ private final String text;
 // precomputed values to speed up their reuse
 
 private final URL _url;
+	private final URL _fullUrl;
 private final String _cookieString;
 private final boolean _hasText;
 private final boolean _hasParams;
@@ -47,11 +48,14 @@ private Map<String, String> _cookies;
 private CodeRequest(HarRequest harRequest) throws Exception {
 	Objects.requireNonNull(harRequest, "Har Request cannot be null");
 
+	AbstractMap.SimpleEntry<URL, List<HarQueryString>> tuple =
+			HarUtils.newTuple(
+					harRequest.getUrl(), ObjectUtils.defaultIfNull(harRequest.getQueryString()));
+
 	this.method = HttpMethod.resolve(harRequest.getMethod()).name();
-	this.url = harRequest.getUrl();
 	this.headers = HarUtils.processHeaders(harRequest);
 	this.cookies = HarUtils.processCookies(harRequest);
-	this.queryStrings = HarUtils.processQueryStrings(harRequest);
+	this.queryStrings = HarUtils.processQueryStrings(tuple.getValue());
 	this.httpVersion = HttpVersion.resolve(harRequest.getHttpVersion()).getProtocolName();
 
 	HarPostData harPostData = harRequest.getPostData();
@@ -62,12 +66,17 @@ private CodeRequest(HarRequest harRequest) throws Exception {
 	this.mimeType = HarUtils.defaultMimeType(mimeType);
 	this.text = StringUtils.defaultIfEmpty(text, "");
 
-	this._url = newURL(harRequest.getUrl());
+	this._fullUrl = tuple.getKey();
+	URI uri = this._fullUrl.toURI();
+	this._url =
+			new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), null, uri.getFragment())
+					.toURL();
+	this.url = _url.toString();
 
 	this._cookieString =
 		cookies.stream()
 			.map(e -> e.getName() + "=" + e.getValue())
-			.collect(Collectors.joining(";"));
+				.collect(Collectors.joining("; "));
 	this._hasText = StringUtils.isNotEmpty(text);
 	this._hasParams = ObjectUtils.isNotEmpty(params);
 	this._hasHeaders = ObjectUtils.isNotEmpty(headers);
@@ -110,22 +119,22 @@ private CodeRequest(HarRequest harRequest) throws Exception {
 			if (!this._hasParams) {
 				throw new Exception("Params cannot be empty");
 			}
-//			if (!this._hasAttachments) {
-//				throw new Exception("Params must have attachments");
-//			}
+			//			if (!this._hasAttachments) {
+			//				throw new Exception("Params must have attachments");
+			//			}
 		}
-}
-
-public Map<String, List<String>> queryStringsToMap(){
-	Map<String, List<String>>  map = new HashMap<>();
-	for(HarQueryString queryString: queryStrings){
-		String key  = queryString.getName();
-		if(!map.containsKey(key)){
-			map.put(key, new ArrayList<>());
-		}
-		map.get(key).add(queryString.getValue());
 	}
-	return  map;
+
+	public Map<String, List<String>> queryStringsToMap() {
+		Map<String, List<String>> map = new HashMap<>();
+		for (HarQueryString queryString : queryStrings) {
+			String key = queryString.getName();
+			if (!map.containsKey(key)) {
+				map.put(key, new ArrayList<>());
+			}
+			map.get(key).add(queryString.getValue());
+		}
+		return map;
 }
 
 public Optional<HarHeader> find(String headerName) {
@@ -142,15 +151,15 @@ public String getMethod() {
 	return method;
 }
 
-public String getUrl() {
-	return url;
-}
-
 public String toJsonString() throws Exception {
 	return ObjectUtils.toJsonString(text);
 }
 
-public Map<String, Object> fromJsonString() throws Exception {
+	public String toPrettyJsonString() throws Exception {
+		return ObjectUtils.toPrettyJsonString(fromJsonString());
+	}
+
+	public Map<String, Object> fromJsonString() throws Exception {
 	return ObjectUtils.fromJsonString(text);
 }
 
@@ -219,11 +228,13 @@ public Map<String, String> headersAsMap() {
 }
 
 public Map<String, String> allHeadersAsMap() {
-	return _allHeaders;
+	return newMap(_allHeaders);
 }
 
 public Map<String, List<String>> queryStringsAsMap() {
-	return _queryStrings;
+	Map<String, List<String>> newMap = new HashMap<>();
+	newMap.putAll(_queryStrings);
+	return newMap;
 }
 
 public Map<String, String> paramsAsMap() {
@@ -242,16 +253,54 @@ public String paramsToJSONString() throws JsonProcessingException {
 	return ObjectUtils.toJsonString(_params);
 }
 
-public String queryStringsToJsonString() throws JsonProcessingException {
-	return ObjectUtils.toJsonString(_queryStrings);
+	public String paramsToPrettyJSONString() throws JsonProcessingException {
+		return ObjectUtils.toPrettyJsonString(_params);
+	}
+
+	public String paramsToString() {
+		return params.stream()
+				.map(e -> e.getName() + "=" + e.getValue())
+				.collect(Collectors.joining("&"));
+	}
+
+	public Map<String, Object> unwrapQueryStrings() {
+		Map<String, Object> result = new LinkedHashMap<>();
+		for (Map.Entry<String, List<String>> entry : _queryStrings.entrySet()) {
+			if (entry.getValue().size() == 1) {
+				result.put(entry.getKey(), entry.getValue().get(0));
+			} else {
+				result.put(entry.getKey(), entry.getValue());
+			}
+		}
+		return result;
+	}
+
+	public String queryStringsToJsonString() throws JsonProcessingException {
+		return ObjectUtils.toPrettyJsonString(this.unwrapQueryStrings());
+	}
+
+	public String headersToJsonString(boolean pretty) throws JsonProcessingException {
+		return (pretty) ? ObjectUtils.toPrettyJsonString(_headers) : ObjectUtils.toJsonString(headers);
 }
 
 public String headersToJsonString() throws JsonProcessingException {
-	return ObjectUtils.toJsonString(_headers);
+	return this.headersToJsonString(true);
+}
+
+	public String allHeadersToJsonString(boolean pretty) throws JsonProcessingException {
+		return (pretty)
+				? ObjectUtils.toPrettyJsonString(_allHeaders)
+				: ObjectUtils.toJsonString(_allHeaders);
 }
 
 public String allHeadersToJsonString() throws JsonProcessingException {
-	return ObjectUtils.toJsonString(_allHeaders);
+	return allHeadersToJsonString(false);
+}
+
+	public Map<String, String> newMap(Map<String, String> map) {
+		Map<String, String> newMap = new HashMap<>();
+		newMap.putAll(map);
+		return newMap;
 }
 
 public String getHost() {
@@ -259,7 +308,7 @@ public String getHost() {
 }
 
 public int getPort() {
-	return _url.getPort() == -1 ? DEFAULT_PORT : _url.getPort();
+	return _url.getPort() == -1 ? (isSecure() ? HTTPS_PORT : HTTP_PORT) : _url.getPort();
 }
 
 public String getProtocol() {
@@ -270,11 +319,31 @@ public String getPath() {
 	return StringUtils.isNotBlank(_url.getPath()) ? _url.getPath() : "/";
 }
 
-public boolean isSecure() {
+	public String getFullPath() {
+		return _hasQueryStrings
+				? (StringUtils.isNotBlank(_fullUrl.getPath()) ? _fullUrl.getPath() : "/")
+				+ "?"
+				+ _fullUrl.getQuery()
+				: (StringUtils.isNotBlank(_url.getPath()) ? _url.getPath() : "/");
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public String getFullUrl() {
+		return _hasQueryStrings ? _fullUrl.toString() : url;
+	}
+
+	public boolean isSecure() {
 	return HttpScheme.HTTPS.equalsIgnoreCase(this.getProtocol());
 }
 
 public static CodeRequest newCodeRequest(HarRequest harRequest) throws Exception {
 	return new CodeRequest(harRequest);
 }
+
+	public boolean isDefaultPort() {
+		return getPort() == HTTP_PORT || getPort() == HTTPS_PORT;
+	}
 }

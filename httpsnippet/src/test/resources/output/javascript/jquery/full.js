@@ -1,4 +1,17 @@
-var settings = {"async":true,"headers":{"Cookie":"foo=bar;bar=baz","content-type":"application/x-www-form-urlencoded","accept":"application/json"},"method":"POST","crossDomain":true,"body":{"foo":"bar"},"url":"http://mockbin.com/har?key=value"}
+var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "http://mockbin.com/har?baz=abc&foo=bar&foo=baz&key=value",
+  "method": "POST",
+  "headers": {
+    "Cookie": "foo=bar; bar=baz",
+    "content-type": "application/x-www-form-urlencoded",
+    "accept": "application/json"
+  },
+  "data": {
+    "foo": "bar"
+  }
+}
 
 $.ajax(settings).done(function (response) {
   console.log(response);

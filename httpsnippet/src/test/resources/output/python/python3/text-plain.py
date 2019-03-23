@@ -1,12 +1,10 @@
 import http.client
 
-conn = http.client.HTTPConnection("mockbin.com", "80")
+conn = http.client.HTTPConnection("mockbin.com")
 
 payload = "Hello World"
 
-headers = {
-	"content-type": "text/plain"
-}
+headers = {"content-type":"text/plain"}
 
 conn.request("POST", "/har", payload, headers)
 

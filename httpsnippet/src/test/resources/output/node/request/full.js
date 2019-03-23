@@ -1,10 +1,29 @@
 var request = require("request");
 
 var jar = request.jar();
-jar.setCookie(request.cookie("foo=bar"), "null");
-jar.setCookie(request.cookie("bar=baz"), "null");
+jar.setCookie(request.cookie("foo=bar"), "http://mockbin.com/har");
+jar.setCookie(request.cookie("bar=baz"), "http://mockbin.com/har");
 
-var options = {"headers":{"content-type":"application/x-www-form-urlencoded","accept":"application/json"},"qs":{"foo":["bar","baz"],"baz":["abc"]},"method":"POST","jar":jar,"url":"http://mockbin.com/har?key=value","forms":{"foo":"bar"}};
+var options = {
+  "method": "POST",
+  "url": "http://mockbin.com/har",
+  "jar": jar,
+  "qs": {
+    "foo": [
+      "bar",
+      "baz"
+    ],
+    "baz": "abc",
+    "key": "value"
+  },
+  "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "accept": "application/json"
+  },
+  "form": {
+    "foo": "bar"
+  }
+};
 
 request(options, function (error, response, body) {
   if (error) throw new Error(error);

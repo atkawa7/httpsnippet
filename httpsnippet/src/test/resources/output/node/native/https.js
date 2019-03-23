@@ -1,6 +1,12 @@
 var http = require("https");
 
-var options = {"path":"/har","headers":{},"hostname":"mockbin.com","method":"GET","port":80};
+var options = {
+  "method": "GET",
+  "hostname": "mockbin.com",
+  "port": 443,
+  "path": "/har",
+  "headers": { }
+};
 
 var req = http.request(options, function (res) {
   var chunks = [];

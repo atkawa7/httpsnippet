@@ -5,6 +5,7 @@ import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +22,7 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 	List<String> methods =
 		Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "TRACE");
 
-	code.push("String response = Jsoup.connect(\"%s\")", codeRequest.getUrl());
+	code.push("String response = Jsoup.connect(\"%s\")", codeRequest.getFullUrl());
 
 	String method = codeRequest.getMethod().toUpperCase();
 

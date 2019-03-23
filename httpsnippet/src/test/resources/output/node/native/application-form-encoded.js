@@ -1,6 +1,15 @@
+var qs = require("querystring");
 var http = require("http");
 
-var options = {"path":"/har","headers":{"content-type":"application/x-www-form-urlencoded"},"hostname":"mockbin.com","method":"POST","port":80};
+var options = {
+  "method": "POST",
+  "hostname": "mockbin.com",
+  "port": 80,
+  "path": "/har",
+  "headers": {
+    "content-type": "application/x-www-form-urlencoded"
+  }
+};
 
 var req = http.request(options, function (res) {
   var chunks = [];
@@ -15,6 +24,5 @@ var req = http.request(options, function (res) {
   });
 });
 
-var qs = require("querystring");
 req.write(qs.stringify({"foo":"bar","hello":"world"}));
 req.end();

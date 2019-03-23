@@ -1,6 +1,16 @@
 var request = require("request");
 
-var options = {"headers":{"content-type":"application/json"},"method":"POST","json":true,"body":{"foo":null},"url":"http://mockbin.com/har"};
+var options = {
+  "method": "POST",
+  "url": "http://mockbin.com/har",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "foo": null
+  },
+  "json": true
+};
 
 request(options, function (error, response, body) {
   if (error) throw new Error(error);

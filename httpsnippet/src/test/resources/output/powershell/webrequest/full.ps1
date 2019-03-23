@@ -12,4 +12,4 @@ $cookie.Name = 'bar'
 $cookie.Value = 'baz'
 $cookie.Domain = 'null'
 $session.Cookies.Add($cookie)
-$response = Invoke-WebRequest -Uri 'http://mockbin.com/har?key=value' -Method POST -Headers $headers -WebSession $session
+$response = Invoke-WebRequest -Uri 'http://mockbin.com/har?baz=abc&foo=bar&foo=baz&key=value' -Method POST -Headers $headers -WebSession $session

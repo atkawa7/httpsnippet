@@ -51,17 +51,18 @@ private <T> String literalRepresentation(T value) {
 	for (Object obj : list) {
 		listBuilder.add(this.literalRepresentation(obj));
 	}
-	return "[" + padBlock(1, String.join(" ", listBuilder)) + " ]";
+		return "[" + padBlock(1, String.join(" ", listBuilder)) + "]";
 	} else if (value instanceof Map) {
 	Map<Object, Object> map = (Map) value;
 	List<String> listBuilder = new ArrayList<>();
 
 	for (Map.Entry<Object, Object> entry : map.entrySet()) {
-		String val = padBlock(listBuilder.size() + 2, literalRepresentation(entry.getValue()));
-		String format = String.format("%s %s \n", entry.getKey(), val);
+		int length = entry.getKey().toString().length();
+		String val = padBlock(length + 2, literalRepresentation(entry.getValue()));
+		String format = String.format(":%s %s", entry.getKey(), val);
 		listBuilder.add(format);
 	}
-	return "{" + padBlock(1, String.join(":", listBuilder)) + "}";
+		return "{" + padBlock(1, String.join("\n ", listBuilder)) + "}";
 	} else {
 	return ObjectUtils.defaultIfNull(value, "");
 	}
@@ -75,14 +76,31 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 
 	CodeBuilder code = new CodeBuilder();
 
-	Map<String, Object> body = new HashMap<>();
+	Map<String, Object> body = new LinkedHashMap<>();
+
+	Optional<HarHeader> optionalHarHeader = codeRequest.find(HttpHeaders.ACCEPT);
 
 	if (codeRequest.hasHeadersAndCookies()) {
-	body.put("headers", codeRequest.allHeadersAsMap());
+		Map<String, String> map = codeRequest.allHeadersAsMap();
+		map.remove(HttpHeaders.CONTENT_TYPE.toLowerCase());
+		optionalHarHeader.ifPresent(
+				harHeader -> {
+					if (MediaType.APPLICATION_JSON.equalsIgnoreCase(harHeader.getValue())) {
+						map.remove(HttpHeaders.ACCEPT.toLowerCase());
+					}
+				});
+
+		Map lowercaseMap = new HashMap();
+
+		map.forEach((k, v) -> lowercaseMap.put(k.toLowerCase(), v));
+
+		if (map.size() > 0) {
+			body.put("headers", lowercaseMap);
+		}
 	}
 
 	if (codeRequest.hasQueryStrings()) {
-	body.put("query-params", codeRequest.queryStringsAsMap());
+		body.put("query-params", codeRequest.unwrapQueryStrings());
 	}
 
 	if (codeRequest.hasBody()) {
@@ -91,7 +109,7 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 		if (codeRequest.hasText()) {
 
 			body.put("content-type", new CljKeyword("json"));
-			body.put("form-params", codeRequest.getText());
+			body.put("form-params", codeRequest.fromJsonString());
 		}
 		break;
 		case MediaType.APPLICATION_FORM_URLENCODED:
@@ -104,15 +122,15 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 		if (codeRequest.hasParams()) {
 			List<Object> multipart = new ArrayList<>();
 			for (HarParam param : codeRequest.getParams()) {
-                Map<String, Object> content = new HashMap<>();
-                Object value =
-                        (StringUtils.isNotBlank(param.getFileName())
-                                && StringUtils.isBlank(param.getValue()))
-                                ? new CljFile(param.getFileName())
-                                : param.getValue();
-                content.put("name", param.getName());
-                content.put("content", value);
-                multipart.add(content);
+				Map<String, Object> content = new HashMap<>();
+				Object value =
+						(StringUtils.isNotBlank(param.getFileName())
+								&& StringUtils.isBlank(param.getValue()))
+								? new CljFile(param.getFileName())
+								: param.getValue();
+				content.put("name", param.getName());
+				content.put("content", value);
+				multipart.add(content);
 			}
 			body.put("multipart", multipart);
 		}
@@ -124,8 +142,12 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 	}
 	}
 
-	Optional<HarHeader> optionalHarHeader = codeRequest.find(HttpHeaders.ACCEPT);
-	optionalHarHeader.ifPresent(harHeader -> body.put("accept", new CljKeyword("json")));
+	optionalHarHeader.ifPresent(
+			harHeader -> {
+				if (MediaType.APPLICATION_JSON.equalsIgnoreCase(harHeader.getValue())) {
+					body.put("accept", new CljKeyword("json"));
+				}
+			});
 
 	code.push("(require '[clj-http.client :as client])\n");
 
@@ -140,6 +162,7 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 			11 + codeRequest.getMethod().length() + codeRequest.getUrl().length(),
 			literalRepresentation(body)));
 	}
+	code.blank();
 	return code.join();
 }
 

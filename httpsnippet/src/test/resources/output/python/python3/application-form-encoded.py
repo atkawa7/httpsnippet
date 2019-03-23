@@ -1,12 +1,10 @@
 import http.client
 
-conn = http.client.HTTPConnection("mockbin.com", "80")
+conn = http.client.HTTPConnection("mockbin.com")
 
-payload = {"foo":"bar","hello":"world"}
+payload = "foo=bar&hello=world"
 
-headers = {
-	"content-type": "application/x-www-form-urlencoded"
-}
+headers = {"content-type":"application/x-www-form-urlencoded"}
 
 conn.request("POST", "/har", payload, headers)
 

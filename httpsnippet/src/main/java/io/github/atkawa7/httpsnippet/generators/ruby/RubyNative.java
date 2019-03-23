@@ -46,7 +46,7 @@ public class RubyNative extends CodeGenerator {
                     .blank();
         }
 
-        code.push("url = URI(\"%s\")", codeRequest.getUrl())
+        code.push("url = URI(\"%s\")", codeRequest.getFullUrl())
                 .blank()
                 .push("http = Net::HTTP.new(url.host, url.port)");
 
@@ -62,11 +62,16 @@ public class RubyNative extends CodeGenerator {
             headers.forEach((k, v) -> code.push("request[\"%s\"] = \"%s\"", k, v));
         }
 
-        if (codeRequest.hasText()) {
-            code.push("request.body = %s", codeRequest.toJsonString());
+        if (codeRequest.hasBody()) {
+            if (codeRequest.hasText()) {
+                code.push("request.body = %s", codeRequest.toJsonString());
+            }
+            if (codeRequest.hasParams()) {
+                code.push("request.body = \"%s\"", codeRequest.paramsToString());
+            }
         }
 
-        code.blank().push("response = http.request(request)").push("puts response.read_body");
+        code.blank().push("response = http.request(request)").push("puts response.read_body").blank();
 
         return code.join();
     }

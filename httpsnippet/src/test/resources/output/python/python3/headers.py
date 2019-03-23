@@ -1,10 +1,8 @@
 import http.client
 
-conn = http.client.HTTPConnection("mockbin.com", "80")
+conn = http.client.HTTPConnection("mockbin.com")
 
-headers = {
-	"x-foo": "Bar","accept": "application/json"
-}
+headers = {"x-foo":"Bar","accept":"application/json"}
 
 conn.request("GET", "/har", headers=headers)
 

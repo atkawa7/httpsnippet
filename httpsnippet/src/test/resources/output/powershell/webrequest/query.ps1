@@ -1,1 +1,1 @@
-$response = Invoke-WebRequest -Uri 'http://mockbin.com/har?key=value' -Method GET 
+$response = Invoke-WebRequest -Uri 'http://mockbin.com/har?baz=abc&foo=bar&foo=baz&key=value' -Method GET 

@@ -22,13 +22,13 @@ public class Curl extends CodeGenerator {
 
     @Override
     protected String generateCode(final CodeRequest codeRequest) throws Exception {
-        String indent = "  ";
+        String indent = " ";
         boolean _short = false, _binary = false;
 
-        CodeBuilder code = new CodeBuilder(indent, "\\\n" + indent);
+        CodeBuilder code = new CodeBuilder(indent, indent + "\\\n  ");
 
         code.push("curl %s %s", _short ? "-X" : "--request", codeRequest.getMethod())
-                .push(String.format("%s%s", _short ? "" : "--url ", quote(codeRequest.getUrl())));
+                .push(String.format("%s%s", _short ? "" : "--url ", quote(codeRequest.getFullUrl())));
 
         if (HttpVersion.HTTP_1_0.equalsIgnoreCase(codeRequest.getHttpVersion())) {
             code.push(_short ? "-0" : "--http1.0");

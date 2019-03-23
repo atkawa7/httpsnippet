@@ -1,8 +1,4 @@
 (require '[clj-http.client :as client])
 
-(client/post "http://mockbin.com/har" {headers {content-type "multipart/form-data" 
-                                         } 
-                                      :multipart [{name "foo" 
-                                           :content (clojure.java.io/file "hello.txt") 
-                                           } ] 
-                                      })
+(client/post "http://mockbin.com/har" {:multipart [{:name "foo"
+                                                    :content (clojure.java.io/file "test/fixtures/files/hello.txt")}]})

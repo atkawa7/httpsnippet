@@ -1,7 +1,19 @@
 var form = new FormData();
-form.append("foo", "Hello World");
+form.append("foo", "hello.txt");
 
-var settings = {"async":true,"headers":{"content-type":"multipart/form-data"},"processData":false,"method":"POST","data":form,"crossDomain":true,"mimeType":"multipart/form-data","contentType":false,"url":"http://mockbin.com/har"}
+var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": "http://mockbin.com/har",
+  "method": "POST",
+  "headers": {
+    "content-type": "multipart/form-data"
+  },
+  "processData": false,
+  "contentType": false,
+  "mimeType": "multipart/form-data",
+  "data": form
+}
 
 $.ajax(settings).done(function (response) {
   console.log(response);

@@ -2,22 +2,17 @@ package main
 
 import (
 	"fmt"
-	"time"
 	"net/http"
 	"io/ioutil"
 )
 
 func main() {
 
-	client := http.Client{
-		Timeout: time.Duration(10 * time.Second),
-	}
-
 	url := "https://mockbin.com/har"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
-	res, _ := client.Do(req)
+	res, _ := http.DefaultClient.Do(req)
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)

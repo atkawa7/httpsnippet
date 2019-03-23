@@ -2,11 +2,8 @@ import requests
 
 url = "http://mockbin.com/har"
 
-payload = {"foo":"bar"}
-
-headers = {
-	"content-type": "multipart/form-data"
-}
+payload = "-----011000010111000001101001\r\nContent-Disposition: form-data; name=\"foo\"\r\n\r\nbar\r\n-----011000010111000001101001--\r\n"
+headers = {'content-type': 'multipart/form-data; boundary=---011000010111000001101001'}
 
 response = requests.request("POST", url, data=payload, headers=headers)
 

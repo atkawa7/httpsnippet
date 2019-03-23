@@ -2,7 +2,10 @@ var unirest = require("unirest");
 
 var req = unirest("GET", "http://mockbin.com/har");
 
-req.headers({"x-foo":"Bar","accept":"application/json"});
+req.headers({
+  "x-foo": "Bar",
+  "accept": "application/json"
+});
 
 
 req.end(function (res) {

@@ -1,8 +1,15 @@
 var unirest = require("unirest");
 
-var req = unirest("GET", "http://mockbin.com/har?key=value");
+var req = unirest("GET", "http://mockbin.com/har");
 
-req.query({"foo":["bar","baz"],"baz":["abc"]});
+req.query({
+  "foo": [
+    "bar",
+    "baz"
+  ],
+  "baz": "abc",
+  "key": "value"
+});
 
 
 req.end(function (res) {

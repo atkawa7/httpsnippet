@@ -2,9 +2,11 @@ package io.github.atkawa7.httpsnippet.generators.java;
 
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
+import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,11 +32,11 @@ public class Unirest extends CodeGenerator {
         if (isNotSupported(method)) {
             code.push(
                     "HttpResponse<String> response = Unirest.customMethod(\"%s\",\"%s\")",
-                    method.toUpperCase(), codeRequest.getUrl());
+                    method.toUpperCase(), codeRequest.getFullUrl());
         } else {
             code.push(
                     "HttpResponse<String> response = Unirest.%s(\"%s\")",
-                    method.toLowerCase(), codeRequest.getUrl());
+                    method.toLowerCase(), codeRequest.getFullUrl());
         }
 
         if (codeRequest.hasHeadersAndCookies()) {
@@ -45,12 +47,47 @@ public class Unirest extends CodeGenerator {
                                 code.push(1, ".header(\"%s\", \"%s\")", k, v);
                             });
         }
+        if (codeRequest.hasBody()) {
+            switch (codeRequest.getMimeType()) {
+                case MediaType.APPLICATION_JSON:
+                    if (codeRequest.hasText()) {
+                        code.push(1, ".body(%s)", codeRequest.toJsonString());
+                    }
+                    break;
 
-        if (codeRequest.hasText()) {
-            code.push(1, ".body(%s)", codeRequest.toJsonString());
+                case MediaType.APPLICATION_FORM_URLENCODED:
+                    if (codeRequest.hasParams()) {
+                        codeRequest
+                                .getParams()
+                                .forEach(p -> code.push(1, ".field(\"%s\",\"%s\")", p.getName(), p.getValue()));
+                    }
+                    break;
+
+                case MediaType.MULTIPART_FORM_DATA: {
+                    if (codeRequest.hasParams()) {
+                        codeRequest
+                                .getParams()
+                                .forEach(
+                                        p -> {
+                                            if (StringUtils.isNotBlank(p.getFileName())) {
+                                                code.push(
+                                                        1, ".field(\"%s\", new File(\"%s\"))", p.getName(), p.getFileName());
+                                            } else {
+                                                code.push(1, ".field(\"%s\",\"%s\")", p.getName(), p.getValue());
+                                            }
+                                        });
+                    }
+                }
+                break;
+                default: {
+                    if (codeRequest.hasText()) {
+                        code.push(1, ".body(\"%s\")", codeRequest.getText());
+                    }
+                }
+            }
         }
 
-        code.push(1, ".asString();");
+        code.push(1, ".asString();").blank();
 
         return code.join();
     }

@@ -1,7 +1,7 @@
 require 'uri'
 require 'net/http'
 
-url = URI("http://mockbin.com/har?key=value")
+url = URI("http://mockbin.com/har?baz=abc&foo=bar&foo=baz&key=value")
 
 http = Net::HTTP.new(url.host, url.port)
 

@@ -3,8 +3,8 @@ var unirest = require("unirest");
 var req = unirest("POST", "http://mockbin.com/har");
 
 var CookieJar = unirest.jar();
-CookieJar.add("foo=bar","null");
-CookieJar.add("bar=baz","null");
+CookieJar.add("foo=bar","http://mockbin.com/har");
+CookieJar.add("bar=baz","http://mockbin.com/har");
 req.jar(CookieJar);
 
 

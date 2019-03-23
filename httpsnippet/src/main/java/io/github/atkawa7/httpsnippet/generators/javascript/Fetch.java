@@ -6,21 +6,22 @@ import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class Fetch extends CodeGenerator {
-protected Fetch() {
+	public Fetch() {
 	super(Client.FETCH, Language.JAVASCRIPT);
 }
 
 @Override
 protected String generateCode(CodeRequest codeRequest) throws Exception {
-	CodeBuilder code = new CodeBuilder();
+	CodeBuilder code = new CodeBuilder(" ");
 
-	String url = codeRequest.getUrl();
-	Map<String, Object> fetchOptions = new HashMap<>();
+	String url = codeRequest.getFullUrl();
+	Map<String, Object> fetchOptions = new LinkedHashMap<>();
 	fetchOptions.put("mode", "cors");
 	fetchOptions.put("method", codeRequest.getMethod());
 	fetchOptions.put("headers", codeRequest.allHeadersAsMap());
@@ -28,14 +29,12 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 	switch (codeRequest.getMimeType()) {
 	case MediaType.APPLICATION_FORM_URLENCODED:
 		if (codeRequest.hasParams()) {
-		code.push("var details =%s;", codeRequest.paramsToJSONString());
-		code.push("var form = [];");
-		code.push("for (var property in details) {");
-		code.push(1, "var encodedKey = encodeURIComponent(property);");
-		code.push(1, "var encodedValue = encodeURIComponent(details[property]);");
-		code.push(1, "form.push(encodedKey + \"=\" + encodedValue);");
-		code.push("}");
-		code.push("form = formBody.join(\"&\");");
+			code.push("const details =%s;", codeRequest.paramsToJSONString());
+			code.push("const form = Object.entries(details)");
+			code.push(
+					4,
+					".map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value))");
+			code.push(4, ".join('&')");
 		fetchOptions.put("body", "[form]");
 		}
 		break;
@@ -72,7 +71,7 @@ protected String generateCode(CodeRequest codeRequest) throws Exception {
 		}
 	}
 
-	code.push("const fetchOptions = " + toJson(fetchOptions).replace("\"[form]\"", "form"))
+	code.push("const fetchOptions = " + toPrettyJson(fetchOptions).replace("\"[form]\"", "form"))
 		.blank()
 		.push("fetch(\"" + url + "\", fetchOptions)")
 		.push(1, ".then(response => response.json())")

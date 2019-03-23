@@ -1,10 +1,10 @@
 var data = new FormData();
-data.append("Hello World", "Hello World");
+data.append("foo", "hello.txt");
 
 var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 
-xhr.addEventListener('readystatechange', function () {
+xhr.addEventListener("readystatechange", function () {
   if (this.readyState === this.DONE) {
     console.log(this.responseText);
   }
