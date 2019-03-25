@@ -6,39 +6,39 @@ import org.junit.jupiter.api.Test;
 
 class CodeBuilderTest {
 
-@Test
-void fill() {}
+  @Test
+  void fill() {}
 
-@Test
-void buildLine() {}
+  @Test
+  void buildLine() {}
 
-@Test
-void buildLine1() {}
+  @Test
+  void buildLine1() {}
 
-@Test
-void buildLine2() {}
+  @Test
+  void buildLine2() {}
 
-@Test
-void buildLine3() {}
+  @Test
+  void buildLine3() {}
 
-@Test
-void push() {}
+  @Test
+  void push() {}
 
-@Test
-void push1() {}
+  @Test
+  void push1() {}
 
-@Test
-void push2() {}
+  @Test
+  void push2() {}
 
-@Test
-void push3() {}
+  @Test
+  void push3() {}
 
-@Test
-void blank() {}
+  @Test
+  void blank() {}
 
-@Test
-void join() {}
+  @Test
+  void join() {}
 
-@Test
-void join1() {}
+  @Test
+  void join1() {}
 }

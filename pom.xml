@@ -221,10 +221,9 @@
                                 <style>GOOGLE</style>
                             </googleJavaFormat>
                             <removeUnusedImports />
-                            <indent>
-                                <tabs>true</tabs>
-                                <spacesPerTab>4</spacesPerTab>
-                            </indent>
+                            <importOrder>
+                                <order>java,javax,org,com,io</order>
+                            </importOrder>
                         </java>
                     </configuration>
                 </plugin>

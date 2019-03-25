@@ -12,7 +12,7 @@ import lombok.experimental.Wither;
 @Builder
 @Wither
 public class CodeSample {
-String lang;
-String source;
-String label;
+  String lang;
+  String source;
+  String label;
 }

@@ -7,10 +7,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 class HttpSchemeTest {
 
-@ParameterizedTest
-@EnumSource(HttpScheme.class)
-void testEqualsIgnoreCase(HttpScheme scheme) {
-	assertTrue(scheme.equalsIgnoreCase(scheme.name()));
-	assertFalse(scheme.equalsIgnoreCase("foo"));
-}
+  @ParameterizedTest
+  @EnumSource(HttpScheme.class)
+  void testEqualsIgnoreCase(HttpScheme scheme) {
+    assertTrue(scheme.equalsIgnoreCase(scheme.name()));
+    assertFalse(scheme.equalsIgnoreCase("foo"));
+  }
 }
