@@ -11,20 +11,34 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartbear.har.model.HarRequest;
+import org.apache.commons.lang3.SystemUtils;
 
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FixtureBuilder {
   private static final ObjectMapper objectMapper = new ObjectMapper();
   private final List<FixtureType> fixtureTypes = new ArrayList<>();
 
-  private static final String currentPath =
-      Fixture.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-  public static final Path FIXTURES_INPUT_PATH = Paths.get(currentPath, "fixtures");
-  public static final Path FIXTURES_OUTPUT_PATH = Paths.get(currentPath, "output");
+  private final Path input;
+  private final Path output;
+
+  private FixtureBuilder(){
+    String currentPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+    currentPath = SystemUtils.IS_OS_WINDOWS? currentPath.substring(1) : currentPath;
+    this.input = Paths.get(currentPath, "fixtures");
+    this.output = Paths.get(currentPath, "output");
+  }
 
   public static FixtureBuilder builder() {
     return new FixtureBuilder();
+  }
+
+
+  public Path getInput() {
+    return input;
+  }
+
+  public Path getOutput() {
+    return output;
   }
 
   public FixtureBuilder applicationFormEncoded() {
@@ -101,8 +115,7 @@ public class FixtureBuilder {
     List<Fixture> fixtures = new ArrayList<>();
     for (FixtureType fixtureType : fixtureTypes) {
       Path filePath =
-          Paths.get(
-              FIXTURES_INPUT_PATH.toString(), String.format("%s.json", fixtureType.getName()));
+          Paths.get(input.toString(), String.format("%s.json", fixtureType.getName()));
       HarRequest harRequest = objectMapper.readValue(filePath.toFile(), HarRequest.class);
       fixtures.add(new Fixture(fixtureType, harRequest));
     }

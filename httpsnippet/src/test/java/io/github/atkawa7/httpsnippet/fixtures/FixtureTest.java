@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,9 +23,11 @@ import io.github.atkawa7.httpsnippet.models.Language;
 @Slf4j
 public class FixtureTest {
 
+  private static FixtureBuilder fixtureBuilder = FixtureBuilder.builder();
+
   public static Stream<Fixture> fixtureStream() throws Exception {
     List<Fixture> fixtures =
-        FixtureBuilder.builder()
+        fixtureBuilder
             .applicationFormEncoded()
             .applicationJson()
             .cookies()
@@ -60,7 +63,7 @@ public class FixtureTest {
       String code = snippet.getCode();
       Path codeDir =
           Paths.get(
-              FixtureBuilder.FIXTURES_OUTPUT_PATH.toString(),
+              fixtureBuilder.getOutput().toString(),
               language.getKey().toLowerCase().replaceAll("[^a-zA-Z0-9-_\\.]", ""),
               client.getKey().toLowerCase().replaceAll("[^a-zA-Z0-9-_\\.]", ""));
       Path codePath =
