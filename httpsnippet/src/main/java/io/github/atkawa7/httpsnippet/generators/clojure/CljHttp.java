@@ -97,7 +97,7 @@ public class CljHttp extends CodeGenerator {
 
       map.forEach((k, v) -> lowercaseMap.put(k.toLowerCase(), v));
 
-      if (map.size() > 0) {
+      if (lowercaseMap.size() > 0) {
         body.put("headers", lowercaseMap);
       }
     }
