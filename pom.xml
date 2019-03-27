@@ -34,7 +34,7 @@
     </distributionManagement>
 
     <properties>
-        <animal-sniffer-maven-plugin.version>1.16</animal-sniffer-maven-plugin.version>
+        <animal-sniffer-maven-plugin.version>1.17</animal-sniffer-maven-plugin.version>
         <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
         <asciidoctor-maven-plugin.version>1.5.7.1</asciidoctor-maven-plugin.version>
         <asciidoctorj-pdf.version>1.5.0-alpha.16</asciidoctorj-pdf.version>
