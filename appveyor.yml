@@ -20,7 +20,7 @@ install:
   - cmd: mvn --version
   - cmd: java -version
 build_script:
-  - mvn -B -V -Prun-its clean verify -pl httpsnippet
+  - mvn -q test jacoco:report -pl httpsnippet
 cache:
   - C:\maven\ -> appveyor.yml
   - C:\Users\appveyor\.m2\ -> pom.xml
