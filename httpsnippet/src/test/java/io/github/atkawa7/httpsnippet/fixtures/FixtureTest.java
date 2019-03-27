@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -60,7 +61,7 @@ public class FixtureTest {
 
       Client client = snippet.getClient();
       Language language = snippet.getLanguage();
-      String code = snippet.getCode();
+      String code = snippet.getCode().replaceAll("\r\n", "\n").trim();
       Path codeDir =
           Paths.get(
               fixtureBuilder.getOutput().toString(),
@@ -71,7 +72,9 @@ public class FixtureTest {
               codeDir.toString(),
               String.format("%s%s", fixture.getFixtureType().getName(), language.getExtname()));
 
-      assertEquals(FileUtils.readFileToString(codePath.toFile()), code);
+      String expected = FileUtils.readFileToString(codePath.toFile()).replaceAll("\r\n", "\n").trim();
+
+      assertEquals(expected, code);
     }
   }
 }
