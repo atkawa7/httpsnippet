@@ -51,7 +51,7 @@
         <coveralls.token>${env.COVERALLS_REPO_TOKEN}</coveralls.token>
         <dependency-check-maven.version>5.0.0-M2</dependency-check-maven.version>
         <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
-        <error_prone_core.version>2.3.2</error_prone_core.version>
+        <error_prone_core.version>2.3.3</error_prone_core.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
         <findsecbugs-plugin.version>1.9.0</findsecbugs-plugin.version>
         <forbidden-apis.version>2.6</forbidden-apis.version>
