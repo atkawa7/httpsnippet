@@ -65,7 +65,7 @@
         <github.username>atkawa7</github.username>
         <google.format.version>1.7</google.format.version>
         <guava.version>27.1-jre</guava.version>
-        <h2.version>1.4.198</h2.version>
+        <h2.version>1.4.199</h2.version>
         <har-java.version>1.0.0</har-java.version>
         <jackson.version>2.9.8</jackson.version>
         <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
