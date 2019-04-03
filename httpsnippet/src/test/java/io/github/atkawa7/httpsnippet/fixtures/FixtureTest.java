@@ -10,8 +10,6 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -72,7 +70,8 @@ public class FixtureTest {
               codeDir.toString(),
               String.format("%s%s", fixture.getFixtureType().getName(), language.getExtname()));
 
-      String expected = FileUtils.readFileToString(codePath.toFile()).replaceAll("\r\n", "\n").trim();
+      String expected =
+          FileUtils.readFileToString(codePath.toFile()).replaceAll("\r\n", "\n").trim();
 
       assertEquals(expected, code);
     }

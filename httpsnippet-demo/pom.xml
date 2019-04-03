@@ -6,13 +6,11 @@
         <artifactId>httpsnippet-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>httpsnippet-demo</artifactId>
     <packaging>jar</packaging>
     <name>Http Snippet Demo</name>
     <description>An HTTP Request snippet generator for Springfox</description>
     <url>https://github.com/atkawa7/httpsnippet</url>
-
     <dependencies>
         <dependency>
             <groupId>com.github.javafaker</groupId>
@@ -68,6 +66,11 @@
             <version>${lombok.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
@@ -85,7 +88,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <resources>
             <resource>
@@ -185,5 +187,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

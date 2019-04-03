@@ -35,8 +35,7 @@ public class Jsoup extends CodeGenerator {
     if (codeRequest.hasHeadersAndCookies()) {
       codeRequest
           .allHeadersAsMap()
-          .forEach(
-              (k, v) -> code.push(1, ".header(\"%s\", \"%s\")", k, v));
+          .forEach((k, v) -> code.push(1, ".header(\"%s\", \"%s\")", k, v));
     }
 
     if (codeRequest.hasText()) {
