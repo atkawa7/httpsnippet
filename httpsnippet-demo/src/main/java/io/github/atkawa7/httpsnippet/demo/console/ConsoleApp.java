@@ -1,9 +1,10 @@
 package io.github.atkawa7.httpsnippet.demo.console;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import lombok.Data;
+
+import org.reflections.Reflections;
 
 import com.github.javafaker.Faker;
 import com.smartbear.har.builder.HarPostDataBuilder;
@@ -13,6 +14,7 @@ import com.smartbear.har.model.HarPostData;
 import com.smartbear.har.model.HarQueryString;
 import com.smartbear.har.model.HarRequest;
 
+import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.generators.java.OkHttp;
 import io.github.atkawa7.httpsnippet.http.HttpMethod;
@@ -56,6 +58,37 @@ public class ConsoleApp {
     // Or directly using
     String code = new OkHttp().code(harRequest);
     System.out.println(code);
+
+    Reflections reflections = new Reflections("io.github.atkawa7");
+
+    Set<Class<? extends CodeGenerator>> subTypes = reflections.getSubTypesOf(CodeGenerator.class);
+    List<String> values = new ArrayList<>();
+    int value = 0;
+    for (Class<? extends CodeGenerator> subType : subTypes) {
+      ++value;
+      values.add(String.format(format(value), subType.getSimpleName()));
+    }
+    Collections.sort(
+        values,
+        (o1, o2) -> {
+          String[] o1Tokens = o1.split(" ");
+          String[] o2Tokens = o2.split(" ");
+          return o1Tokens[1].compareTo(o2Tokens[1]);
+        });
+    System.out.print(String.join("\n", values));
+  }
+
+  private static String format(int value) {
+    switch (value % 4) {
+      case 1:
+        return "CodeGenerator <|--- %s";
+      case 2:
+        return "%s ---|> CodeGenerator";
+      case 3:
+        return "%s ---|> CodeGenerator ";
+      default:
+        return "CodeGenerator <|--- %s";
+    }
   }
 
   @Data

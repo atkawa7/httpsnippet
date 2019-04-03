@@ -1,0 +1,287 @@
+= Http Snippet
+
+
+An HTTP Request snippet generator for many languages & tools. It can generate code for over twelve different languages and currently supports cURL, Javascript, Node, C, Java, Objective-C, Swift, Python, Ruby, C#, Go, OCaml and more!.
+
+
+==== Har Request
+
+Http snippet depends on the har request to generate code request snippets. The following object contains detailed info about performed request. Some additional fields from the Har spec are not required i.e `bodySize`, `headerSize` and `comments`.
+
+```json
+{
+    "method": "GET",
+    "url": "http://www.example.com/path/?param=value",
+    "httpVersion": "HTTP/1.1",
+    "cookies": [],
+    "headers": [],
+    "queryString" : [],
+    "postData" : {}
+}
+```
+
+The following table shows mandatory and optional har request fields
+
+|===
+|Field | Type | Description | Required
+
+|httpVersion
+|string
+|Request HTTP Version.
+|optional
+
+|method
+|string
+|Request method (GET, POST, ...).
+|optional
+
+|url
+|string
+|Absolute URL of the request (fragments are not included)
+|required
+
+|cookies
+|array
+|List of cookie objects
+|optional
+
+|headers
+|array
+|List of header objects.
+|optional
+
+|queryString
+|array
+|List of query parameter objects.
+|optional
+
+|postData
+|object
+|Posted data info.
+|optional
+
+|===
+
+
+The following snippet shows how to convert a json string to `HarRequest` using `jackson` object mapper.
+
+```java
+  private static final ObjectMapper mapper  = new ObjectMapper();
+  public static HarRequest harRequest(String jsonRequest) throws Exception{
+        return mapper.readValue(jsonRequest, HarRequest.class);
+  }
+```
+
+Another alternative way to create ```HarRequest``` is to use builders from `har-java`.
+
+```java
+HarRequest harRequest =
+        new HarRequestBuilder()
+            .withUrl(url)
+            .withQueryString(queryStrings)
+            .withPostData(null)
+            .build();
+```
+
+Here is how to include it as a dependency in the pom using the following
+
+```xml
+ <dependency>
+            <groupId>com.smartbear</groupId>
+            <artifactId>har-java</artifactId>
+            <version>${har-java.version}</version>
+        </dependency>
+```
+
+==== Query Strings
+
+When a query string with the same name exist in both url and query string list
+
+```json
+"url": "http://www.example.com/path/?foo=bar",
+"queryString" : [{"name": "foo", "value": "baz"}],
+```
+then it will be merged into a new list and the resulting url in code snippets will be `http://www.example.com/path/?foo=bar&foo=baz`. **Note:** some servers will treat `foo` as a list when you do this. In the case where comma separated values are required  passing the url as  `http://www.example.com/path/?foo=bar,baz` or query string as `"queryString" : [{"name": "foo", "value": "bar,baz"}]` should suffice
+
+
+==== Headers
+**Note:** Headers are case insensitive. They are passed as key values.
+
+==== Generators
+
+Please start by browsing for available generators  and inspect each implementation. A generator is a simple module with a constructor that accepts two parameters: language and client where language is the target language i.e ```JAVA```, ```PYTHON```  and client is the target client that supports the language ```OKHTTP``` for ```JAVA```. The generator has ```generateCode``` function which converts ```HarRequest``` to ```HttpSnippet```.
+
+[plantuml, generators]
+....
+abstract class CodeGenerator{
+#language: Language
+#displayName: String
+#client: Client
++ String code(final HarRequest harRequest) throws Exception
+# {abstract} String generateCode(final CodeRequest harRequest) throws Exception
+}
+
+Swift ---|> CodeGenerator
+Fetch ---|> CodeGenerator
+Unirest ---|> CodeGenerator
+XMLHttpRequest ---|> CodeGenerator
+Curl ---|> CodeGenerator
+NodeUnirest ---|> CodeGenerator
+PowerShell ---|> CodeGenerator
+OkHttp ---|> CodeGenerator
+RubyNative ---|> CodeGenerator
+PythonRequests ---|> CodeGenerator
+CodeGenerator <|--- JQuery
+CodeGenerator <|--- Python3Native
+CodeGenerator <|--- LibCurl
+CodeGenerator <|--- GoNative
+CodeGenerator <|--- NodeNative
+CodeGenerator <|--- RestSharp
+CodeGenerator <|--- NodeRequest
+CodeGenerator <|--- ObjNSURLSession
+CodeGenerator <|--- CljHttp
+CodeGenerator <|--- Jsoup
+....
+
+
+==== PostData
+
+===== application/x-www-form-urlencoded
+If the post data is of type ```application/x-www-form-urlencoded```  then params should not be empty or containing filenames. If not then it will throw exceptions. **Note:** `text` is ignored when mimeType is ```application/x-www-form-urlencoded``` The following shows example of postData
+
+```json
+{
+    "mimeType": "application/x-www-form-urlencoded",
+    "params": [{
+        "name": "foo",
+        "value": "bar"
+    }, {
+        "name": "foo",
+        "value": "baz"
+    }, {
+        "name": "baz",
+        "value": "abc"
+    }]
+}
+```
+
+===== application/json
+
+This will match when postData.mimeType is one of: ```application/json```, ```text/json```, ```text/x-json```, ```application/x-json```. If the post data is ```application/json``` then params are ignored.  **Note:** the text is validated and if not  a valid JSON object an exception is thrown. The following shows example of postData
+
+```json
+{
+    "mimeType": "application/json",
+    "params": [],
+    "text": "{\"foo\": \"bar\"}"
+}
+```
+
+===== multipart/form-data
+
+This will match when postData.mimeType is one of: ```multipart/mixed``` ```multipart/related``` ```multipart/form-data```, ```multipart/alternative``` will force ```postData.mimeType``` to ```multipart/form-data```. The ```postData``` must have non empty ```params``` otherwise it would throw an error. If param with ```fileName``` exists then it must have ```contentType``` otherwise an error is also thrown
+
+```json
+{
+    "mimeType": "multipart/form-data",
+    "params": [{
+        "name": "foo",
+        "value": "bar"
+    },
+    {
+          "name": "foo",
+          "fileName": "hello.txt",
+          "contentType": "text/plain"
+    }
+ ]
+}
+```
+
+
+==== Supported  Clients
+
+|===
+
+|Client|Description
+
+
+|https://github.com/dakrone/clj-http[Clj-http]
+|An idiomatic clojure http client wrapping the apache client.
+
+|http://golang.org/pkg/net/http/#NewRequest[NewRequest]
+|Golang HTTP client request
+
+|http://api.jquery.com/jquery.ajax/[JQuery]
+|Perform an asynchronous HTTP (Ajax) requests with JQuery
+
+|https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest[XMLHttpRequest]
+|W3C Standard API that provides scripted client functionality
+
+|http://unirest.io/nodejs.html[Unirest]
+|Lightweight HTTP Request Client Library
+
+|http://nodejs.org/api/http.html#http_http_request_options_callback[HTTP]
+|Node.js native HTTP interface
+
+|https://github.com/request/request[Request]
+|Simplified HTTP request client
+
+|https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSURLSession_class/index.html[NSURLSession]
+|Foundation's NSURLSession request
+
+|https://github.com/mirage/ocaml-cohttp[CoHTTP]
+|Cohttp is a very lightweight HTTP server using Lwt or Async for OCaml
+
+|http://devel-m6w6.rhcloud.com/mdref/http[HTTP v2]
+|PHP with pecl/http v2
+
+|http://php.net/manual/en/book.http.php[HTTP v1]
+|PHP with pecl/http v1
+
+|http://php.net/manual/en/book.curl.php[cURL]
+|PHP with ext-curl
+
+|http://docs.python-requests.org/en/latest/api/#requests.request[Requests]
+|Requests HTTP library
+
+|https://docs.python.org/3/library/http.client.html[http.client]
+|Python3 HTTP Client
+
+|http://curl.haxx.se/[cURL]
+|cURL is a command line tool and library for transferring data with URL syntax
+
+|http://httpie.org/[HTTPie]
+|a CLI, cURL-like tool for humans
+
+|https://www.gnu.org/software/wget/[Wget]
+|a free software package for retrieving files using HTTP, HTTPS
+
+|https://developer.apple.com/library/mac/documentation/Foundation/Reference/NSURLSession_class/index.html[NSURLSession]
+|Foundation's NSURLSession request
+
+|http://ruby-doc.org/stdlib-2.2.1/libdoc/net/http/rdoc/Net/HTTP.html[Net::http]
+|Ruby HTTP client
+
+|http://unirest.io/java.html[Unirest]
+|Lightweight HTTP Request Client Library
+
+|http://restsharp.org/[RestSharp]
+|Simple REST and HTTP API Client for .NET
+
+|http://curl.haxx.se/libcurl/[Libcurl]
+|Simple REST and HTTP API Client for C
+
+|http://square.github.io/okhttp/[OkHttp]
+|An HTTP Request Client Library
+
+|https://docs.microsoft.com/en-us/powershell/module/Microsoft.PowerShell.Utility/Invoke-WebRequest[Invoke-WebRequest]
+|Powershell Invoke-WebRequest client
+
+|http://jsoup.org/[JSoup]
+|JSoup Java HTML Parser, with best of DOM, CSS, and jquery
+
+|https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API[Fetch API]
+|Browser API that offers a simple interface for fetching resources
+
+|===
+

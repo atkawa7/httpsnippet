@@ -1,0 +1,32 @@
+@startuml
+
+abstract class CodeGenerator{
+#language: Language
+#displayName: String
+#client: Client
++ String code(final HarRequest harRequest) throws Exception
+# {abstract} String generateCode(final CodeRequest harRequest) throws Exception
+}
+
+Swift ---|> CodeGenerator
+Fetch ---|> CodeGenerator
+Unirest ---|> CodeGenerator
+XMLHttpRequest ---|> CodeGenerator
+Curl ---|> CodeGenerator
+NodeUnirest ---|> CodeGenerator
+PowerShell ---|> CodeGenerator
+OkHttp ---|> CodeGenerator
+RubyNative ---|> CodeGenerator
+PythonRequests ---|> CodeGenerator
+CodeGenerator <|--- JQuery
+CodeGenerator <|--- Python3Native
+CodeGenerator <|--- LibCurl
+CodeGenerator <|--- GoNative
+CodeGenerator <|--- NodeNative
+CodeGenerator <|--- RestSharp
+CodeGenerator <|--- NodeRequest
+CodeGenerator <|--- ObjNSURLSession
+CodeGenerator <|--- CljHttp
+CodeGenerator <|--- Jsoup
+
+@enduml

@@ -5,13 +5,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.SystemUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartbear.har.model.HarRequest;
-import org.apache.commons.lang3.SystemUtils;
 
 @Slf4j
 public class FixtureBuilder {
@@ -21,9 +20,10 @@ public class FixtureBuilder {
   private final Path input;
   private final Path output;
 
-  private FixtureBuilder(){
-    String currentPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-    currentPath = SystemUtils.IS_OS_WINDOWS? currentPath.substring(1) : currentPath;
+  private FixtureBuilder() {
+    String currentPath =
+        this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+    currentPath = SystemUtils.IS_OS_WINDOWS ? currentPath.substring(1) : currentPath;
     this.input = Paths.get(currentPath, "fixtures");
     this.output = Paths.get(currentPath, "output");
   }
@@ -31,7 +31,6 @@ public class FixtureBuilder {
   public static FixtureBuilder builder() {
     return new FixtureBuilder();
   }
-
 
   public Path getInput() {
     return input;
@@ -114,8 +113,7 @@ public class FixtureBuilder {
   public List<Fixture> build() throws Exception {
     List<Fixture> fixtures = new ArrayList<>();
     for (FixtureType fixtureType : fixtureTypes) {
-      Path filePath =
-          Paths.get(input.toString(), String.format("%s.json", fixtureType.getName()));
+      Path filePath = Paths.get(input.toString(), String.format("%s.json", fixtureType.getName()));
       HarRequest harRequest = objectMapper.readValue(filePath.toFile(), HarRequest.class);
       fixtures.add(new Fixture(fixtureType, harRequest));
     }
