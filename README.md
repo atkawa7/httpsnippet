@@ -11,7 +11,7 @@
 ***The motivation behind porting this is using it for generating snippets in swagger and redocs.
 The project is still in development phase***. 
 
-- [ ] Documentation
+- [x] Documentation
 - [x] Tests
 - [ ] Releasing to maven
 
