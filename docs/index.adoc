@@ -3,6 +3,7 @@
 
 An HTTP Request snippet generator for many languages & tools. It can generate code for over twelve different languages and currently supports cURL, Javascript, Node, C, Java, Objective-C, Swift, Python, Ruby, C#, Go, OCaml and more!.
 
+<<<<<<< HEAD
 ==== Usage
 Enable maven snapshots in `~/.m2/settings.xml`
 ```xml
@@ -89,6 +90,8 @@ cd httpsnippet
 mvn clean install
 java -jar httpsnippet-demo/target/httpsnippet-demo-0.0.1-SNAPSHOT.jar
 ```
+=======
+>>>>>>> a8855cf526135b93537ab2d47373d4b463b942f3
 
 ==== Har Request
 
@@ -195,7 +198,11 @@ then it will be merged into a new list and the resulting url in code snippets wi
 
 ==== Generators
 
+<<<<<<< HEAD
 Please start by browsing for available generators  and inspect each implementation. A generator is a simple class with a constructor that accepts two parameters: language and client where language is the target language i.e ```JAVA```, ```PYTHON```  and client is the target client that supports the language ```OKHTTP``` for ```JAVA```. The generator has ```generateCode``` function which converts ```HarRequest``` to ```HttpSnippet```.
+=======
+Please start by browsing for available generators  and inspect each implementation. A generator is a simple module with a constructor that accepts two parameters: language and client where language is the target language i.e ```JAVA```, ```PYTHON```  and client is the target client that supports the language ```OKHTTP``` for ```JAVA```. The generator has ```generateCode``` function which converts ```HarRequest``` to ```HttpSnippet```.
+>>>>>>> a8855cf526135b93537ab2d47373d4b463b942f3
 
 [plantuml, generators]
 ....

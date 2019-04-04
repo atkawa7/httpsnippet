@@ -106,7 +106,11 @@
         <spotbugs-fb-contrib.version>7.4.3.sb</spotbugs-fb-contrib.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
         <spotless-maven-plugin.version>1.21.1</spotless-maven-plugin.version>
+<<<<<<< HEAD
         <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
+=======
+        <spring.boot.version>2.1.3.RELEASE</spring.boot.version>
+>>>>>>> a8855cf526135b93537ab2d47373d4b463b942f3
         <springfox.version>2.9.2</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
