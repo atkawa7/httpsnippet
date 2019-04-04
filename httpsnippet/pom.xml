@@ -215,17 +215,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>3.0.0</version>
-<<<<<<< HEAD
-=======
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>index</report>
-                            <report>help</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
->>>>>>> a8855cf526135b93537ab2d47373d4b463b942f3
             </plugin>
         </plugins>
     </reporting>
