@@ -3,7 +3,6 @@
 
 An HTTP Request snippet generator for many languages & tools. It can generate code for over twelve different languages and currently supports cURL, Javascript, Node, C, Java, Objective-C, Swift, Python, Ruby, C#, Go, OCaml and more!.
 
-<<<<<<< HEAD
 ==== Usage
 Enable maven snapshots in `~/.m2/settings.xml`
 ```xml
@@ -85,13 +84,11 @@ public class Main {
 For integrating with other third party i.e ```spring```, ```redoc```, ```swagger``` such as checkout the demo.
 
 ```bash
-https://github.com/atkawa7/httpsnippet
+git clone https://github.com/atkawa7/httpsnippet
 cd httpsnippet
 mvn clean install
 java -jar httpsnippet-demo/target/httpsnippet-demo-0.0.1-SNAPSHOT.jar
 ```
-=======
->>>>>>> a8855cf526135b93537ab2d47373d4b463b942f3
 
 ==== Har Request
 
