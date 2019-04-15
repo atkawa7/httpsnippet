@@ -31,9 +31,10 @@
     <properties>
         <animal-sniffer-maven-plugin.version>1.17</animal-sniffer-maven-plugin.version>
         <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
+        <asciidoclet.version>1.5.6</asciidoclet.version>
         <asciidoctor-maven-plugin.version>2.0.0-RC.1</asciidoctor-maven-plugin.version>
         <asciidoctorj-diagram.version>1.5.16</asciidoctorj-diagram.version>
-        <asciidoctorj-epub3.version>1.5.0-alpha.8.1</asciidoctorj-epub3.version>
+        <asciidoctorj-epub3.version>1.5.0-alpha.9</asciidoctorj-epub3.version>
         <asciidoctorj-pdf.version>1.5.0-alpha.16</asciidoctorj-pdf.version>
         <build-number-maven-plugin.version>1.4</build-number-maven-plugin.version>
         <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
@@ -41,7 +42,7 @@
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <codecov.token>${env.CODECOV_TOKEN}</codecov.token>
         <commons-io.version>2.6</commons-io.version>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
         <commons-text.version>1.6</commons-text.version>
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
@@ -67,9 +68,9 @@
         <jackson.version>2.9.8</jackson.version>
         <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
         <java.faker.version>0.17.2</java.faker.version>
-        <jruby-complete.version>9.2.6.0</jruby-complete.version>
-        <junit-jupiter.version>5.4.1</junit-jupiter.version>
-        <junit-platform.version>1.4.1</junit-platform.version>
+        <jruby-complete.version>9.2.7.0</jruby-complete.version>
+        <junit-jupiter.version>5.4.2</junit-jupiter.version>
+        <junit-platform.version>1.4.2</junit-platform.version>
         <lombok.version>1.18.6</lombok.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
@@ -98,6 +99,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <ossindex-maven-plugin.version>3.0.4</ossindex-maven-plugin.version>
+        <pmd-core.version>6.13.0</pmd-core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <reflections.version>0.9.11</reflections.version>
         <slf4j.version>1.7.26</slf4j.version>
@@ -402,11 +404,11 @@
                             <goals>
                                 <goal>jar</goal>
                             </goals>
-                            <configuration>
-                                <additionalJOption>-Xdoclint:none</additionalJOption>
-                            </configuration>
                         </execution>
                     </executions>
+                    <configuration>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -417,6 +419,25 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${maven-pmd-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-core</artifactId>
+                            <version>${pmd-core.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-java</artifactId>
+                            <version>${pmd-core.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <linkXRef>false</linkXRef>
+                        <sourceEncoding>utf-8</sourceEncoding>
+                        <minimumTokens>100</minimumTokens>
+                        <targetJdk>${maven.compiler.target}</targetJdk>
+                        <verbose>true</verbose>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
