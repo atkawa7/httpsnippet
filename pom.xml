@@ -31,6 +31,7 @@
     <properties>
         <animal-sniffer-maven-plugin.version>1.17</animal-sniffer-maven-plugin.version>
         <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
+        <asciidoclet.version>1.5.6</asciidoclet.version>
         <asciidoctor-maven-plugin.version>2.0.0-RC.1</asciidoctor-maven-plugin.version>
         <asciidoctorj-diagram.version>1.5.16</asciidoctorj-diagram.version>
         <asciidoctorj-epub3.version>1.5.0-alpha.9</asciidoctorj-epub3.version>
@@ -98,6 +99,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <ossindex-maven-plugin.version>3.0.4</ossindex-maven-plugin.version>
+        <pmd-core.version>6.13.0</pmd-core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <reflections.version>0.9.11</reflections.version>
         <slf4j.version>1.7.26</slf4j.version>
@@ -110,8 +112,6 @@
         <springfox.version>2.9.2</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
-        <asciidoclet.version>1.5.6</asciidoclet.version>
-        <pmd-core.version>6.13.0</pmd-core.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -398,9 +398,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
-                    <configuration>
-                        <additionalJOption>-Xdoclint:none</additionalJOption>
-                    </configuration>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -409,6 +406,9 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -419,13 +419,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>${maven-pmd-plugin.version}</version>
-                    <configuration>
-                        <linkXRef>false</linkXRef>
-                        <sourceEncoding>utf-8</sourceEncoding>
-                        <minimumTokens>100</minimumTokens>
-                        <targetJdk>${maven.compiler.target}</targetJdk>
-                        <verbose>true</verbose>
-                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
@@ -438,6 +431,13 @@
                             <version>${pmd-core.version}</version>
                         </dependency>
                     </dependencies>
+                    <configuration>
+                        <linkXRef>false</linkXRef>
+                        <sourceEncoding>utf-8</sourceEncoding>
+                        <minimumTokens>100</minimumTokens>
+                        <targetJdk>${maven.compiler.target}</targetJdk>
+                        <verbose>true</verbose>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
