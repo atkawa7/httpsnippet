@@ -4,7 +4,6 @@ import static io.github.atkawa7.httpsnippet.models.internal.CodeRequest.newCodeR
 
 import java.util.Objects;
 
-import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.Getter;
 
 import com.smartbear.har.model.HarRequest;
@@ -12,6 +11,7 @@ import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 
 @Getter
 public abstract class CodeGenerator {

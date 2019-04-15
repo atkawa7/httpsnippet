@@ -2,7 +2,6 @@ package io.github.atkawa7.httpsnippet.generators.clojure;
 
 import java.util.*;
 
-import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,6 +18,7 @@ import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 
 public class CljHttp extends CodeGenerator {
   private static final List<String> SUPPORTED_METHODS =

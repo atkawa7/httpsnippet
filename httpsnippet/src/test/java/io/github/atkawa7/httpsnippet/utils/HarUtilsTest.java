@@ -1,14 +1,11 @@
 package io.github.atkawa7.httpsnippet.utils;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.*;
-import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.*;
+
+import org.junit.jupiter.api.Test;
 
 class HarUtilsTest {
   @Test
@@ -25,7 +22,7 @@ class HarUtilsTest {
     Map<String, Object> h = new HashMap<>();
     h.put("foo", "foo");
     Map<String, Object> result =
-            assertDoesNotThrow(() -> HarUtils.fromJsonString("{\"foo\":\"foo\"}"));
+        assertDoesNotThrow(() -> HarUtils.fromJsonString("{\"foo\":\"foo\"}"));
     assertEquals(h, result);
   }
 

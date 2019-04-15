@@ -2,7 +2,6 @@ package io.github.atkawa7.httpsnippet.demo.console;
 
 import java.util.*;
 
-import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.Data;
 
 import org.reflections.Reflections;
@@ -23,6 +22,7 @@ import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.HttpSnippet;
 import io.github.atkawa7.httpsnippet.models.Language;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 
 public class ConsoleApp {
 

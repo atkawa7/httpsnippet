@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.smartbear.har.model.HarParam;
 
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
@@ -15,7 +17,6 @@ import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
 import io.github.atkawa7.httpsnippet.utils.HarUtils;
-import org.apache.commons.lang3.ObjectUtils;
 
 public class ObjNSURLSession extends CodeGenerator {
   private int timeout;

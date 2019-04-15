@@ -6,7 +6,6 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.NonNull;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -16,6 +15,7 @@ import com.smartbear.har.model.HarQueryString;
 import com.smartbear.har.model.HarRequest;
 
 import io.github.atkawa7.httpsnippet.http.HttpScheme;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 
 final class URLWrapper {
   public static final int HTTP_PORT = 80;

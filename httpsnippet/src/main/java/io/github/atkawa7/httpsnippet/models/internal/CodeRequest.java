@@ -277,9 +277,7 @@ public final class CodeRequest {
   }
 
   public String allHeadersToJsonString(boolean pretty) throws JsonProcessingException {
-    return (pretty)
-        ? HarUtils.toPrettyJsonString(_allHeaders)
-        : HarUtils.toJsonString(_allHeaders);
+    return (pretty) ? HarUtils.toPrettyJsonString(_allHeaders) : HarUtils.toJsonString(_allHeaders);
   }
 
   public String allHeadersToJsonString() throws JsonProcessingException {

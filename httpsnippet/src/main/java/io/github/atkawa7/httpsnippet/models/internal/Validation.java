@@ -1,10 +1,10 @@
 package io.github.atkawa7.httpsnippet.models.internal;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.apache.commons.lang3.ObjectUtils;
 
 public interface Validation<T> {
   static <T> List<T> validate(List<T> validationList, Validation<T> validation) throws Exception {

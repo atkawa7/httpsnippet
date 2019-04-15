@@ -3,7 +3,6 @@ package io.github.atkawa7.httpsnippet.demo.swagger.plugins;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -38,6 +37,7 @@ import io.github.atkawa7.httpsnippet.demo.swagger.models.CodeSample;
 import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 
 @Slf4j
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
