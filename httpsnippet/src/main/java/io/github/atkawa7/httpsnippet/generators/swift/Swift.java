@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.smartbear.har.model.HarParam;
 
@@ -13,7 +14,6 @@ import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 public class Swift extends CodeGenerator {
 
@@ -26,9 +26,9 @@ public class Swift extends CodeGenerator {
   }
 
   private <T> String literalRepresentation(T value, Integer indent) {
-    int indentLevel = ObjectUtils.isNull(indent) ? 1 : indent + 1;
+    int indentLevel = Objects.isNull(indent) ? 1 : indent + 1;
 
-    if (ObjectUtils.isNull(value)) {
+    if (Objects.isNull(value)) {
       return "nil";
     } else if (value instanceof List) {
       List list = (List) value;

@@ -2,6 +2,7 @@ package io.github.atkawa7.httpsnippet.generators.javascript;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.smartbear.har.model.HarParam;
@@ -12,7 +13,6 @@ import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 public class XMLHttpRequest extends CodeGenerator {
   private boolean cors;

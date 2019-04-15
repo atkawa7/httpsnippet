@@ -6,15 +6,16 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.NonNull;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.smartbear.har.model.HarQueryString;
 import com.smartbear.har.model.HarRequest;
 
 import io.github.atkawa7.httpsnippet.http.HttpScheme;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 final class URLWrapper {
   public static final int HTTP_PORT = 80;
@@ -125,13 +126,13 @@ final class URLWrapper {
         .map(
             t ->
                 String.format(
-                    "%s=%s", t.getKey(), ObjectUtils.isNull(t.getValue()) ? "" : t.getValue()))
+                    "%s=%s", t.getKey(), Objects.isNull(t.getValue()) ? "" : t.getValue()))
         .collect(Collectors.joining("&"));
   }
 
   private static AbstractMap.SimpleEntry<URL, List<HarQueryString>> newTuple(HarRequest harRequest)
       throws Exception {
-    List<HarQueryString> harQueryStrings = ObjectUtils.defaultIfNull(harRequest.getQueryString());
+    List<HarQueryString> harQueryStrings = HarUtils.defaultIfNull(harRequest.getQueryString());
     String url = harRequest.getUrl();
 
     try {

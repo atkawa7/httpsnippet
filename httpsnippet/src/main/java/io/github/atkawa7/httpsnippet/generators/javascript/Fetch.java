@@ -39,13 +39,6 @@ public class Fetch extends CodeGenerator {
           fetchOptions.put("body", "[form]");
         }
         break;
-
-      case MediaType.APPLICATION_JSON:
-        if (codeRequest.hasText()) {
-          fetchOptions.put("body", codeRequest.getText());
-        }
-        break;
-
       case MediaType.MULTIPART_FORM_DATA:
         if (codeRequest.hasParams()) {
           code.push("let form = new FormData();");
@@ -65,6 +58,8 @@ public class Fetch extends CodeGenerator {
         }
 
         break;
+
+      case MediaType.APPLICATION_JSON:
 
       default:
         if (codeRequest.hasText()) {

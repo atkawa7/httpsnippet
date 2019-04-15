@@ -1,16 +1,17 @@
 package io.github.atkawa7.httpsnippet.models.internal;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import java.util.Objects;
 
 public interface Validation<T> {
   static <T> List<T> validate(List<T> validationList, Validation<T> validation) throws Exception {
     List<T> result = new ArrayList<>();
-    if (ObjectUtils.isNotNull(validationList) && ObjectUtils.isNotNull(validation)) {
+    if (ObjectUtils.isNotEmpty(validationList) && Objects.nonNull(validation)) {
       for (T obj : validationList) {
-        if (ObjectUtils.isNull(obj)) {
+        if (Objects.isNull(obj)) {
           throw new Exception("object cannot be null");
         }
         validation.validate(obj);

@@ -4,6 +4,7 @@ import static io.github.atkawa7.httpsnippet.models.internal.CodeRequest.newCodeR
 
 import java.util.Objects;
 
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.Getter;
 
 import com.smartbear.har.model.HarRequest;
@@ -11,7 +12,6 @@ import com.smartbear.har.model.HarRequest;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 @Getter
 public abstract class CodeGenerator {
@@ -36,11 +36,11 @@ public abstract class CodeGenerator {
   protected abstract String generateCode(final CodeRequest harRequest) throws Exception;
 
   protected String toJson(Object value) throws Exception {
-    return ObjectUtils.toJsonString(value);
+    return HarUtils.toJsonString(value);
   }
 
   protected String toPrettyJson(Object value) throws Exception {
-    return ObjectUtils.toPrettyJsonString(value);
+    return HarUtils.toPrettyJsonString(value);
   }
 
   @Override

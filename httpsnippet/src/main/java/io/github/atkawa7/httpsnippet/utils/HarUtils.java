@@ -1,7 +1,14 @@
 package io.github.atkawa7.httpsnippet.utils;
 
+import java.io.IOException;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.experimental.UtilityClass;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +20,57 @@ import io.github.atkawa7.httpsnippet.models.internal.Validation;
 
 @UtilityClass
 public class HarUtils {
+
+
+    private static final ObjectMapper prettyObjectMapper = new ObjectMapper();
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        prettyObjectMapper.setDefaultPrettyPrinter(new HttpSnippetPrettyPrinter());
+        prettyObjectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
+    }
+
+    public static String toPrettyJsonString(Object value) throws JsonProcessingException {
+        return prettyObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+    }
+
+    public static String toJsonString(Object value) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(value);
+    }
+
+    public static Map<String, Object> fromJsonString(String json) throws IOException {
+        return objectMapper.readValue(json, Map.class);
+    }
+
+    public static <T> boolean isNotNull(T object) {
+        return Objects.nonNull(object);
+    }
+
+    public static <T> boolean isNull(T object) {
+        return Objects.isNull(object);
+    }
+
+    public static <T> String defaultIfNull(T obj, String str) {
+        return isNull(obj) ? str : obj.toString();
+    }
+
+    public static <T> List<T> defaultIfNull(List<T> obj) {
+        return isNull(obj) ? new ArrayList<>() : obj;
+    }
+
+    public static void validateJSON(String jsonInString) throws Exception {
+        if (StringUtils.isNotBlank(jsonInString)) {
+            try {
+                objectMapper.readTree(jsonInString);
+            } catch (Exception ex) {
+                throw new Exception("JSON validation failed");
+            }
+        } else {
+            throw new Exception("JSON validation failed");
+        }
+    }
 
   public List<HarQueryString> processQueryStrings(List<HarQueryString> harQueryStrings)
       throws Exception {
@@ -39,7 +97,7 @@ public class HarUtils {
   }
 
   public List<HarParam> processParams(HarPostData postData) throws Exception {
-    if (ObjectUtils.isNotNull(postData)) {
+    if (Objects.nonNull(postData)) {
       return Validation.validate(
           postData.getParams(),
           param -> {
@@ -81,4 +139,26 @@ public class HarUtils {
       return mimeType;
     }
   }
+
+    static class HttpSnippetPrettyPrinter extends DefaultPrettyPrinter {
+
+        public HttpSnippetPrettyPrinter(DefaultPrettyPrinter base) {
+            super(base);
+        }
+
+        public HttpSnippetPrettyPrinter() {
+            super();
+            _arrayIndenter = DefaultIndenter.SYSTEM_LINEFEED_INSTANCE;
+        }
+
+        @Override
+        public DefaultPrettyPrinter createInstance() {
+            return new HttpSnippetPrettyPrinter(this);
+        }
+
+        @Override
+        public void writeObjectFieldValueSeparator(JsonGenerator g) throws IOException {
+            g.writeRaw(": ");
+        }
+    }
 }

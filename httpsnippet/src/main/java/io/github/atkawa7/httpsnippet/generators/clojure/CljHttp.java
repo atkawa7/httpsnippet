@@ -2,9 +2,11 @@ package io.github.atkawa7.httpsnippet.generators.clojure;
 
 import java.util.*;
 
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.smartbear.har.model.HarHeader;
@@ -17,7 +19,6 @@ import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 public class CljHttp extends CodeGenerator {
   private static final List<String> SUPPORTED_METHODS =
@@ -42,7 +43,7 @@ public class CljHttp extends CodeGenerator {
   }
 
   private <T> String literalRepresentation(T value) {
-    if (ObjectUtils.isNull(value)) {
+    if (Objects.isNull(value)) {
       return "nil";
     } else if (value instanceof String) {
       return "\"" + ((String) value).replace("\"", "\\\"") + "\"";
@@ -67,7 +68,7 @@ public class CljHttp extends CodeGenerator {
       }
       return "{" + padBlock(1, String.join("\n ", listBuilder)) + "}";
     } else {
-      return ObjectUtils.defaultIfNull(value, "");
+      return HarUtils.defaultIfNull(value, "");
     }
   }
 

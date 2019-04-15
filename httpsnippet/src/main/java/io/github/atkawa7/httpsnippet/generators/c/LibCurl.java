@@ -34,11 +34,9 @@ public class LibCurl extends CodeGenerator {
       codeRequest
           .getHeaders()
           .forEach(
-              harHeader -> {
-                code.push(
-                    "headers = curl_slist_append(headers, \"%s: %s\");",
-                    harHeader.getName(), harHeader.getValue());
-              });
+              harHeader -> code.push(
+                  "headers = curl_slist_append(headers, \"%s: %s\");",
+                  harHeader.getName(), harHeader.getValue()));
 
       code.push("curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);");
     }

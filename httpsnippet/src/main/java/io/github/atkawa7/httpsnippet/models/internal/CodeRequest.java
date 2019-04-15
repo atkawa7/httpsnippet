@@ -3,6 +3,7 @@ package io.github.atkawa7.httpsnippet.models.internal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,7 +11,6 @@ import com.smartbear.har.model.*;
 
 import io.github.atkawa7.httpsnippet.http.*;
 import io.github.atkawa7.httpsnippet.utils.HarUtils;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 // internal wrapper class around har request
 public final class CodeRequest {
@@ -55,8 +55,8 @@ public final class CodeRequest {
     this.httpVersion = HttpVersion.resolve(harRequest.getHttpVersion()).getProtocolName();
 
     HarPostData harPostData = harRequest.getPostData();
-    String mimeType = ObjectUtils.isNotNull(harPostData) ? harPostData.getMimeType() : null;
-    String text = ObjectUtils.isNotNull(harPostData) ? harPostData.getText() : null;
+    String mimeType = Objects.nonNull(harPostData) ? harPostData.getMimeType() : null;
+    String text = Objects.nonNull(harPostData) ? harPostData.getText() : null;
 
     this.params = HarUtils.processParams(harPostData);
     this.mimeType = HarUtils.defaultMimeType(mimeType);
@@ -99,7 +99,7 @@ public final class CodeRequest {
   private void validateMimeType() throws Exception {
 
     if (MediaType.APPLICATION_JSON.equalsIgnoreCase(mimeType)) {
-      ObjectUtils.validateJSON(this.text);
+      HarUtils.validateJSON(this.text);
     } else if (MediaType.APPLICATION_FORM_URLENCODED.equalsIgnoreCase(mimeType)) {
       if (!this._hasParams) {
         throw new Exception("Params cannot be empty");
@@ -130,8 +130,8 @@ public final class CodeRequest {
     return this.headers.stream()
         .filter(
             harHeader ->
-                ObjectUtils.isNotNull(harHeader)
-                    && ObjectUtils.isNotNull(harHeader.getName())
+                Objects.nonNull(harHeader)
+                    && Objects.nonNull(harHeader.getName())
                     && harHeader.getName().equalsIgnoreCase(headerName))
         .findFirst();
   }
@@ -141,15 +141,15 @@ public final class CodeRequest {
   }
 
   public String toJsonString() throws Exception {
-    return ObjectUtils.toJsonString(text);
+    return HarUtils.toJsonString(text);
   }
 
   public String toPrettyJsonString() throws Exception {
-    return ObjectUtils.toPrettyJsonString(fromJsonString());
+    return HarUtils.toPrettyJsonString(fromJsonString());
   }
 
   public Map<String, Object> fromJsonString() throws Exception {
-    return ObjectUtils.fromJsonString(text);
+    return HarUtils.fromJsonString(text);
   }
 
   public String getHttpVersion() {
@@ -239,11 +239,11 @@ public final class CodeRequest {
   }
 
   public String paramsToJSONString() throws JsonProcessingException {
-    return ObjectUtils.toJsonString(_params);
+    return HarUtils.toJsonString(_params);
   }
 
   public String paramsToPrettyJSONString() throws JsonProcessingException {
-    return ObjectUtils.toPrettyJsonString(_params);
+    return HarUtils.toPrettyJsonString(_params);
   }
 
   public String paramsToString() {
@@ -265,11 +265,11 @@ public final class CodeRequest {
   }
 
   public String queryStringsToJsonString() throws JsonProcessingException {
-    return ObjectUtils.toPrettyJsonString(this.unwrapQueryStrings());
+    return HarUtils.toPrettyJsonString(this.unwrapQueryStrings());
   }
 
   public String headersToJsonString(boolean pretty) throws JsonProcessingException {
-    return (pretty) ? ObjectUtils.toPrettyJsonString(_headers) : ObjectUtils.toJsonString(headers);
+    return (pretty) ? HarUtils.toPrettyJsonString(_headers) : HarUtils.toJsonString(headers);
   }
 
   public String headersToJsonString() throws JsonProcessingException {
@@ -278,8 +278,8 @@ public final class CodeRequest {
 
   public String allHeadersToJsonString(boolean pretty) throws JsonProcessingException {
     return (pretty)
-        ? ObjectUtils.toPrettyJsonString(_allHeaders)
-        : ObjectUtils.toJsonString(_allHeaders);
+        ? HarUtils.toPrettyJsonString(_allHeaders)
+        : HarUtils.toJsonString(_allHeaders);
   }
 
   public String allHeadersToJsonString() throws JsonProcessingException {

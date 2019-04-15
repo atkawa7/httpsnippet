@@ -3,8 +3,10 @@ package io.github.atkawa7.httpsnippet.demo.swagger.plugins;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +38,6 @@ import io.github.atkawa7.httpsnippet.demo.swagger.models.CodeSample;
 import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
 
 @Slf4j
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
@@ -60,13 +61,13 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
 
     String body;
     try {
-      body = ObjectUtils.isNull(example) ? "" : ObjectUtils.toJsonString(example);
+      body = Objects.isNull(example) ? "" : HarUtils.toJsonString(example);
     } catch (JsonProcessingException e) {
       throw new RuntimeException("Failed to create json from example");
     }
 
     HarPostData postData =
-        ObjectUtils.isNull(example)
+        Objects.isNull(example)
             ? null
             : new HarPostDataBuilder()
                 .withMimeType(MediaType.APPLICATION_JSON)
@@ -117,7 +118,7 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
     String TWITTER = "https://twitter.com/%s";
     Faker FAKER = new Faker();
 
-    if (ObjectUtils.isNotNull(resolvedParameters)) {
+    if (Objects.nonNull(resolvedParameters)) {
       for (ResolvedMethodParameter resolvedMethodParameter : resolvedParameters) {
         Optional<String> optional = resolvedMethodParameter.defaultName();
 
@@ -174,7 +175,7 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
     }
 
     DocumentationContext documentationContext = operationContext.getDocumentationContext();
-    if (ObjectUtils.isNotNull(documentationContext)) {
+    if (Objects.nonNull(documentationContext)) {
       Set<String> consumes = documentationContext.getConsumes();
       if (ObjectUtils.isNotEmpty(consumes)) {
         HarHeader harHeader =

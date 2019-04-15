@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.smartbear.har.model.HarParam;
 
@@ -13,7 +14,8 @@ import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;
 import io.github.atkawa7.httpsnippet.models.internal.CodeRequest;
-import io.github.atkawa7.httpsnippet.utils.ObjectUtils;
+import io.github.atkawa7.httpsnippet.utils.HarUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class ObjNSURLSession extends CodeGenerator {
   private int timeout;
@@ -42,7 +44,7 @@ public class ObjNSURLSession extends CodeGenerator {
 
   public <T> String literalRepresentation(T value, Integer indentation) throws Exception {
     String join = indentation == null ? ", " : ",\n   " + this.blankString(indentation);
-    if (ObjectUtils.isNull(value)) {
+    if (Objects.isNull(value)) {
       return "nil";
     } else if (value instanceof Number) {
       return "@" + value.toString();
@@ -70,7 +72,7 @@ public class ObjNSURLSession extends CodeGenerator {
       Boolean bool = (Boolean) value;
       return bool ? "@YES" : "@NO";
     } else {
-      return String.format("@%s", toJson(ObjectUtils.defaultIfNull(value, "")));
+      return String.format("@%s", toJson(HarUtils.defaultIfNull(value, "")));
     }
   }
 
