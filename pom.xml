@@ -105,7 +105,7 @@
         <slf4j.version>1.7.26</slf4j.version>
         <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
         <sortpom-maven-plugin.version>2.10.0</sortpom-maven-plugin.version>
-        <spotbugs-fb-contrib.version>7.4.3.sb</spotbugs-fb-contrib.version>
+        <spotbugs-fb-contrib.version>7.4.5</spotbugs-fb-contrib.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
         <spotless-maven-plugin.version>1.23.0</spotless-maven-plugin.version>
         <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
