@@ -108,6 +108,7 @@
                             <sourceHighlighter>highlight.js</sourceHighlighter>
                             <doctype>book</doctype>
                             <attributes>
+                                <toclevels>10</toclevels>
                                 <icons>font</icons>
                                 <highlightjsdir>highlight</highlightjsdir>
                                 <highlightjs-theme>atom-one-dark-reasonable</highlightjs-theme>

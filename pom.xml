@@ -47,7 +47,7 @@
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <coveralls.token>${env.COVERALLS_REPO_TOKEN}</coveralls.token>
-        <dependency-check-maven.version>5.0.0-M2</dependency-check-maven.version>
+        <dependency-check-maven.version>5.0.0-M3</dependency-check-maven.version>
         <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
         <error_prone_core.version>2.3.3</error_prone_core.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
@@ -65,24 +65,24 @@
         <guava.version>27.1-jre</guava.version>
         <h2.version>1.4.199</h2.version>
         <har-java.version>1.0.0</har-java.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.9.9</jackson.version>
         <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
-        <java.faker.version>0.17.2</java.faker.version>
+        <java.faker.version>0.18</java.faker.version>
         <jruby-complete.version>9.2.7.0</jruby-complete.version>
         <junit-jupiter.version>5.4.2</junit-jupiter.version>
         <junit-platform.version>1.4.2</junit-platform.version>
-        <lombok.version>1.18.6</lombok.version>
+        <lombok.version>1.18.8</lombok.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
-        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
         <maven-jar-signer-plugin.version>3.0.0</maven-jar-signer-plugin.version>
         <maven-jarsigner-plugin.version>3.0.0</maven-jarsigner-plugin.version>
         <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
@@ -93,7 +93,7 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -108,7 +108,7 @@
         <spotbugs-fb-contrib.version>7.4.3.sb</spotbugs-fb-contrib.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
         <spotless-maven-plugin.version>1.23.0</spotless-maven-plugin.version>
-        <spring.boot.version>2.1.4.RELEASE</spring.boot.version>
+        <spring.boot.version>2.1.5.RELEASE</spring.boot.version>
         <springfox.version>2.9.2</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
