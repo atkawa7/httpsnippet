@@ -47,7 +47,7 @@
         <copy-rename-maven-plugin.version>1.0.1</copy-rename-maven-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <coveralls.token>${env.COVERALLS_REPO_TOKEN}</coveralls.token>
-        <dependency-check-maven.version>5.0.0-M3</dependency-check-maven.version>
+        <dependency-check-maven.version>5.2.0</dependency-check-maven.version>
         <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
         <error_prone_core.version>2.3.3</error_prone_core.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
