@@ -33,7 +33,7 @@
         <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
         <asciidoclet.version>1.5.6</asciidoclet.version>
         <asciidoctor-maven-plugin.version>2.0.0-RC.1</asciidoctor-maven-plugin.version>
-        <asciidoctorj-diagram.version>1.5.16</asciidoctorj-diagram.version>
+        <asciidoctorj-diagram.version>2.0.0</asciidoctorj-diagram.version>
         <asciidoctorj-epub3.version>1.5.0-alpha.9</asciidoctorj-epub3.version>
         <asciidoctorj-pdf.version>1.5.0-alpha.17</asciidoctorj-pdf.version>
         <build-number-maven-plugin.version>1.4</build-number-maven-plugin.version>
