@@ -35,7 +35,7 @@
         <asciidoctor-maven-plugin.version>2.0.0-RC.1</asciidoctor-maven-plugin.version>
         <asciidoctorj-diagram.version>1.5.16</asciidoctorj-diagram.version>
         <asciidoctorj-epub3.version>1.5.0-alpha.9</asciidoctorj-epub3.version>
-        <asciidoctorj-pdf.version>1.5.0-alpha.17</asciidoctorj-pdf.version>
+        <asciidoctorj-pdf.version>1.5.3</asciidoctorj-pdf.version>
         <build-number-maven-plugin.version>1.4</build-number-maven-plugin.version>
         <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
         <clover-maven-plugin.version>4.3.1</clover-maven-plugin.version>
