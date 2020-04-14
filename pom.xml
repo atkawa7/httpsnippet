@@ -62,7 +62,7 @@
         <github.repository>httpsnippet</github.repository>
         <github.username>atkawa7</github.username>
         <google.format.version>1.7</google.format.version>
-        <guava.version>27.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <h2.version>1.4.199</h2.version>
         <har-java.version>1.0.0</har-java.version>
         <jackson.version>2.9.9</jackson.version>
