@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.atkawa7</groupId>
     <artifactId>httpsnippet-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Http Snippet Parent</name>
     <description>An HTTP Request snippet generator for Springfox</description>
@@ -28,6 +28,27 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jcenter-snapshots</id>
+            <name>jcenter</name>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+        </repository>
+        <repository>
+            <id>jcenter-releases</id>
+            <name>jcenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+    </repositories>
+
     <properties>
         <animal-sniffer-maven-plugin.version>1.17</animal-sniffer-maven-plugin.version>
         <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
@@ -62,7 +83,6 @@
         <github.repository>httpsnippet</github.repository>
         <github.username>atkawa7</github.username>
         <google.format.version>1.7</google.format.version>
-        <guava.version>27.1-jre</guava.version>
         <h2.version>1.4.199</h2.version>
         <har-java.version>1.0.0</har-java.version>
         <jackson.version>2.9.9</jackson.version>
@@ -108,8 +128,8 @@
         <spotbugs-fb-contrib.version>7.4.3.sb</spotbugs-fb-contrib.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
         <spotless-maven-plugin.version>1.23.0</spotless-maven-plugin.version>
-        <spring.boot.version>2.1.5.RELEASE</spring.boot.version>
-        <springfox.version>2.9.2</springfox.version>
+        <spring.boot.version>2.3.1.RELEASE</spring.boot.version>
+        <springfox.version>3.0.0-SNAPSHOT</springfox.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
         <xml-format-maven-plugin.version>3.0.7</xml-format-maven-plugin.version>
     </properties>
@@ -140,13 +160,8 @@
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>3.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

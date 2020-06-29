@@ -10,19 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.mvc.condition.NameValueExpression;
-
-import springfox.documentation.service.ResolvedMethodParameter;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.OperationBuilderPlugin;
-import springfox.documentation.spi.service.contexts.DocumentationContext;
-import springfox.documentation.spi.service.contexts.OperationContext;
-import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
-import com.google.common.base.Optional;
 import com.smartbear.har.builder.HarHeaderBuilder;
 import com.smartbear.har.builder.HarPostDataBuilder;
 import com.smartbear.har.builder.HarRequestBuilder;
@@ -38,6 +29,13 @@ import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.HarUtils;
+import springfox.documentation.service.ResolvedMethodParameter;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.OperationBuilderPlugin;
+import springfox.documentation.spi.service.contexts.DocumentationContext;
+import springfox.documentation.spi.service.contexts.OperationContext;
+import springfox.documentation.spring.wrapper.NameValueExpression;
+import springfox.documentation.swagger.common.SwaggerPluginSupport;
 
 @Slf4j
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)

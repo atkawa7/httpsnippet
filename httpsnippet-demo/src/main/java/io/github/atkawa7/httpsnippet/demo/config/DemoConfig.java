@@ -11,17 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.Tag;
-import springfox.documentation.service.VendorExtension;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 import io.github.atkawa7.httpsnippet.demo.domain.EntityMarker;
 import io.github.atkawa7.httpsnippet.demo.processors.SpeakerProcessor;
 import io.github.atkawa7.httpsnippet.demo.processors.SpeakerProcessorImpl;
@@ -34,11 +23,19 @@ import io.github.atkawa7.httpsnippet.demo.swagger.extensions.ExternalDocsVendorE
 import io.github.atkawa7.httpsnippet.demo.swagger.extensions.LogoVendorExtension;
 import io.github.atkawa7.httpsnippet.demo.swagger.plugins.CodeSampleOperationBuilderPlugin;
 import io.github.atkawa7.httpsnippet.http.MediaType;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.service.Tag;
+import springfox.documentation.service.VendorExtension;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 @EntityScan(basePackageClasses = EntityMarker.class)
 @EnableJpaRepositories(basePackageClasses = RepositoryMarker.class)
-@EnableSwagger2
 public class DemoConfig {
   @Bean
   public DemoProperties demoProperties(Environment environment) {
@@ -87,7 +84,7 @@ public class DemoConfig {
             .extensions(apiInfoVendorExtensions)
             .build();
 
-    return new Docket(DocumentationType.SWAGGER_2)
+    return new Docket(DocumentationType.OAS_30)
         .protocols(protocols)
         .apiInfo(apiInfo)
         .produces(Collections.singleton(MediaType.APPLICATION_JSON))

@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.atkawa7</groupId>
         <artifactId>httpsnippet-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>httpsnippet</artifactId>
     <packaging>jar</packaging>
@@ -207,6 +207,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
