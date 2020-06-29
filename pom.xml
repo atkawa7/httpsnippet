@@ -119,7 +119,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
         <ossindex-maven-plugin.version>3.0.4</ossindex-maven-plugin.version>
-        <pmd-core.version>6.14.0</pmd-core.version>
+        <pmd-core.version>6.15.0</pmd-core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <reflections.version>0.9.11</reflections.version>
         <slf4j.version>1.7.26</slf4j.version>
