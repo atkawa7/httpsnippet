@@ -23,11 +23,11 @@ public class OkHttp extends CodeGenerator {
   }
 
   public boolean isNotSupportedMethod(String method) {
-    return SUPPORTED_METHODS.indexOf(method) == -1;
+    return !SUPPORTED_METHODS.contains(method);
   }
 
   public boolean supportsBody(String method) {
-    return SUPPORTS_BODY.indexOf(method) >= 0;
+    return SUPPORTS_BODY.contains(method);
   }
 
   @Override

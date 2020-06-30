@@ -6,12 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.atkawa7.har.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.Test;
 
-import com.smartbear.har.builder.*;
-import com.smartbear.har.model.*;
 
 import io.github.atkawa7.httpsnippet.http.HttpHeaders;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
@@ -25,60 +24,60 @@ class CodeRequestTest {
 
   public static List<HarCookie> cookies() {
     List<HarCookie> cookies = new ArrayList<>();
-    cookies.add(new HarCookieBuilder().withName("foo").withValue("bar").build());
-    cookies.add(new HarCookieBuilder().withName("bar").withValue("baz").build());
+    cookies.add(new HarCookie().withName("foo").withValue("bar"));
+    cookies.add(new HarCookie().withName("bar").withValue("baz"));
     return cookies;
   }
 
   public static List<HarHeader> jsonHeaders() {
     List<HarHeader> headers = new ArrayList<>();
     headers.add(
-        new HarHeaderBuilder()
+        new HarHeader()
             .withName(HttpHeaders.ACCEPT)
             .withValue(MediaType.APPLICATION_JSON)
-            .build());
+            );
     headers.add(
-        new HarHeaderBuilder()
+        new HarHeader()
             .withName(HttpHeaders.CONTENT_TYPE)
             .withValue(MediaType.APPLICATION_JSON)
-            .build());
+            );
     return headers;
   }
 
   public static List<HarHeader> multipartHeaders() {
     List<HarHeader> headers = new ArrayList<>();
     headers.add(
-        new HarHeaderBuilder()
+        new HarHeader()
             .withName(HttpHeaders.ACCEPT)
             .withValue(MediaType.APPLICATION_JSON)
-            .build());
+            );
     headers.add(
-        new HarHeaderBuilder()
+        new HarHeader()
             .withName(HttpHeaders.CONTENT_TYPE)
             .withValue(MediaType.MULTIPART_FORM_DATA)
-            .build());
+            );
     return headers;
   }
 
   public static List<HarHeader> formUrlencodedHeaders() {
     List<HarHeader> headers = new ArrayList<>();
     headers.add(
-        new HarHeaderBuilder()
+        new HarHeader()
             .withName(HttpHeaders.ACCEPT)
             .withValue(MediaType.APPLICATION_JSON)
-            .build());
+            );
     headers.add(
-        new HarHeaderBuilder()
+        new HarHeader()
             .withName(HttpHeaders.CONTENT_TYPE)
             .withValue(MediaType.APPLICATION_FORM_URLENCODED)
-            .build());
+            );
     return headers;
   }
 
   public static List<HarQueryString> queryStrings() {
     List<HarQueryString> queryStrings = new ArrayList<>();
-    queryStrings.add(new HarQueryStringBuilder().withName("foo").withValue("baz").build());
-    queryStrings.add(new HarQueryStringBuilder().withName("foo").withValue("bar").build());
+    queryStrings.add(new HarQueryString().withName("foo").withValue("baz"));
+    queryStrings.add(new HarQueryString().withName("foo").withValue("bar"));
     return queryStrings;
   }
 
@@ -99,7 +98,7 @@ class CodeRequestTest {
 
   @Test
   void testExceptionRaisedWhenUrlIsMalformed() {
-    HarRequest harRequest = new HarRequestBuilder().withUrl("localhost").build();
+    HarRequest harRequest = new HarRequest().withUrl("localhost");
     Exception thrown =
         assertThrows(
             Exception.class, () -> newCodeRequest(harRequest), "Expected exception thrown");
@@ -109,10 +108,10 @@ class CodeRequestTest {
   @Test
   void testExceptionIsRaisedWhenContentTypeIsJsonAndPostDataTextIsNotJson() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
-            .withPostData(new HarPostDataBuilder().withMimeType(MediaType.APPLICATION_JSON).build())
-            .build();
+            .withPostData(new HarPostData().withMimeType(MediaType.APPLICATION_JSON))
+            ;
     Exception thrown =
         assertThrows(
             Exception.class, () -> newCodeRequest(harRequest), "Expected exception thrown");
@@ -122,11 +121,11 @@ class CodeRequestTest {
   @Test
   void testExceptionIsThrownWhenContentTypeIsMultiFormDataAndListOfParamsIsEmpty() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
             .withPostData(
                 new HarPostData(MediaType.MULTIPART_FORM_DATA, new ArrayList<>(), null, null))
-            .build();
+            ;
     Exception thrown =
         assertThrows(
             Exception.class, () -> newCodeRequest(harRequest), "Expected exception thrown");
@@ -136,12 +135,12 @@ class CodeRequestTest {
   @Test
   void testExceptionIsRaisedWhenContentTypeIsFormUrlEncodedAndListOfParamsIsEmpty() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
             .withPostData(
                 new HarPostData(
                     MediaType.APPLICATION_FORM_URLENCODED, new ArrayList<>(), null, null))
-            .build();
+            ;
     Exception thrown =
         assertThrows(
             Exception.class, () -> newCodeRequest(harRequest), "Expected exception thrown");
@@ -151,14 +150,14 @@ class CodeRequestTest {
   @Test
   void testNoneBlankMimeTypeWhenPostDataHasText() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertEquals(MediaType.TEXT_PLAIN, codeRequest.getMimeType());
@@ -167,10 +166,10 @@ class CodeRequestTest {
   @Test
   void testBlankMimeTypeWhenPostDataHasText() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
-            .withPostData(new HarPostDataBuilder().withText(postDataJson()).build())
-            .build();
+            .withPostData(new HarPostData().withText(postDataJson()))
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertEquals(MediaType.APPLICATION_OCTET_STREAM, codeRequest.getMimeType());
@@ -179,27 +178,27 @@ class CodeRequestTest {
   @Test
   void testURL() {
     HarRequest request1 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTPS_URL)
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request1), "Exception thrown but not expected");
     assertTrue(codeRequest.isSecure());
 
     HarRequest request2 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost:8000/foo")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request2), "Exception thrown but not expected");
     assertFalse(codeRequest.isSecure());
@@ -208,27 +207,27 @@ class CodeRequestTest {
   @Test
   void testPort() {
     HarRequest request1 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost/foo")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request1), "Exception thrown but not expected");
     assertEquals(80, codeRequest.getPort());
 
     HarRequest request2 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost:8080/foo")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request2), "Exception thrown but not expected");
     assertEquals(8080, codeRequest.getPort());
@@ -237,27 +236,27 @@ class CodeRequestTest {
   @Test
   void testPath() {
     HarRequest request1 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request1), "Exception thrown but not expected");
     assertEquals("/", codeRequest.getPath());
 
     HarRequest request2 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost/foo")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request2), "Exception thrown but not expected");
     assertEquals("/foo", codeRequest.getPath());
@@ -266,14 +265,14 @@ class CodeRequestTest {
   @Test
   void testHost() {
     HarRequest request1 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataPlain())
                     .withMimeType(MediaType.TEXT_PLAIN)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request1), "Exception thrown but not expected");
     assertEquals("localhost", codeRequest.getHost());
@@ -281,20 +280,20 @@ class CodeRequestTest {
 
   private static List<HarParam> formUrlencodedParams() {
     List<HarParam> params = new ArrayList<>();
-    params.add(new HarParamsBuilder().withName("foo").withValue("bar").build());
-    params.add(new HarParamsBuilder().withName("bar").withValue("baz").build());
+    params.add(new HarParam().withName("foo").withValue("bar"));
+    params.add(new HarParam().withName("bar").withValue("baz"));
     return params;
   }
 
   public static List<HarParam> multipartParams() {
     List<HarParam> params = new ArrayList<>();
-    params.add(new HarParamsBuilder().withName("foo").withValue("bar").build());
+    params.add(new HarParam().withName("foo").withValue("bar"));
     params.add(
-        new HarParamsBuilder()
+        new HarParam()
             .withName("bar")
             .withFileName("baz.txt")
             .withContentType(MediaType.TEXT_PLAIN)
-            .build());
+            );
     return params;
   }
 
@@ -303,14 +302,14 @@ class CodeRequestTest {
     List<HarParam> params = formUrlencodedParams();
 
     HarRequest request1 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withParams(params)
                     .withMimeType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request1), "Exception thrown but not expected");
     assertTrue(codeRequest.hasParams());
@@ -324,14 +323,14 @@ class CodeRequestTest {
     List<HarParam> params = multipartParams();
 
     HarRequest request1 =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl("http://localhost")
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withParams(params)
                     .withMimeType(MediaType.MULTIPART_FORM_DATA)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(request1), "Exception thrown but not expected");
     assertTrue(codeRequest.hasParams());
@@ -343,14 +342,14 @@ class CodeRequestTest {
   @Test
   void testPostDataHasText() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
             .withPostData(
-                new HarPostDataBuilder()
+                new HarPostData()
                     .withText(postDataJson())
                     .withMimeType(MediaType.APPLICATION_JSON)
-                    .build())
-            .build();
+                    )
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertEquals(MediaType.APPLICATION_JSON, codeRequest.getMimeType());
@@ -363,7 +362,7 @@ class CodeRequestTest {
   @Test
   void testCookies() {
     HarRequest harRequest =
-        new HarRequestBuilder().withUrl(HTTP_URL).withCookies(cookies()).withPostData(null).build();
+        new HarRequest().withUrl(HTTP_URL).withCookies(cookies()).withPostData(null);
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertTrue(codeRequest.hasCookies());
@@ -375,11 +374,11 @@ class CodeRequestTest {
   @Test
   void testHeaders() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
             .withHeaders(jsonHeaders())
             .withPostData(null)
-            .build();
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertTrue(codeRequest.hasHeaders());
@@ -391,11 +390,11 @@ class CodeRequestTest {
   @Test
   void testQueryStrings() {
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withUrl(HTTP_URL)
             .withQueryString(queryStrings())
             .withPostData(null)
-            .build();
+            ;
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertTrue(codeRequest.hasQueryStrings());
@@ -405,7 +404,7 @@ class CodeRequestTest {
 
   @Test
   void testHttpVersion() {
-    HarRequest harRequest = new HarRequestBuilder().withUrl(HTTP_URL).withPostData(null).build();
+    HarRequest harRequest = new HarRequest().withUrl(HTTP_URL).withPostData(null);
     CodeRequest codeRequest =
         assertDoesNotThrow(() -> newCodeRequest(harRequest), "Exception thrown but not expected");
     assertEquals(HttpVersion.HTTP_1_1, HttpVersion.resolve(codeRequest.getHttpVersion()));

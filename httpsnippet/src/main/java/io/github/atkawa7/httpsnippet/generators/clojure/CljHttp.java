@@ -28,7 +28,7 @@ public class CljHttp extends CodeGenerator {
   }
 
   private boolean isNotSupported(final String method) {
-    return SUPPORTED_METHODS.indexOf(method.toLowerCase()) == -1;
+    return !SUPPORTED_METHODS.contains(method.toLowerCase());
   }
 
   private String padBlock(final int max, String input) {
@@ -171,8 +171,9 @@ public class CljHttp extends CodeGenerator {
 
   @AllArgsConstructor
   @Getter
+  static
   class CljFile {
-    private String path;
+    private final String path;
 
     @Override
     public String toString() {
@@ -182,8 +183,9 @@ public class CljHttp extends CodeGenerator {
 
   @AllArgsConstructor
   @Getter
+  static
   class CljKeyword {
-    private String name;
+    private final String name;
 
     public String toString() {
       return ':' + this.name;

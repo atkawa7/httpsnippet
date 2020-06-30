@@ -37,7 +37,7 @@ public class RubyNative extends CodeGenerator {
             "MOVE", "TRACE");
     String capMethod = method.charAt(0) + method.substring(1).toLowerCase();
 
-    if (methods.indexOf(method) < 0) {
+    if (!methods.contains(method)) {
       code.push("class Net::HTTP::%s < Net::HTTPRequest", capMethod)
           .push("  METHOD = '%s'", method.toUpperCase())
           .push("  REQUEST_HAS_BODY = \'%s\'", codeRequest.hasText() ? "true" : "false")

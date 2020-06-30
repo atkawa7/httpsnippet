@@ -21,7 +21,7 @@ public class PowerShell extends CodeGenerator {
     List<String> methods =
         Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS");
 
-    if (methods.indexOf(codeRequest.getMethod()) == -1) {
+    if (!methods.contains(codeRequest.getMethod())) {
       throw new Exception("Method not supported");
     }
 

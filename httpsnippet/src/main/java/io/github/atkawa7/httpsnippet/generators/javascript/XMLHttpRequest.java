@@ -85,7 +85,7 @@ public class XMLHttpRequest extends CodeGenerator {
           (k, v) -> {
             try {
               code.push("xhr.setRequestHeader(%s, %s);", toJson(k), toJson(v));
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
           });
     }

@@ -5,12 +5,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.atkawa7.har.HarRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.SystemUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smartbear.har.model.HarRequest;
 
 @Slf4j
 public class FixtureBuilder {

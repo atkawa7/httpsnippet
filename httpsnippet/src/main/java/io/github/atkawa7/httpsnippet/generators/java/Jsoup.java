@@ -26,10 +26,10 @@ public class Jsoup extends CodeGenerator {
 
     String method = codeRequest.getMethod().toUpperCase();
 
-    if (methods.indexOf(method) == -1) {
-      code.push(1, ".method(Method.valueOf(\"%s\"))", method);
-    } else {
+    if (methods.contains(method)) {
       code.push(1, ".method(Method.%s)", method);
+    } else {
+      code.push(1, ".method(Method.valueOf(\"%s\"))", method);
     }
 
     if (codeRequest.hasHeadersAndCookies()) {

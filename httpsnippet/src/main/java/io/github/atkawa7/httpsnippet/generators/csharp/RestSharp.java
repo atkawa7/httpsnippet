@@ -21,7 +21,7 @@ public class RestSharp extends CodeGenerator {
   }
 
   public boolean isNotSupported(String method) {
-    return SUPPORTED_METHODS.indexOf(method.toUpperCase()) == -1;
+    return !SUPPORTED_METHODS.contains(method.toUpperCase());
   }
 
   @Override
