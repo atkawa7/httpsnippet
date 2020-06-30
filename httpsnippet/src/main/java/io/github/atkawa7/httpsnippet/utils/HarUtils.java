@@ -3,6 +3,9 @@ package io.github.atkawa7.httpsnippet.utils;
 import java.io.IOException;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import io.atkawa7.har.*;
 import lombok.experimental.UtilityClass;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +16,7 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.smartbear.har.model.*;
+
 
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.models.internal.Validation;
@@ -29,6 +32,12 @@ public class HarUtils {
     prettyObjectMapper.setDefaultPrettyPrinter(new HttpSnippetPrettyPrinter());
     prettyObjectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     objectMapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    objectMapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
+    objectMapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
+    objectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
   }
 
   public static String toPrettyJsonString(Object value) throws JsonProcessingException {

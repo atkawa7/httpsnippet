@@ -1,19 +1,18 @@
 package io.github.atkawa7.httpsnippet.demo.console;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.*;
 
+import io.atkawa7.har.HarHeader;
+import io.atkawa7.har.HarPostData;
+import io.atkawa7.har.HarQueryString;
+import io.atkawa7.har.HarRequest;
 import lombok.Data;
 
 import org.reflections.Reflections;
 
 import com.github.javafaker.Faker;
-import com.smartbear.har.builder.HarPostDataBuilder;
-import com.smartbear.har.builder.HarRequestBuilder;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarQueryString;
-import com.smartbear.har.model.HarRequest;
-
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;
 import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.generators.java.OkHttp;
@@ -26,6 +25,21 @@ import io.github.atkawa7.httpsnippet.utils.HarUtils;
 
 public class ConsoleApp {
 
+  public static List<HarQueryString> queryString(String queryString) throws UnsupportedEncodingException {
+    final String[] parameters = Objects.requireNonNull(queryString).split("&");
+    List<HarQueryString> queryStrings = new ArrayList<>();
+    for (String parameter : parameters) {
+      final int idx = parameter.indexOf("=");
+      final String key = idx > 0 ? URLDecoder.decode(parameter.substring(0, idx), "UTF-8") : parameter;
+      final String value = idx > 0 && parameter.length() > idx + 1 ? URLDecoder.decode(parameter.substring(idx + 1), "UTF-8") : "";
+      if (!key.isEmpty()) {
+        queryStrings.add(new HarQueryString(key, value, ""));
+      }
+    }
+    return queryStrings;
+  }
+
+
   public static void main(String[] args) throws Exception {
     List<HarHeader> headers = new ArrayList<>();
     List<HarQueryString> queryStrings = new ArrayList<>();
@@ -36,20 +50,18 @@ public class ConsoleApp {
     user.setLastName(faker.name().lastName());
 
     HarPostData harPostData =
-        new HarPostDataBuilder()
+        new HarPostData()
             .withMimeType(MediaType.APPLICATION_JSON)
-            .withText(HarUtils.toJsonString(user))
-            .build();
+            .withText(HarUtils.toJsonString(user));
 
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withMethod(HttpMethod.GET.toString())
             .withUrl("http://localhost:5000/users")
             .withHeaders(headers)
             .withQueryString(queryStrings)
             .withHttpVersion(HttpVersion.HTTP_1_1.toString())
-            .withPostData(harPostData)
-            .build();
+            .withPostData(harPostData);
 
     // Using default client
     HttpSnippet httpSnippet = new HttpSnippetCodeGenerator().snippet(harRequest, Language.JAVA);

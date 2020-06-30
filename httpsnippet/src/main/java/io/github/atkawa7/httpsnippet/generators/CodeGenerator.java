@@ -4,9 +4,9 @@ import static io.github.atkawa7.httpsnippet.models.internal.CodeRequest.newCodeR
 
 import java.util.Objects;
 
+import io.atkawa7.har.HarRequest;
 import lombok.Getter;
 
-import com.smartbear.har.model.HarRequest;
 
 import io.github.atkawa7.httpsnippet.models.Client;
 import io.github.atkawa7.httpsnippet.models.Language;

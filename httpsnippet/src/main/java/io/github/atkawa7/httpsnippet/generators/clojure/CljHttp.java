@@ -2,14 +2,13 @@ package io.github.atkawa7.httpsnippet.generators.clojure;
 
 import java.util.*;
 
+import io.atkawa7.har.HarHeader;
+import io.atkawa7.har.HarParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarParam;
 
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;

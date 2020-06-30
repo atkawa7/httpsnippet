@@ -1,26 +1,11 @@
 package io.github.atkawa7.httpsnippet.demo.swagger.plugins;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
-import com.smartbear.har.builder.HarHeaderBuilder;
-import com.smartbear.har.builder.HarPostDataBuilder;
-import com.smartbear.har.builder.HarRequestBuilder;
-import com.smartbear.har.model.HarHeader;
-import com.smartbear.har.model.HarPostData;
-import com.smartbear.har.model.HarRequest;
-
+import io.atkawa7.har.HarHeader;
+import io.atkawa7.har.HarPostData;
+import io.atkawa7.har.HarRequest;
 import io.github.atkawa7.httpsnippet.demo.config.DemoProperties;
 import io.github.atkawa7.httpsnippet.demo.dto.SpeakerDTO;
 import io.github.atkawa7.httpsnippet.demo.swagger.extensions.CodeSampleVendorExtension;
@@ -29,6 +14,12 @@ import io.github.atkawa7.httpsnippet.generators.HttpSnippetCodeGenerator;
 import io.github.atkawa7.httpsnippet.http.HttpVersion;
 import io.github.atkawa7.httpsnippet.http.MediaType;
 import io.github.atkawa7.httpsnippet.utils.HarUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
 import springfox.documentation.service.ResolvedMethodParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.OperationBuilderPlugin;
@@ -36,6 +27,9 @@ import springfox.documentation.spi.service.contexts.DocumentationContext;
 import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spring.wrapper.NameValueExpression;
 import springfox.documentation.swagger.common.SwaggerPluginSupport;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER + 100)
@@ -67,13 +61,12 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
     HarPostData postData =
         Objects.isNull(example)
             ? null
-            : new HarPostDataBuilder()
+            : new HarPostData()
                 .withMimeType(MediaType.APPLICATION_JSON)
-                .withText(body)
-                .build();
+                .withText(body);
 
     HarRequest harRequest =
-        new HarRequestBuilder()
+        new HarRequest()
             .withMethod(operationContext.httpMethod().name())
             .withUrl(
                 String.format(
@@ -82,7 +75,7 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
             .withHeaders(headers)
             .withHttpVersion(HttpVersion.HTTP_1_1.toString())
             .withPostData(postData)
-            .build();
+            ;
 
     try {
       final List<CodeSample> codeSamples =
@@ -164,10 +157,9 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
     if (ObjectUtils.isNotEmpty(nameValueExpressions)) {
       for (NameValueExpression<String> nameValueExpression : nameValueExpressions) {
         HarHeader harHeader =
-            new HarHeaderBuilder()
+            new HarHeader()
                 .withName(nameValueExpression.getName())
-                .withValue(nameValueExpression.getValue())
-                .build();
+                .withValue(nameValueExpression.getValue());
         headers.add(harHeader);
       }
     }
@@ -177,10 +169,9 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
       Set<String> consumes = documentationContext.getConsumes();
       if (ObjectUtils.isNotEmpty(consumes)) {
         HarHeader harHeader =
-            new HarHeaderBuilder()
+            new HarHeader()
                 .withName(HttpHeaders.CONTENT_TYPE)
-                .withValue(StringUtils.join(consumes, ","))
-                .build();
+                .withValue(StringUtils.join(consumes, ","));
         headers.add(harHeader);
       }
 
@@ -188,10 +179,9 @@ public class CodeSampleOperationBuilderPlugin implements OperationBuilderPlugin 
 
       if (ObjectUtils.isNotEmpty(consumes)) {
         HarHeader harHeader =
-            new HarHeaderBuilder()
+            new HarHeader()
                 .withName(HttpHeaders.ACCEPT)
-                .withValue(StringUtils.join(produces, ","))
-                .build();
+                .withValue(StringUtils.join(produces, ","));
         headers.add(harHeader);
       }
     }

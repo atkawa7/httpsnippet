@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.atkawa7</groupId>
         <artifactId>httpsnippet-parent</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.3</version>
     </parent>
     <artifactId>httpsnippet</artifactId>
     <packaging>jar</packaging>
@@ -14,15 +14,17 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
             <version>${spotbugs-maven-plugin.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.smartbear</groupId>
-            <artifactId>har-java</artifactId>
+            <groupId>io.github.atkawa7</groupId>
+            <artifactId>har</artifactId>
             <version>${har-java.version}</version>
         </dependency>
         <dependency>

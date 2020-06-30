@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.atkawa7</groupId>
     <artifactId>httpsnippet-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3</version>
     <packaging>pom</packaging>
     <name>Http Snippet Parent</name>
     <description>An HTTP Request snippet generator for Springfox</description>
@@ -33,6 +33,10 @@
         <repository>
             <id>central</id>
             <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <snapshots>
@@ -84,14 +88,14 @@
         <github.username>atkawa7</github.username>
         <google.format.version>1.7</google.format.version>
         <h2.version>1.4.199</h2.version>
-        <har-java.version>1.0.0</har-java.version>
+        <har-java.version>0.0.2</har-java.version>
         <jackson.version>2.11.1</jackson.version>
         <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
         <java.faker.version>0.18</java.faker.version>
         <jruby-complete.version>9.2.7.0</jruby-complete.version>
         <junit-jupiter.version>5.4.2</junit-jupiter.version>
         <junit-platform.version>1.4.2</junit-platform.version>
-        <lombok.version>1.18.8</lombok.version>
+        <lombok.version>1.18.12</lombok.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
         <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
         <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
@@ -154,8 +158,8 @@
                 <version>${spotbugs-maven-plugin.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.smartbear</groupId>
-                <artifactId>har-java</artifactId>
+                <groupId>io.atkawa7</groupId>
+                <artifactId>har</artifactId>
                 <version>${har-java.version}</version>
             </dependency>
             <dependency>

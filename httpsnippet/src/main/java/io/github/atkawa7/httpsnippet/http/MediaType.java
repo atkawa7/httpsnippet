@@ -28,10 +28,10 @@ public class MediaType {
   public static final String TEXT_PLAIN = "text/plain";
 
   public static final boolean isMultipartMediaType(String header) {
-    return MULTIPART_MEDIA_TYPES.indexOf(header) != -1;
+    return MULTIPART_MEDIA_TYPES.contains(header);
   }
 
   public static final boolean isJsonMediaType(String header) {
-    return JSON_MEDIA_TYPES.indexOf(header) != -1;
+    return JSON_MEDIA_TYPES.contains(header);
   }
 }

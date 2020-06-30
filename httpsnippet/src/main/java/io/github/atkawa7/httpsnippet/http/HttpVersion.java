@@ -39,7 +39,7 @@ public final class HttpVersion {
   }
 
   public static HttpVersion resolve(String method) {
-    return mappings.containsKey(method) ? mappings.get(method) : HttpVersion.HTTP_1_1;
+    return mappings.getOrDefault(method, HttpVersion.HTTP_1_1);
   }
 
   @Override

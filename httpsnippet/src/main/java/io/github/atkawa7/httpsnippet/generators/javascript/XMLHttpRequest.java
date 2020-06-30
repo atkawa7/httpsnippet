@@ -2,10 +2,10 @@ package io.github.atkawa7.httpsnippet.generators.javascript;
 
 import java.util.Map;
 
+import io.atkawa7.har.HarParam;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.smartbear.har.model.HarParam;
 
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;
 import io.github.atkawa7.httpsnippet.generators.CodeGenerator;

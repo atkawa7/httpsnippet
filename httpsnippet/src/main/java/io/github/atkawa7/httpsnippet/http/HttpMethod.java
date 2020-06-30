@@ -22,6 +22,6 @@ public enum HttpMethod {
   }
 
   public static HttpMethod resolve(String method) {
-    return mappings.containsKey(method) ? mappings.get(method) : GET;
+    return mappings.getOrDefault(method, GET);
   }
 }

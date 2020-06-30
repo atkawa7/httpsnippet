@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.atkawa7</groupId>
         <artifactId>httpsnippet-parent</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.3</version>
     </parent>
     <artifactId>httpsnippet-demo</artifactId>
     <packaging>jar</packaging>
@@ -93,39 +93,39 @@
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontend-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>install-node-and-yarn</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>install-node-and-yarn</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>yarn-install</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>yarn-run-build</id>
-                        <goals>
-                            <goal>yarn</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
-                    <yarnVersion>${frontend-maven-plugin.yarnVersion}</yarnVersion>
-                    <installDirectory>${maven.multiModuleProjectDirectory}/bin</installDirectory>
-                    <workingDirectory>${project.basedir}/redoc</workingDirectory>
-                </configuration>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>install-node-and-yarn</id>-->
+<!--                        <phase>generate-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>install-node-and-yarn</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>yarn-install</id>-->
+<!--                        <goals>-->
+<!--                            <goal>yarn</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <arguments>install</arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>yarn-run-build</id>-->
+<!--                        <goals>-->
+<!--                            <goal>yarn</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <arguments>run build</arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>-->
+<!--                    <yarnVersion>${frontend-maven-plugin.yarnVersion}</yarnVersion>-->
+<!--                    <installDirectory>${maven.multiModuleProjectDirectory}/bin</installDirectory>-->
+<!--                    <workingDirectory>${project.basedir}/redoc</workingDirectory>-->
+<!--                </configuration>-->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
