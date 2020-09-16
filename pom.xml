@@ -90,7 +90,7 @@
         <h2.version>1.4.199</h2.version>
         <har-java.version>0.0.2</har-java.version>
         <jackson.version>2.11.1</jackson.version>
-        <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
         <java.faker.version>0.18</java.faker.version>
         <jruby-complete.version>9.2.7.0</jruby-complete.version>
         <junit-jupiter.version>5.4.2</junit-jupiter.version>
