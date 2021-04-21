@@ -4,7 +4,7 @@ import static io.github.atkawa7.httpsnippet.models.internal.CodeRequest.newCodeR
 
 import java.util.Objects;
 
-import io.atkawa7.har.HarRequest;
+import io.github.atkawa7.har.HarRequest;
 import lombok.Getter;
 
 

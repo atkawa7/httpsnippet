@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import io.atkawa7.har.HarParam;
+import io.github.atkawa7.har.HarParam;
 import org.apache.commons.lang3.ObjectUtils;
 
 

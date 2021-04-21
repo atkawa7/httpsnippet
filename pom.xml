@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.atkawa7</groupId>
     <artifactId>httpsnippet-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
     <name>Http Snippet Parent</name>
     <description>An HTTP Request snippet generator for Springfox</description>
@@ -14,7 +14,7 @@
     <scm>
         <connection>scm:git:git@github.com:atkawa7/httpsnippet.git</connection>
         <developerConnection>scm:git:git@github.com:atkawa7/httpsnippet.git</developerConnection>
-        <tag>v0.0.1</tag>
+        <tag>v1.0.1</tag>
         <url>https://github.com/atkawa7/httpsnippet</url>
     </scm>
     <distributionManagement>
@@ -63,7 +63,7 @@
         <github.username>atkawa7</github.username>
         <google.format.version>1.7</google.format.version>
         <h2.version>1.4.199</h2.version>
-        <har-java.version>0.0.2</har-java.version>
+        <har-java.version>1.1.4</har-java.version>
         <jackson.version>2.11.1</jackson.version>
         <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
         <java.faker.version>0.18</java.faker.version>
@@ -133,7 +133,7 @@
                 <version>${spotbugs-maven-plugin.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.atkawa7</groupId>
+                <groupId>io.github.atkawa7</groupId>
                 <artifactId>har</artifactId>
                 <version>${har-java.version}</version>
             </dependency>

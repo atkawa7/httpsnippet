@@ -1,6 +1,6 @@
 package io.github.atkawa7.httpsnippet.generators.shell;
 
-import io.atkawa7.har.HarParam;
+import io.github.atkawa7.har.HarParam;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 

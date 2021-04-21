@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.atkawa7.har.*;
+import io.github.atkawa7.har.*;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.Test;

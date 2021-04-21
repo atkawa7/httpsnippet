@@ -2,8 +2,8 @@ package io.github.atkawa7.httpsnippet.generators.clojure;
 
 import java.util.*;
 
-import io.atkawa7.har.HarHeader;
-import io.atkawa7.har.HarParam;
+import io.github.atkawa7.har.HarHeader;
+import io.github.atkawa7.har.HarParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

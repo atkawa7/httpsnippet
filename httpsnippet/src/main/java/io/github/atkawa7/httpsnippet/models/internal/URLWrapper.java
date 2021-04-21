@@ -6,8 +6,8 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.atkawa7.har.HarQueryString;
-import io.atkawa7.har.HarRequest;
+import io.github.atkawa7.har.HarQueryString;
+import io.github.atkawa7.har.HarRequest;
 import lombok.NonNull;
 
 import org.apache.commons.lang3.ObjectUtils;

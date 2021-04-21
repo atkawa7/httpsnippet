@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import io.atkawa7.har.*;
+import io.github.atkawa7.har.*;
 import lombok.experimental.UtilityClass;
 
 import org.apache.commons.lang3.StringUtils;

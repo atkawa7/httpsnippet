@@ -6,7 +6,7 @@ import static java.lang.Boolean.TRUE;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import io.atkawa7.har.HarParam;
+import io.github.atkawa7.har.HarParam;
 import org.apache.commons.lang3.StringUtils;
 
 import io.github.atkawa7.httpsnippet.builder.CodeBuilder;

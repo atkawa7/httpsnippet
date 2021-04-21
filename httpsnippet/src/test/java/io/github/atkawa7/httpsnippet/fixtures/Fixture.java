@@ -1,6 +1,6 @@
 package io.github.atkawa7.httpsnippet.fixtures;
 
-import io.atkawa7.har.HarRequest;
+import io.github.atkawa7.har.HarRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

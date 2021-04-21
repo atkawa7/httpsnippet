@@ -3,7 +3,7 @@ package io.github.atkawa7.httpsnippet.models.internal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.atkawa7.har.*;
+import io.github.atkawa7.har.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 

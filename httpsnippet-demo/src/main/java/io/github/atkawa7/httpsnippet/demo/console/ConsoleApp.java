@@ -4,10 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.*;
 
-import io.atkawa7.har.HarHeader;
-import io.atkawa7.har.HarPostData;
-import io.atkawa7.har.HarQueryString;
-import io.atkawa7.har.HarRequest;
+import io.github.atkawa7.har.HarHeader;
+import io.github.atkawa7.har.HarPostData;
+import io.github.atkawa7.har.HarQueryString;
+import io.github.atkawa7.har.HarRequest;
 import lombok.Data;
 
 import org.reflections.Reflections;

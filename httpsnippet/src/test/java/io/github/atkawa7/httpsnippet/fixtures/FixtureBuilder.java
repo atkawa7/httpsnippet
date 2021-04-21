@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.atkawa7.har.HarRequest;
+import io.github.atkawa7.har.HarRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.SystemUtils;
