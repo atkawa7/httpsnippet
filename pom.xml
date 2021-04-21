@@ -3,13 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.atkawa7</groupId>
     <artifactId>httpsnippet-parent</artifactId>
-    <version>0.0.4</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Http Snippet Parent</name>
     <description>An HTTP Request snippet generator for Springfox</description>
     <url>https://github.com/atkawa7/httpsnippet</url>
     <modules>
-        <module>httpsnippet-demo</module>
         <module>httpsnippet</module>
     </modules>
     <scm>
@@ -561,6 +560,25 @@
                     <version>${versions-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${nexus-staging-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>default-deploy</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.eluder.coveralls</groupId>
                     <artifactId>coveralls-maven-plugin</artifactId>
                     <version>${coveralls-maven-plugin.version}</version>
@@ -657,7 +675,11 @@
     </build>
     <profiles>
         <profile>
-            <id>releases</id>
+            <id>demo</id>
+            <modules>
+                <module>httpsnippet</module>
+                <module>httpsnippet-demo</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>
