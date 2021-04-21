@@ -446,6 +446,7 @@
                         <tagNameFormat>v@{project.version}</tagNameFormat>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <releaseProfiles>releases</releaseProfiles>
+                        <arguments>-DskipTests</arguments>
                     </configuration>
                 </plugin>
                 <plugin>
