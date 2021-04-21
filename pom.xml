@@ -11,6 +11,13 @@
     <modules>
         <module>httpsnippet</module>
     </modules>
+    <developers>
+    <developer>
+        <id>allen</id>
+        <name>allen</name>
+        <email>atkawa7@yahoo.com</email>
+    </developer>
+</developers>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
