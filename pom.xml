@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.atkawa7</groupId>
     <artifactId>httpsnippet-parent</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Http Snippet Parent</name>
     <description>An HTTP Request snippet generator for Springfox</description>
@@ -14,7 +14,7 @@
     <scm>
         <connection>scm:git:git@github.com:atkawa7/httpsnippet.git</connection>
         <developerConnection>scm:git:git@github.com:atkawa7/httpsnippet.git</developerConnection>
-        <tag>v1.0.5</tag>
+        <tag>HEAD</tag>
         <url>https://github.com/atkawa7/httpsnippet</url>
     </scm>
     <distributionManagement>
