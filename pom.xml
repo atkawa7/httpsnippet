@@ -14,7 +14,7 @@
     <scm>
         <connection>scm:git:git@github.com:atkawa7/httpsnippet.git</connection>
         <developerConnection>scm:git:git@github.com:atkawa7/httpsnippet.git</developerConnection>
-        <tag>v1.0.1</tag>
+        <tag>v0.0.1</tag>
         <url>https://github.com/atkawa7/httpsnippet</url>
     </scm>
     <distributionManagement>
