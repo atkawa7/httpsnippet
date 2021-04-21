@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.atkawa7</groupId>
         <artifactId>httpsnippet-parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>httpsnippet</artifactId>
     <packaging>jar</packaging>
