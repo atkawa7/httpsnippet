@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.github.eirslett:frontend-maven-plugin
+    versions:
+    - 1.11.0
+    - 1.11.2
+  - dependency-name: com.google.errorprone:error_prone_core
+    versions:
+    - 2.5.1
+  - dependency-name: org.apache.commons:commons-lang3
+    versions:
+    - "3.11"
