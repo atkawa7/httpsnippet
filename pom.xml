@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>httpsnippet</artifactId>
     <groupId>io.github.atkawa7</groupId>
-    <version>1.0.7</version>
     <packaging>jar</packaging>
     <name>Http Snippet</name>
-    <description>Http Snippet</description>
+    <version>1.0.8-SNAPSHOT</version>
+    <description>An HTTP Request snippet generator for openapi</description>
     <url>https://github.com/atkawa7/httpsnippet</url>
     <licenses>
         <license>
