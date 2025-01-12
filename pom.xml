@@ -5,7 +5,7 @@
     <groupId>io.github.atkawa7</groupId>
     <packaging>jar</packaging>
     <name>Http Snippet</name>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.8</version>
     <description>An HTTP Request snippet generator for openapi</description>
     <url>https://github.com/atkawa7/httpsnippet</url>
     <licenses>
@@ -26,7 +26,7 @@
     <scm>
         <connection>scm:git:git://github.com/atkawa7/httpsnippet.git</connection>
         <developerConnection>scm:git:git@github.com:atkawa7/httpsnippet.git</developerConnection>
-        <tag>httpsnippet-1.0.7</tag>
+        <tag>httpsnippet-1.0.8</tag>
         <url>https://github.com/atkawa7/httpsnippet</url>
     </scm>
     <distributionManagement>
