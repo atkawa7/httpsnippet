@@ -6,6 +6,36 @@
     <version>1.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Http Snippet</name>
+    <description>Http Snippet</description>
+    <url>https://github.com/atkawa7/httpsnippet</url>
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <url>https://raw.githubusercontent.com/atkawa7/httpsnippet/LICENSE.txt</url>
+            <distribution>https://github.com/atkawa7/httpsnippet</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>atkawa7</name>
+            <email>atkawa7@yahoo.com</email>
+            <organization>atkawa7</organization>
+            <organizationUrl>https://github.com/atkawa7</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/atkawa7/httpsnippet.git</connection>
+        <developerConnection>scm:git:git@github.com:atkawa7/httpsnippet.git</developerConnection>
+        <tag>httpsnippet-1.0.3</tag>
+        <url>https://github.com/atkawa7/httpsnippet</url>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
     <properties>
         <animal-sniffer-maven-plugin.version>1.18</animal-sniffer-maven-plugin.version>
         <animal-sniffer-signature.version>1.0</animal-sniffer-signature.version>
